@@ -25,7 +25,6 @@ namespace PoGoPrivate
 
         public PogoMachine()
         {
-            Logger.AddLogger(new ConsoleLogger(LogLevel.Info));
 #if DEBUG
             Logger.Write("ON", LogLevel.Debug);
 #endif

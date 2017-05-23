@@ -165,6 +165,8 @@
     <Compile Include="EntityFramework\StoreData\User.cs" />
     <Compile Include="Enums\LogLevel.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="Models\Assets.cs" />
+    <Compile Include="Models\Configs.cs" />
     <Compile Include="PogoMachine.cs" />
     <Compile Include="Global.cs" />
     <Compile Include="Interfaces\ILogger.cs" />
@@ -178,8 +180,6 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

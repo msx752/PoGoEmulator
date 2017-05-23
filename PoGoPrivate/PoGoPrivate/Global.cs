@@ -4,11 +4,13 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using PoGoPrivate.Models;
 
 namespace PoGoPrivate
 {
     public static class Global
     {
+        public static Configs cfg = new Configs();
         public static int port = 3000;
         public static IPAddress ip = IPAddress.Any;
         public static int maxRequestContentLength = (1024 * 1024) * (1); //1MB

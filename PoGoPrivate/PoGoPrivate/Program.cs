@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PoGoPrivate.Enums;
 using PoGoPrivate.Logging;
+using PoGoPrivate.Models;
 
 namespace PoGoPrivate
 {
@@ -16,7 +17,9 @@ namespace PoGoPrivate
 
         private static void Main(string[] args)
         {
+            Logger.AddLogger(new ConsoleLogger(LogLevel.Info));
             Garbage();
+            Assets.ValidateModels();
             Task run = Task.Run(() =>
               {
                   machine = new PogoMachine();
