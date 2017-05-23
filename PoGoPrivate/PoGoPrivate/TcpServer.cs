@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using PoGoPrivate.Enums;
 using PoGoPrivate.Logging;
 
-namespace PoGoPrivate.Requests
+namespace PoGoPrivate
 {
     public class TcpServer
     {
@@ -16,8 +16,6 @@ namespace PoGoPrivate.Requests
         public TcpServer()
         {
         }
-
-        private bool listening = false;
 
         public async void StartServer(IPAddress ip, int port) //non blocking listener
         {
@@ -73,6 +71,7 @@ namespace PoGoPrivate.Requests
 
         #region Fields.
 
+        private bool listening = false;
         private CancellationToken _ct;
         private CancellationTokenSource _cts = new CancellationTokenSource();
         private TcpListener _listener;
