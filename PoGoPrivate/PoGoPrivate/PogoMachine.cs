@@ -29,10 +29,17 @@ namespace PoGoPrivate
 #if DEBUG
             Logger.Write("ON", LogLevel.Debug);
 #endif
-            database = new DataService();
-            var newConfig = database.Configure().Builder.UseInMemoryDatabase();
-            database.UseConfiguration(newConfig);
-            Logger.Write("Successfuly connected to database server.");
+            try
+            {
+                database = new DataService();
+                var newConfig = database.Configure().Builder.UseInMemoryDatabase();
+                database.UseConfiguration(newConfig);
+                Logger.Write("Successfuly connected to database server.");
+            }
+            catch (Exception e)
+            {
+                Logger.Write(e.Message, LogLevel.Error);
+            }
         }
 
         public void Run()
