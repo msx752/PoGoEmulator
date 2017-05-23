@@ -10,6 +10,10 @@ namespace PoGoPrivate.Models
 {
     public static class Assets
     {
+        public static string[] plaforms = new string[] { "android", "ios" };
+        public static Dictionary<string, object> GAME_ASSETS = new Dictionary<string, object>();
+        public static Dictionary<string, object> GAME_MASTER = new Dictionary<string, object>();
+
         public static void ValidateModels()
         {
 #if DEBUG
