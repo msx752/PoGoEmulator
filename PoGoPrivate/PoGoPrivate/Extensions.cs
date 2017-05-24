@@ -66,17 +66,8 @@ namespace PoGoPrivate
         {
             CodedInputStream codedStream = new CodedInputStream(cnnUser.HttpContext.body.First());
             T serverResponse = Activator.CreateInstance(typeof(T)) as T;
-            Type tp = serverResponse.GetType();
-            var mths = tp.GetMethods();
-            MethodInfo methodMergeFrom = null;
-            for (int i = 0; i < mths.Length; i++)
-            {
-                if (mths[i].ToString() == "Void MergeFrom(Google.Protobuf.CodedInputStream)")
-                {
-                    methodMergeFrom = mths[i];
-                    break;
-                }
-            }
+            MethodInfo methodMergeFrom = serverResponse?.GetType().GetMethods().ToList()
+                .FirstOrDefault(p => p.ToString() == "Void MergeFrom(Google.Protobuf.CodedInputStream)");
             if (methodMergeFrom == null)
                 throw new Exception("undefined protobuf class");
             methodMergeFrom.Invoke(serverResponse, new object[] { codedStream });
