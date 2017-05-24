@@ -36,6 +36,9 @@
     <Reference Include="Google.Protobuf, Version=3.3.0.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Protobuf.3.3.0\lib\net45\Google.Protobuf.dll</HintPath>
     </Reference>
+    <Reference Include="HttpMachine, Version=0.9.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\HttpMachine.0.9.0.0\lib\HttpMachine.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.AspNetCore.Hosting.Abstractions, Version=1.1.2.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNetCore.Hosting.Abstractions.1.1.2\lib\net451\Microsoft.AspNetCore.Hosting.Abstractions.dll</HintPath>
     </Reference>
@@ -170,6 +173,7 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="Models\Assets.cs" />
     <Compile Include="Models\Configs.cs" />
+    <Compile Include="MyHttpParserDelegate.cs" />
     <Compile Include="PogoMachine.cs" />
     <Compile Include="Global.cs" />
     <Compile Include="Interfaces\ILogger.cs" />
@@ -183,6 +187,11 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\POGOProtos\POGOProtos.csproj">
+      <Project>{bdca7004-2081-4afd-a7ee-16a101050f82}</Project>
+      <Name>POGOProtos</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

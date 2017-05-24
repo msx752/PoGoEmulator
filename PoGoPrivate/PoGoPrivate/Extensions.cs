@@ -8,6 +8,7 @@ using System.Text;
 using PoGoPrivate.Enums;
 using PoGoPrivate.Logging;
 using System.Threading;
+using HttpMachine;
 
 namespace PoGoPrivate
 {
@@ -18,39 +19,36 @@ namespace PoGoPrivate
             return string.Join(Environment.NewLine, headers.Select(x => x.Key + ": " + x.Value).ToArray()) + Environment.NewLine;
         }
 
-        public static Dictionary<string, string> GetHeaders(this NetworkStream stream, CancellationToken ct)
+        private static string ReadAllLinesWithPeek(NetworkStream stream)
+        {
+            StreamReader sr = new StreamReader(stream);
+            string input = "";
+            while (sr.Peek() >= 0)
+            {
+                input += (char)sr.Read();
+            }
+            return input;
+        }
+
+        public static MyHttpParserDelegate GetHeaders(this NetworkStream stream, CancellationToken ct)
         {
             try
             {
-                ct.ThrowIfCancellationRequested();
-                var headers = new Dictionary<string, string>();
-                byte[] data = new byte[Global.maxRequestContentLength];
-                int numBytesRead = stream.Read(data, 0, data.Length);
-                if (numBytesRead > 0)
+                var handler = new MyHttpParserDelegate();
+                var parser = new HttpParser(handler);
+
+                var buffer = new byte[Global.maxRequestContentLength];
+
+                int bytesRead = stream.Read(buffer, 0, buffer.Length);
+                int d = parser.Execute(new ArraySegment<byte>(buffer, 0, bytesRead));
+                if (bytesRead != d)
                 {
-                    string[] str = Encoding.Default.GetString(data, 0, numBytesRead).Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
-                    data = null;
-                    bool reachedToData = false;
-                    foreach (var headerLine in str)
-                    {
-                        ct.ThrowIfCancellationRequested();
-                        if (reachedToData)
-                        {
-                            headers["Protobuf"] += Environment.NewLine + headerLine;
-                            continue;
-                        }
-                        var headerParts = headerLine.Split(' ');
-                        if (headerParts.Length > 1)
-                            headers[headerParts[0].TrimEnd(':')] = headerLine.Substring(headerParts[0].Length + 1);
-                        else
-                        {
-                            headers["Protobuf"] = "";
-                            reachedToData = true;
-                        }
-                    }
-                    str = null;
+                    throw new Exception("data not matching");
                 }
-                return headers;
+                // ensure you get the last callbacks.
+                parser.Execute(default(ArraySegment<byte>));
+
+                return handler;
             }
             catch (ObjectDisposedException e)
             {

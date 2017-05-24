@@ -20,10 +20,10 @@ namespace PoGoPrivate
         private TcpClient client;
         private Stopwatch stopwatch;
         private NetworkStream stream;
-        private Dictionary<string, string> headers;
+        private MyHttpParserDelegate _httpContext;
         private Timer tmr;
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
-        public Dictionary<string, string> Headers { get { return headers; } }
+        public MyHttpParserDelegate HttpContext { get { return _httpContext; } }
         public NetworkStream Stream { get { return stream; } }
 
         public Connection(TcpClient client)
@@ -37,7 +37,7 @@ namespace PoGoPrivate
             stopwatch.Start();
             Task.Run(() => tmr.Start(), _cts.Token);
             this.stream = this.client.GetStream();
-            headers = Stream.GetHeaders(_cts.Token);
+            _httpContext = Stream.GetHeaders(_cts.Token);
         }
 
         private void Tmr_Elapsed(object sender, ElapsedEventArgs e)
@@ -55,7 +55,7 @@ namespace PoGoPrivate
         {
             try
             {
-                Logger.Write(Headers.JoinLines(), LogLevel.Response);
+                Logger.Write(HttpContext.headers.JoinLines(), LogLevel.Response);
                 Request.Router(this, _cts.Token);
             }
             catch (ObjectDisposedException e)
@@ -117,7 +117,7 @@ namespace PoGoPrivate
             tmr = null;
 
             stopwatch = null;
-            headers = null;
+            _httpContext = null;
 
             client?.Close();
             ((IDisposable)client)?.Dispose();

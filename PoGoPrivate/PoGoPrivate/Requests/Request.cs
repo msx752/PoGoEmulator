@@ -5,8 +5,10 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Protobuf;
 using PoGoPrivate.Enums;
 using PoGoPrivate.Logging;
+using POGOProtos.Networking.Envelopes;
 
 namespace PoGoPrivate.Requests
 {
@@ -17,16 +19,9 @@ namespace PoGoPrivate.Requests
             try
             {
                 ct.ThrowIfCancellationRequested();
-                string router = "";
-                if (connectedClient.Headers.ContainsKey("POST"))
-                    router = connectedClient.Headers["POST"];
-                //else if (connectedClient.Headers.ContainsKey("GET")) //check it
-                //    router = connectedClient.Headers["GET"];
-                else
-                    throw new Exception($"unkown request format: {connectedClient.Headers.FirstOrDefault().Key}");
+                string router = connectedClient.HttpContext.requestUri;
 
-                router = router.Replace(" HTTP/1.1", "");//remove http the version
-                Uri url = new Uri("http://" + connectedClient.Headers["Host"] + router);
+                Uri url = new Uri("http://host" + router);
                 switch (url.Segments[1])
                 {
                     case "plfe/":
@@ -39,7 +34,7 @@ namespace PoGoPrivate.Requests
                         //        string s1 = i.ToString();
                         //    }
                         //}
-                        ProcessRpcRequest(connectedClient, ct);
+                        RpcRequest(connectedClient, ct);
                         break;
 
                     case "model/":
@@ -69,9 +64,14 @@ namespace PoGoPrivate.Requests
             }
         }
 
-        private static void ProcessRpcRequest(Connection connectedClient, CancellationToken ct)
+        private static void RpcRequest(Connection connectedClient, CancellationToken ct)
         {
+            // "POGOProtos.Networking.Envelopes.RequestEnvelope"
             ct.ThrowIfCancellationRequested();
+            var S = connectedClient.HttpContext.body.FirstOrDefault();
+            CodedInputStream codedStream = new CodedInputStream(S.Array);
+            RequestEnvelope serverResponse = new RequestEnvelope();
+            serverResponse.MergeFrom(codedStream);
         }
     }
 }
