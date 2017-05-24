@@ -11,11 +11,10 @@ namespace PoGoPrivate.Machine
     {
         #region fields
 
-        private TcpServer _slistener;
-
         private readonly DatabaseService _database;
-        public TcpServer Server { get { return _slistener; } }
+        private TcpServer _slistener;
         public DatabaseService Database { get { return _database; } }
+        public TcpServer Server { get { return _slistener; } }
 
         #endregion fields
 

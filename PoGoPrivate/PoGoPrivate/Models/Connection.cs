@@ -13,15 +13,14 @@ namespace PoGoPrivate.Models
 {
     public sealed class Connection : IDisposable
     {
-        private bool IsDisposed = false;
+        private readonly CancellationTokenSource _cts = new CancellationTokenSource();
+        private MyHttpContext _httpContext;
         private TcpClient client;
+        private bool completed;
+        private bool IsDisposed = false;
         private Stopwatch stopwatch;
         private NetworkStream stream;
-        private MyHttpContext _httpContext;
         private Timer tmr;
-        private readonly CancellationTokenSource _cts = new CancellationTokenSource();
-        public MyHttpContext HttpContext { get { return _httpContext; } }
-        public NetworkStream Stream { get { return stream; } }
 
         public Connection(TcpClient client)
         {
@@ -37,51 +36,6 @@ namespace PoGoPrivate.Models
             _httpContext = Stream.GetContext(_cts.Token);
         }
 
-        private void Tmr_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            if (_cts.Token.IsCancellationRequested)
-                return;
-
-            if (this.client.Client.Poll(1, SelectMode.SelectRead) && this.client.Client.Available == 0)//detect the custom aborting
-                this.Abort(true);
-            else if (Finished)
-                this.Abort();
-        }
-
-        public void Execute()
-        {
-            try
-            {
-                Logger.Write(HttpContext.headers.JoinLines(), LogLevel.Response);
-                RequestHandler.Parse(this, _cts.Token);
-            }
-            catch (ObjectDisposedException e)
-            {
-#if DEBUG
-                Logger.Write(e.Message, LogLevel.TaskIssue);
-#endif
-            }
-            catch (OperationCanceledException e)
-            {
-#if DEBUG
-                Logger.Write(e.Message, LogLevel.TaskIssue);
-#endif
-            }
-            catch (Exception e)
-            {
-                Logger.Write(e.Message, LogLevel.Error);
-            }
-            this.Abort();
-        }
-
-        public void Abort(bool isUserCanceled = false)
-        {
-            //You can write out an abort message to the client if you like. (Stream.Write()....)
-            this.Dispose(isUserCanceled);
-        }
-
-        private bool completed;
-
         public bool Finished
         {
             get
@@ -91,6 +45,15 @@ namespace PoGoPrivate.Models
                 else
                     return false;
             }
+        }
+
+        public MyHttpContext HttpContext { get { return _httpContext; } }
+        public NetworkStream Stream { get { return stream; } }
+
+        public void Abort(bool isUserCanceled = false)
+        {
+            //You can write out an abort message to the client if you like. (Stream.Write()....)
+            this.Dispose(isUserCanceled);
         }
 
         public void Dispose(bool isUserCanceled)
@@ -128,6 +91,43 @@ namespace PoGoPrivate.Models
         public void Dispose()
         {
             Dispose(false);
+        }
+
+        public void Execute()
+        {
+            try
+            {
+                Logger.Write(HttpContext.headers.JoinLines(), LogLevel.Response);
+                RequestHandler.Parse(this, _cts.Token);
+            }
+            catch (ObjectDisposedException e)
+            {
+#if DEBUG
+                Logger.Write(e.Message, LogLevel.TaskIssue);
+#endif
+            }
+            catch (OperationCanceledException e)
+            {
+#if DEBUG
+                Logger.Write(e.Message, LogLevel.TaskIssue);
+#endif
+            }
+            catch (Exception e)
+            {
+                Logger.Write(e.Message, LogLevel.Error);
+            }
+            this.Abort();
+        }
+
+        private void Tmr_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            if (_cts.Token.IsCancellationRequested)
+                return;
+
+            if (this.client.Client.Poll(1, SelectMode.SelectRead) && this.client.Client.Available == 0)//detect the custom aborting
+                this.Abort(true);
+            else if (Finished)
+                this.Abort();
         }
     }
 }

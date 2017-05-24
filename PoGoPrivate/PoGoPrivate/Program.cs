@@ -12,6 +12,22 @@ namespace PoGoPrivate
     {
         private static PogoMachine machine;
 
+        public static void Garbage()
+        {
+            #region Start GC Collector
+
+            Task.Run(() =>
+            {
+                while (true)
+                {
+                    GC.Collect();
+                    Thread.Sleep((int)Global.Cfg.GarbageTime.TotalMilliseconds);
+                }
+            });
+
+            #endregion Start GC Collector
+        }
+
         private static void Main(string[] args)
         {
             try
@@ -48,22 +64,6 @@ namespace PoGoPrivate
                 Logger.Write(e.Message, LogLevel.Error);
             }
             machine.Stop();
-        }
-
-        public static void Garbage()
-        {
-            #region Start GC Collector
-
-            Task.Run(() =>
-            {
-                while (true)
-                {
-                    GC.Collect();
-                    Thread.Sleep((int)Global.Cfg.GarbageTime.TotalMilliseconds);
-                }
-            });
-
-            #endregion Start GC Collector
         }
     }
 }

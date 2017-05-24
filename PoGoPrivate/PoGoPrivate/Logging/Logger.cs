@@ -8,10 +8,9 @@ namespace PoGoPrivate.Logging
 {
     public static class Logger
     {
-        private static List<ILogger> _loggers = new List<ILogger>();
-
-        private static ConcurrentQueue<string> _logbufferList = new ConcurrentQueue<string>();
         private static string _lastLogMessage;
+        private static ConcurrentQueue<string> _logbufferList = new ConcurrentQueue<string>();
+        private static List<ILogger> _loggers = new List<ILogger>();
 
         /// <summary>
         /// Add a logger. 
@@ -33,35 +32,6 @@ namespace PoGoPrivate.Logging
                 Write(ex.Message, color: ConsoleColor.DarkRed);
             }
 #endif
-        }
-
-        /// <summary>
-        /// Log a specific message to the logger setup by <see cref="SetLogger(ILogger)" /> . 
-        /// </summary>
-        /// <param name="message">
-        /// The message to log. 
-        /// </param>
-        /// <param name="level">
-        /// Optional level to log. Default <see cref="System.LogLevel.Info" />. 
-        /// </param>
-        /// <param name="color">
-        /// Optional. Default is automatic color. 
-        /// </param>
-        public static void Write(string message, LogLevel level = LogLevel.Info,
-            ConsoleColor color = ConsoleColor.Black, bool force = false)
-        {
-            if (_loggers.Count == 0/* || _lastLogMessage == message*/)
-                return;
-
-            _lastLogMessage = message;
-            foreach (var logger in _loggers)
-                logger?.Write(message, level, color);
-        }
-
-        public static void LineSelect(int lineChar = 0, int linesUp = 1)
-        {
-            foreach (var logger in _loggers)
-                logger?.LineSelect(lineChar, linesUp);
         }
 
         public static string GetFinalMessage(string message, LogLevel level, ConsoleColor color)
@@ -157,6 +127,35 @@ namespace PoGoPrivate.Logging
                     // Grey
                     return "#93a1a1";
             }
+        }
+
+        public static void LineSelect(int lineChar = 0, int linesUp = 1)
+        {
+            foreach (var logger in _loggers)
+                logger?.LineSelect(lineChar, linesUp);
+        }
+
+        /// <summary>
+        /// Log a specific message to the logger setup by <see cref="SetLogger(ILogger)" /> . 
+        /// </summary>
+        /// <param name="message">
+        /// The message to log. 
+        /// </param>
+        /// <param name="level">
+        /// Optional level to log. Default <see cref="System.LogLevel.Info" />. 
+        /// </param>
+        /// <param name="color">
+        /// Optional. Default is automatic color. 
+        /// </param>
+        public static void Write(string message, LogLevel level = LogLevel.Info,
+            ConsoleColor color = ConsoleColor.Black, bool force = false)
+        {
+            if (_loggers.Count == 0/* || _lastLogMessage == message*/)
+                return;
+
+            _lastLogMessage = message;
+            foreach (var logger in _loggers)
+                logger?.Write(message, level, color);
         }
     }
 }

@@ -15,9 +15,9 @@ namespace PoGoPrivate
 #endif
         };
 
-        public static GameMaster GameMaster = null;
-
         public static Dictionary<string, KeyValuePair<byte[], GetAssetDigestResponse>> GameAssets =
             new Dictionary<string, KeyValuePair<byte[], GetAssetDigestResponse>>();
+
+        public static GameMaster GameMaster = null;
     }
 }

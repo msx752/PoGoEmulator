@@ -44,11 +44,6 @@ namespace PoGoPrivate.Models
             }
         }
 
-        private void HandleClient(Connection client)
-        {
-            client.Execute();
-        }
-
         // Stops receiving incoming requests.
         public void Stop()
         {
@@ -67,14 +62,19 @@ namespace PoGoPrivate.Models
             _listener.Stop();
         }
 
+        private void HandleClient(Connection client)
+        {
+            client.Execute();
+        }
+
         #endregion Public.
 
         #region Fields.
 
-        private bool listening = false;
         private CancellationToken _ct;
         private CancellationTokenSource _cts = new CancellationTokenSource();
         private TcpListener _listener;
+        private bool listening = false;
 
         #endregion Fields.
     }

@@ -5,6 +5,8 @@ namespace PoGoPrivate.Interfaces
 {
     public interface ILogger
     {
+        void LineSelect(int lineChar = 0, int linesUp = 1);
+
         /// <summary>
         /// Log a specific message by LogLevel. 
         /// </summary>
@@ -18,7 +20,5 @@ namespace PoGoPrivate.Interfaces
         /// Optional. Default automatic color. 
         /// </param>
         void Write(string message, LogLevel level = LogLevel.Info, ConsoleColor color = ConsoleColor.Black);
-
-        void LineSelect(int lineChar = 0, int linesUp = 1);
     }
 }

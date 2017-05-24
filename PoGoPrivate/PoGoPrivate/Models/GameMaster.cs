@@ -12,12 +12,6 @@ namespace PoGoPrivate.Models
 {
     public class GameMaster
     {
-        public Dictionary<string, DownloadItemTemplatesResponse.Types.ItemTemplate> Settings { get; set; }
-            = new Dictionary<string, DownloadItemTemplatesResponse.Types.ItemTemplate>();
-
-        public DownloadItemTemplatesResponse Decode { get; set; }
-        public byte[] Buffer { get; set; }
-
         public GameMaster()
         {
 #if DEBUG
@@ -38,5 +32,12 @@ namespace PoGoPrivate.Models
 
             Logger.Write("ItemTemplates are successfully loaded");
         }
+
+        public byte[] Buffer { get; set; }
+
+        public DownloadItemTemplatesResponse Decode { get; set; }
+
+        public Dictionary<string, DownloadItemTemplatesResponse.Types.ItemTemplate> Settings { get; set; }
+                                    = new Dictionary<string, DownloadItemTemplatesResponse.Types.ItemTemplate>();
     }
 }

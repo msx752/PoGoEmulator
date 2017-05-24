@@ -11,6 +11,17 @@ namespace PoGoPrivate
     {
         public static string[] Plaforms = new string[] { "android", "ios" };
 
+        public static void CheckMissingPokemon(string pathPlatform, int maxPokemonNationalId)
+        {
+            for (var j = 1; j <= maxPokemonNationalId; j++)
+            {
+                var modelFile = "pm" + (j >= 10 ? j >= 100 ? "0" : "00" : "000") + j;
+                var path = Path.Combine(pathPlatform, modelFile);
+                if (!File.Exists(path))
+                    throw new Exception($"{path} not found");
+            }
+        }
+
         public static void ValidateAssets()
         {
             Logger.Write("Validating Assets..");
@@ -47,17 +58,6 @@ namespace PoGoPrivate
                 CheckMissingPokemon(path_platform, max); //missing files are checking
             }
             Logger.Write("Pokemons are successfully loaded...");
-        }
-
-        public static void CheckMissingPokemon(string pathPlatform, int maxPokemonNationalId)
-        {
-            for (var j = 1; j <= maxPokemonNationalId; j++)
-            {
-                var modelFile = "pm" + (j >= 10 ? j >= 100 ? "0" : "00" : "000") + j;
-                var path = Path.Combine(pathPlatform, modelFile);
-                if (!File.Exists(path))
-                    throw new Exception($"{path} not found");
-            }
         }
     }
 }

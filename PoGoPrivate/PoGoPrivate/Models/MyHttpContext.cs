@@ -9,37 +9,21 @@ namespace PoGoPrivate.Models
     /// </summary>
     public class MyHttpContext : IHttpParserHandler
     {
-        public string method, requestUri, path, queryString, fragment, headerName, headerValue, statusReason;
-        public int versionMajor = -1, versionMinor = -1;
-        public int? statusCode;
-        public Dictionary<string, string> headers;
         public List<byte[]> body;
+        public Dictionary<string, string> headers;
+        public string method, requestUri, path, queryString, fragment, headerName, headerValue, statusReason;
         public bool onHeadersEndCalled, shouldKeepAlive;
+        public int? statusCode;
+        public int versionMajor = -1, versionMinor = -1;
 
-        public void OnMessageBegin(HttpParser parser)
+        public void OnBody(HttpParser parser, ArraySegment<byte> data)
         {
-            headers = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
-            body = new List<byte[]>();
-        }
-
-        public void OnMethod(HttpParser parser, string method)
-        {
-            this.method = method;
-        }
-
-        public void OnRequestUri(HttpParser parser, string requestUri)
-        {
-            this.requestUri = requestUri;
+            body.Add(data.ToArray());
         }
 
         public void OnFragment(HttpParser parser, string fragment)
         {
             this.fragment = fragment;
-        }
-
-        public void OnQueryString(HttpParser parser, string queryString)
-        {
-            this.queryString = queryString;
         }
 
         public void OnHeaderName(HttpParser parser, string name)
@@ -50,23 +34,6 @@ namespace PoGoPrivate.Models
                 CommitHeader();
 
             headerName = name;
-        }
-
-        private void CommitHeader()
-        {
-            //Console.WriteLine("Committing header '" + headerName + "' : '" + headerValue + "'");
-            headers[headerName] = headerValue;
-            headerName = headerValue = null;
-        }
-
-        public void OnHeaderValue(HttpParser parser, string value)
-        {
-            //Console.WriteLine("OnHeaderValue:  '" + str + "'");
-
-            if (string.IsNullOrEmpty(headerName))
-                throw new Exception("Got header value without name.");
-
-            headerValue = value;
         }
 
         public void OnHeadersEnd(HttpParser parser)
@@ -81,14 +48,47 @@ namespace PoGoPrivate.Models
             shouldKeepAlive = parser.ShouldKeepAlive;
         }
 
-        public void OnBody(HttpParser parser, ArraySegment<byte> data)
+        public void OnHeaderValue(HttpParser parser, string value)
         {
-            body.Add(data.ToArray());
+            //Console.WriteLine("OnHeaderValue:  '" + str + "'");
+
+            if (string.IsNullOrEmpty(headerName))
+                throw new Exception("Got header value without name.");
+
+            headerValue = value;
+        }
+
+        public void OnMessageBegin(HttpParser parser)
+        {
+            headers = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
+            body = new List<byte[]>();
         }
 
         public void OnMessageEnd(HttpParser parser)
         {
             // Console.WriteLine("OnMessageEnd");
+        }
+
+        public void OnMethod(HttpParser parser, string method)
+        {
+            this.method = method;
+        }
+
+        public void OnQueryString(HttpParser parser, string queryString)
+        {
+            this.queryString = queryString;
+        }
+
+        public void OnRequestUri(HttpParser parser, string requestUri)
+        {
+            this.requestUri = requestUri;
+        }
+
+        private void CommitHeader()
+        {
+            //Console.WriteLine("Committing header '" + headerName + "' : '" + headerValue + "'");
+            headers[headerName] = headerValue;
+            headerName = headerValue = null;
         }
     }
 }

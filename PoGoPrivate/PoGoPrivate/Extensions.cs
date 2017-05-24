@@ -14,11 +14,6 @@ namespace PoGoPrivate
 {
     public static class Extensions
     {
-        public static string JoinLines(this Dictionary<string, string> headers)
-        {
-            return string.Join(Environment.NewLine, headers.Select(x => x.Key + ": " + x.Value).ToArray()) + Environment.NewLine;
-        }
-
         public static MyHttpContext GetContext(this NetworkStream stream, CancellationToken ct)
         {
             try
@@ -57,6 +52,11 @@ namespace PoGoPrivate
                 Logger.Write(e.Message, LogLevel.Error);
             }
             return null;
+        }
+
+        public static string JoinLines(this Dictionary<string, string> headers)
+        {
+            return string.Join(Environment.NewLine, headers.Select(x => x.Key + ": " + x.Value).ToArray()) + Environment.NewLine;
         }
 
         //not necessary

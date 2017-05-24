@@ -23,6 +23,11 @@ namespace PoGoPrivate.Models
             _maxLogLevel = maxLogLevel;
         }
 
+        public void LineSelect(int lineChar = 0, int linesUp = 1)
+        {
+            Console.SetCursorPosition(lineChar, Console.CursorTop - linesUp);
+        }
+
         public void TurnOffLogBuffering()
         {
             // No need for buffering
@@ -51,11 +56,6 @@ namespace PoGoPrivate.Models
 
             var finalMessage = Logger.GetFinalMessage(message, level, color);
             Console.WriteLine(finalMessage);
-        }
-
-        public void LineSelect(int lineChar = 0, int linesUp = 1)
-        {
-            Console.SetCursorPosition(lineChar, Console.CursorTop - linesUp);
         }
     }
 }
