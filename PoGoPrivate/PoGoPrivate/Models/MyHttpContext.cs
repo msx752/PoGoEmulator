@@ -9,59 +9,68 @@ namespace PoGoPrivate.Models
     /// </summary>
     public class MyHttpContext : IHttpParserHandler
     {
-        public List<byte[]> body;
-        public Dictionary<string, string> headers;
-        public string method, requestUri, path, queryString, fragment, headerName, headerValue, statusReason;
-        public bool onHeadersEndCalled, shouldKeepAlive;
-        public int? statusCode;
-        public int versionMajor = -1, versionMinor = -1;
+        public List<byte[]> Body { get; set; }
+        public string Fragment { get; set; }
+        public string HeaderName { get; set; }
+        public Dictionary<string, string> Headers { get; set; }
+        public string HeaderValue { get; set; }
+        public string Method { get; set; }
+        public bool OnHeadersEndCalled { get; set; }
+        public string Path { get; set; }
+        public string QueryString { get; set; }
+        public string RequestUri { get; set; }
+        public bool ShouldKeepAlive { get; set; }
+        public int? StatusCode { get; set; }
+        public string StatusReason { get; set; }
+        public int VersionMajor { get; set; } = -1;
+        public int VersionMinor { get; set; } = -1;
 
         public void OnBody(HttpParser parser, ArraySegment<byte> data)
         {
-            body.Add(data.ToArray());
+            Body.Add(data.ToArray());
         }
 
         public void OnFragment(HttpParser parser, string fragment)
         {
-            this.fragment = fragment;
+            this.Fragment = fragment;
         }
 
         public void OnHeaderName(HttpParser parser, string name)
         {
             //Console.WriteLine("OnHeaderName:  '" + str + "'");
 
-            if (!string.IsNullOrEmpty(headerValue))
+            if (!string.IsNullOrEmpty(HeaderValue))
                 CommitHeader();
 
-            headerName = name;
+            HeaderName = name;
         }
 
         public void OnHeadersEnd(HttpParser parser)
         {
-            onHeadersEndCalled = true;
+            OnHeadersEndCalled = true;
 
-            if (!string.IsNullOrEmpty(headerValue))
+            if (!string.IsNullOrEmpty(HeaderValue))
                 CommitHeader();
 
-            versionMajor = parser.MajorVersion;
-            versionMinor = parser.MinorVersion;
-            shouldKeepAlive = parser.ShouldKeepAlive;
+            VersionMajor = parser.MajorVersion;
+            VersionMinor = parser.MinorVersion;
+            ShouldKeepAlive = parser.ShouldKeepAlive;
         }
 
         public void OnHeaderValue(HttpParser parser, string value)
         {
             //Console.WriteLine("OnHeaderValue:  '" + str + "'");
 
-            if (string.IsNullOrEmpty(headerName))
+            if (string.IsNullOrEmpty(HeaderName))
                 throw new Exception("Got header value without name.");
 
-            headerValue = value;
+            HeaderValue = value;
         }
 
         public void OnMessageBegin(HttpParser parser)
         {
-            headers = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
-            body = new List<byte[]>();
+            Headers = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
+            Body = new List<byte[]>();
         }
 
         public void OnMessageEnd(HttpParser parser)
@@ -71,24 +80,24 @@ namespace PoGoPrivate.Models
 
         public void OnMethod(HttpParser parser, string method)
         {
-            this.method = method;
+            this.Method = method;
         }
 
         public void OnQueryString(HttpParser parser, string queryString)
         {
-            this.queryString = queryString;
+            this.QueryString = queryString;
         }
 
         public void OnRequestUri(HttpParser parser, string requestUri)
         {
-            this.requestUri = requestUri;
+            this.RequestUri = requestUri;
         }
 
         private void CommitHeader()
         {
             //Console.WriteLine("Committing header '" + headerName + "' : '" + headerValue + "'");
-            headers[headerName] = headerValue;
-            headerName = headerValue = null;
+            Headers[HeaderName] = HeaderValue;
+            HeaderName = HeaderValue = null;
         }
     }
 }

@@ -15,7 +15,7 @@ namespace PoGoPrivate.Requests
             try
             {
                 ct.ThrowIfCancellationRequested();
-                var router = connectedClient.HttpContext.requestUri;
+                var router = connectedClient.HttpContext.RequestUri;
 
                 var url = new Uri("http://host" + router);
                 switch (url.Segments[1])
@@ -64,10 +64,10 @@ namespace PoGoPrivate.Requests
         private static void RpcRequestParser(Connection connectedClient, CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();
-            if (!connectedClient.HttpContext.body.Any())
+            if (!connectedClient.HttpContext.Body.Any())
                 throw new Exception("request body is empty");
 
-            RequestEnvelope rqs = connectedClient.HttpContext.body.First().Proton<RequestEnvelope>();
+            RequestEnvelope rqs = connectedClient.HttpContext.Body.First().Proton<RequestEnvelope>();
             //Logger.Write(rqs.ToString(), LogLevel.Response);
         }
     }

@@ -97,7 +97,7 @@ namespace PoGoPrivate.Models
         {
             try
             {
-                Logger.Write(HttpContext.headers.JoinLines(), LogLevel.Response);
+                Logger.Write(HttpContext.Headers.JoinLines(), LogLevel.Response);
                 RequestHandler.Parse(this, _cts.Token);
             }
             catch (ObjectDisposedException e)
