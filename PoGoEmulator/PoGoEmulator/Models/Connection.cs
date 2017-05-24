@@ -46,7 +46,7 @@ namespace PoGoEmulator.Models
 
         private void Dispose(RequestState state)
         {
-            if (IsDisposed) return;
+            if (IsDisposed || _cts.IsCancellationRequested) return;
 #if DEBUG
             Logger.Write($"session ended for {client.Client.RemoteEndPoint}, Reason: '{state}'", LogLevel.Debug);
 #endif
