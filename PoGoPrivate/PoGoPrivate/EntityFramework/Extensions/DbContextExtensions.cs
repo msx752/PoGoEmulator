@@ -4,11 +4,11 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using BetterEntityFramework.DataReaders;
-using BetterEntityFramework.Helpers;
 using Microsoft.EntityFrameworkCore;
+using PoGoPrivate.EntityFramework.DataReaders;
+using PoGoPrivate.EntityFramework.Helpers;
 
-namespace BetterEntityFramework.Extensions
+namespace PoGoPrivate.EntityFramework.Extensions
 {
     internal static class DbContextExtensions
     {
@@ -33,17 +33,26 @@ namespace BetterEntityFramework.Extensions
         }
 
         /// <summary>
-        /// 
+        /// /// 
         /// </summary>
-        /// <typeparam name="TSource"></typeparam>
-        /// <param name="context"></param>
-        /// <param name="source"></param>
-        /// <param name="destination"></param>
-        /// <param name="batchSize"></param>
-        /// <param name="timeout"></param>
-        /// <param name="notifyFrequency"></param>
-        /// <param name="observer"></param>
-        /// <returns></returns>
+        /// <typeparam name="TSource">
+        /// </typeparam>
+        /// <param name="context">
+        /// </param>
+        /// <param name="source">
+        /// </param>
+        /// <param name="destination">
+        /// </param>
+        /// <param name="batchSize">
+        /// </param>
+        /// <param name="timeout">
+        /// </param>
+        /// <param name="notifyFrequency">
+        /// </param>
+        /// <param name="observer">
+        /// </param>
+        /// <returns>
+        /// </returns>
         public static async Task BulkInsert<TSource>(this DbContext context, IQueryable<TSource> source, IQueryable destination, int batchSize = 100000, int timeout = 0, int notifyFrequency = 1000, IObserver<TSource> observer = null)
         {
             VerifyDestinationCanReceiveSource(source, destination);

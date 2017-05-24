@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace BetterEntityFramework.StoreData
+namespace PoGoPrivate.EntityFramework.Database
 {
     public partial class EfStoreContext
     {

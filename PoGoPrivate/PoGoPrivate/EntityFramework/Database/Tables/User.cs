@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PoGoPrivate.EntityFramework.StoreData
+namespace PoGoPrivate.EntityFramework.Database.Tables
 {
     [Table("users")]
     public partial class User

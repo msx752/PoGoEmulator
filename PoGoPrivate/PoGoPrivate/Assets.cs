@@ -1,12 +1,9 @@
-﻿using System;
+﻿using PoGoPrivate.Logging;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PoGoPrivate.Logging;
 
-namespace PoGoPrivate.Models
+namespace PoGoPrivate
 {
     public static class Assets
     {

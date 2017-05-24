@@ -2,7 +2,7 @@
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 
-namespace BetterEntityFramework.Helpers
+namespace PoGoPrivate.EntityFramework.Helpers
 {
     internal class BulkHelper
     {

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace BetterEntityFramework.DataReaders
+namespace PoGoPrivate.EntityFramework.DataReaders
 {
     internal class QueryableDataReader<T> : DbDataReader
     {

@@ -1,12 +1,12 @@
-﻿using System;
+﻿using PoGoPrivate.Enums;
+using PoGoPrivate.Logging;
+using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
-using PoGoPrivate.Enums;
-using PoGoPrivate.Logging;
 
-namespace PoGoPrivate
+namespace PoGoPrivate.Models
 {
     public class TcpServer
     {

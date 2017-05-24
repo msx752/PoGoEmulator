@@ -1,9 +1,7 @@
-﻿using System.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
-using PoGoPrivate.EntityFramework.StoreData;
+﻿using Microsoft.EntityFrameworkCore;
+using PoGoPrivate.EntityFramework.Database.Tables;
 
-namespace BetterEntityFramework.StoreData
+namespace PoGoPrivate.EntityFramework.Database
 {
     public partial class EfStoreContext : DbContext
     {

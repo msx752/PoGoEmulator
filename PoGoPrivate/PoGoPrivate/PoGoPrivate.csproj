@@ -158,30 +158,30 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Connection.cs" />
-    <Compile Include="ConsoleLogger.cs" />
+    <Compile Include="Models\Connection.cs" />
+    <Compile Include="Models\ConsoleLogger.cs" />
     <Compile Include="EntityFramework\DataOptionsBuilder.cs" />
     <Compile Include="EntityFramework\DataReaders\QueryableDataReader.cs" />
     <Compile Include="EntityFramework\DataService.cs" />
     <Compile Include="EntityFramework\Extensions\DbContextExtensions.cs" />
     <Compile Include="EntityFramework\Extensions\IQueryableExtensions.cs" />
     <Compile Include="EntityFramework\Helpers\BulkHelper.cs" />
-    <Compile Include="EntityFramework\StoreData\EfStoreContext.cs" />
-    <Compile Include="EntityFramework\StoreData\EfStoreContext.Customizations.cs" />
-    <Compile Include="EntityFramework\StoreData\User.cs" />
+    <Compile Include="EntityFramework\Database\EfStoreContext.cs" />
+    <Compile Include="EntityFramework\Database\EfStoreContext.Customizations.cs" />
+    <Compile Include="EntityFramework\Database\Tables\User.cs" />
     <Compile Include="Enums\LogLevel.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="Models\Assets.cs" />
+    <Compile Include="Assets.cs" />
     <Compile Include="Models\Configs.cs" />
-    <Compile Include="MyHttpParserDelegate.cs" />
-    <Compile Include="PogoMachine.cs" />
+    <Compile Include="Models\MyHttpContext.cs" />
+    <Compile Include="Machine\PogoMachine.cs" />
     <Compile Include="Global.cs" />
     <Compile Include="Interfaces\ILogger.cs" />
     <Compile Include="Logging\Logger.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Requests\Request.cs" />
-    <Compile Include="TcpServer.cs" />
+    <Compile Include="Models\TcpServer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Z.EntityFramework.Plus;
 
-namespace BetterEntityFramework.Extensions
+namespace PoGoPrivate.EntityFramework.Extensions
 {
     internal static class IQueryableExtensions
     {

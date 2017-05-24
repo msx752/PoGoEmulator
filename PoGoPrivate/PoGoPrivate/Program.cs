@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using PoGoPrivate.Enums;
+using PoGoPrivate.Logging;
+using PoGoPrivate.Machine;
+using PoGoPrivate.Models;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using PoGoPrivate.Enums;
-using PoGoPrivate.Logging;
-using PoGoPrivate.Models;
 
 namespace PoGoPrivate
 {
@@ -20,11 +17,11 @@ namespace PoGoPrivate
             Logger.AddLogger(new ConsoleLogger(LogLevel.Info));
             Garbage();
             Assets.ValidateModels();
-            Task run = Task.Run(() =>
-              {
-                  machine = new PogoMachine();
-                  machine.Run();
-              });
+            Task run = Task.Factory.StartNew(() =>
+           {
+               machine = new PogoMachine();
+               machine.Run();
+           });
             string line = "";
             do
             {

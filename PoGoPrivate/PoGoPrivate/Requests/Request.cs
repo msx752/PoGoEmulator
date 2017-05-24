@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Google.Protobuf;
-using PoGoPrivate.Enums;
+﻿using PoGoPrivate.Enums;
 using PoGoPrivate.Logging;
+using PoGoPrivate.Models;
 using POGOProtos.Networking.Envelopes;
+using System;
+using System.Linq;
+using System.Threading;
 
 namespace PoGoPrivate.Requests
 {

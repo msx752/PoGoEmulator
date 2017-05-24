@@ -1,8 +1,8 @@
 ﻿using System;
-using BetterEntityFramework.StoreData;
 using Microsoft.EntityFrameworkCore;
+using EfStoreContext = PoGoPrivate.EntityFramework.Database.EfStoreContext;
 
-namespace BetterEntityFramework
+namespace PoGoPrivate.EntityFramework
 {
     public class DataService : IDisposable
     {

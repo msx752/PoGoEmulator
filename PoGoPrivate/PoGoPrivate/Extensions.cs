@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections;
+﻿using Google.Protobuf;
+using HttpMachine;
+using PoGoPrivate.Enums;
+using PoGoPrivate.Logging;
+using PoGoPrivate.Models;
+using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
-using System.Text;
-using PoGoPrivate.Enums;
-using PoGoPrivate.Logging;
 using System.Threading;
-using Google.Protobuf;
-using HttpMachine;
-using POGOProtos.Networking.Envelopes;
 
 namespace PoGoPrivate
 {

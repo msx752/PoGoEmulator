@@ -1,11 +1,8 @@
-﻿using System;
+﻿using HttpMachine;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HttpMachine;
 
-namespace PoGoPrivate
+namespace PoGoPrivate.Models
 {
     public class MyHttpContext : IHttpParserHandler
     {

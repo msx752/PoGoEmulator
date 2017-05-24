@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using PoGoPrivate.Enums;
+using PoGoPrivate.Logging;
+using PoGoPrivate.Requests;
+using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
-using PoGoPrivate.Enums;
-using PoGoPrivate.Logging;
-using PoGoPrivate.Requests;
 using Timer = System.Timers.Timer;
 
-namespace PoGoPrivate
+namespace PoGoPrivate.Models
 {
     public sealed class Connection : IDisposable
     {

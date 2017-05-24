@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PoGoPrivate.Enums;
+﻿using PoGoPrivate.Enums;
 using PoGoPrivate.Interfaces;
 using PoGoPrivate.Logging;
+using System;
+using System.Text;
 
-namespace PoGoPrivate
+namespace PoGoPrivate.Models
 {
     /// <summary>
     /// The ConsoleLogger is a simple logger which writes all logs to the Console. 

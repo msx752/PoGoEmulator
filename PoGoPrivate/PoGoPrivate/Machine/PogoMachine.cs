@@ -1,19 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using BetterEntityFramework;
-using BetterEntityFramework.Extensions;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using PoGoPrivate.Enums;
 using PoGoPrivate.Logging;
-using PoGoPrivate.Requests;
+using PoGoPrivate.Models;
+using System;
+using PoGoPrivate.EntityFramework;
 
-namespace PoGoPrivate
+namespace PoGoPrivate.Machine
 {
     public class PogoMachine
     {
@@ -43,13 +35,24 @@ namespace PoGoPrivate
 
         public void Run()
         {
-            slistener = new TcpServer();
-            slistener.StartServer(Global.ip, Global.port);
-            Logger.Write($"Listening {Global.ip}:{Global.port}");
+            try
+            {
+                slistener = new TcpServer();
+                slistener.StartServer(Global.ip, Global.port);
+                Logger.Write($"Listening {Global.ip}:{Global.port}");
+            }
+            catch (Exception e)
+            {
+                Logger.Write(e.Message, LogLevel.Error);
+            }
         }
 
         public void Stop()
         {
+#if DEBUG
+
+            Logger.Write("machine is stopped.", LogLevel.Debug);
+#endif
             slistener.Stop();
         }
     }
