@@ -3,7 +3,6 @@ using PoGoEmulator.Enums;
 using PoGoEmulator.Logging;
 using PoGoEmulator.Models;
 using System;
-using PoGoEmulator.EntityFramework;
 
 namespace PoGoEmulator.Machine
 {
@@ -11,9 +10,10 @@ namespace PoGoEmulator.Machine
     {
         #region fields
 
-        private readonly DatabaseService _database;
+        //private readonly DatabaseService _database;
         private TcpServer _slistener;
-        public DatabaseService Database { get { return _database; } }
+
+        //public DatabaseService Database { get { return _database; } }
         public TcpServer Server { get { return _slistener; } }
 
         #endregion fields
@@ -22,9 +22,9 @@ namespace PoGoEmulator.Machine
         {
             try
             {
-                _database = new DatabaseService();
-                var newConfig = _database.Configure().Builder.UseInMemoryDatabase();
-                _database.UseConfiguration(newConfig);
+                //_database = new DatabaseService();
+                //var newConfig = _database.Configure().Builder.UseInMemoryDatabase();
+                //_database.UseConfiguration(newConfig);
                 Logger.Write("Successfuly connected to database server.");
             }
             catch (Exception e)

@@ -158,18 +158,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Database\PoGoDbContext.cs" />
+    <Compile Include="Database\Tables\User.cs" />
     <Compile Include="Enums\ClientState.cs" />
+    <Compile Include="Migrations\20170524193132_UserTable.cs" />
+    <Compile Include="Migrations\20170524193132_UserTable.designer.cs">
+      <DependentUpon>20170524193132_UserTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\PoGoDbContextModelSnapshot.cs" />
     <Compile Include="Models\Connection.cs" />
     <Compile Include="Models\ConsoleLogger.cs" />
-    <Compile Include="EntityFramework\DataOptionsBuilder.cs" />
-    <Compile Include="EntityFramework\DataReaders\QueryableDataReader.cs" />
-    <Compile Include="EntityFramework\DataService.cs" />
-    <Compile Include="EntityFramework\Extensions\DbContextExtensions.cs" />
-    <Compile Include="EntityFramework\Extensions\IQueryableExtensions.cs" />
-    <Compile Include="EntityFramework\Helpers\BulkHelper.cs" />
-    <Compile Include="EntityFramework\Database\EfStoreContext.cs" />
-    <Compile Include="EntityFramework\Database\EfStoreContext.Customizations.cs" />
-    <Compile Include="EntityFramework\Database\Tables\User.cs" />
     <Compile Include="Enums\LogLevel.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Assets.cs" />

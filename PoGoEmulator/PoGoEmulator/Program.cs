@@ -10,7 +10,7 @@ namespace PoGoEmulator
 {
     internal class Program
     {
-        private static PogoMachine machine;
+        public static PogoMachine machine;
 
         public static void Garbage()
         {

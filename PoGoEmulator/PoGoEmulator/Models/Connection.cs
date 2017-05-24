@@ -4,9 +4,12 @@ using PoGoEmulator.Requests;
 using System;
 using System.Diagnostics;
 using System.Net.Sockets;
+using System.Reactive;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
+using PoGoEmulator.Database;
+using PoGoEmulator.Database.Tables;
 using Timer = System.Timers.Timer;
 
 namespace PoGoEmulator.Models
@@ -18,8 +21,9 @@ namespace PoGoEmulator.Models
         private TcpClient client;
         private bool IsDisposed = false;
         private Stopwatch stopwatch;
-        private NetworkStream stream;
+        private NetworkStream _stream;
         private Timer tmr;
+        private PoGoDbContext _database;
 
         public Connection(TcpClient client)
         {
@@ -31,12 +35,14 @@ namespace PoGoEmulator.Models
             tmr.Elapsed += Tmr_Elapsed;
             stopwatch.Start();
             Task.Run(() => tmr.Start(), _cts.Token);
-            this.stream = this.client.GetStream();
+            this._stream = this.client.GetStream();
             _httpContext = Stream.GetContext(_cts.Token);
+            _database = new PoGoDbContext();
         }
 
+        public PoGoDbContext Database { get { return _database; } }
         public MyHttpContext HttpContext { get { return _httpContext; } }
-        public NetworkStream Stream { get { return stream; } }
+        public NetworkStream Stream { get { return _stream; } }
 
         public void Abort(RequestState state)
         {
@@ -52,6 +58,11 @@ namespace PoGoEmulator.Models
 #endif
             IsDisposed = true;
 
+            if (state == RequestState.Completed)
+                Database.SaveChanges();
+
+            Database.Dispose();
+
             tmr.Enabled = false;
             tmr.Dispose();
             _cts.Cancel(); //force stop
@@ -65,9 +76,9 @@ namespace PoGoEmulator.Models
             ((IDisposable)client)?.Dispose();
             client = null;
 
-            stream?.Close();
-            stream?.Dispose();
-            stream = null;
+            _stream?.Close();
+            _stream?.Dispose();
+            _stream = null;
         }
 
         public void Dispose()
@@ -79,24 +90,32 @@ namespace PoGoEmulator.Models
         {
             try
             {
+#if DEBUG
                 Logger.Write($"{HttpContext.RequestUri} from {client.Client.RemoteEndPoint}", LogLevel.Response);
+#endif
                 RequestHandler.Parse(this, _cts.Token);
             }
             catch (ObjectDisposedException e)
             {
 #if DEBUG
                 Logger.Write(e.Message, LogLevel.TaskIssue);
+                this.Abort(RequestState.AbortedBySystem);
+                return;
 #endif
             }
             catch (OperationCanceledException e)
             {
 #if DEBUG
                 Logger.Write(e.Message, LogLevel.TaskIssue);
+                this.Abort(RequestState.AbortedBySystem);
+                return;
 #endif
             }
             catch (Exception e)
             {
                 Logger.Write(e.Message, LogLevel.Error);
+                this.Abort(RequestState.AbortedBySystem);
+                return;
             }
             this.Abort(RequestState.Completed);
         }
