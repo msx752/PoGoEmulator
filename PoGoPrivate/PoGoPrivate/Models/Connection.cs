@@ -53,7 +53,7 @@ namespace PoGoPrivate.Models
             try
             {
                 Logger.Write(HttpContext.headers.JoinLines(), LogLevel.Response);
-                Request.Router(this, _cts.Token);
+                Request.Handler(this, _cts.Token);
             }
             catch (ObjectDisposedException e)
             {
@@ -86,7 +86,7 @@ namespace PoGoPrivate.Models
         {
             get
             {
-                if (stopwatch?.ElapsedMilliseconds > Global.requestTimeout.TotalMilliseconds || completed)
+                if (stopwatch?.ElapsedMilliseconds > Global.RequestTimeout.TotalMilliseconds || completed)
                     return true;
                 else
                     return false;

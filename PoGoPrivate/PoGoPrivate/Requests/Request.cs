@@ -10,14 +10,14 @@ namespace PoGoPrivate.Requests
 {
     public static class Request
     {
-        public static void Router(Connection connectedClient, CancellationToken ct)
+        public static void Handler(Connection connectedClient, CancellationToken ct)
         {
             try
             {
                 ct.ThrowIfCancellationRequested();
-                string router = connectedClient.HttpContext.requestUri;
+                var router = connectedClient.HttpContext.requestUri;
 
-                Uri url = new Uri("http://host" + router);
+                var url = new Uri("http://host" + router);
                 switch (url.Segments[1])
                 {
                     case "plfe/":
@@ -30,7 +30,7 @@ namespace PoGoPrivate.Requests
                         //        string s1 = i.ToString();
                         //    }
                         //}
-                        RpcRequest(connectedClient, ct);
+                        RpcRequestParser(connectedClient, ct);
                         break;
 
                     case "model/":
@@ -60,14 +60,13 @@ namespace PoGoPrivate.Requests
             }
         }
 
-        private static void RpcRequest(Connection connectedClient, CancellationToken ct)
+        // "POGOProtos.Networking.Envelopes.RequestEnvelope"
+        private static void RpcRequestParser(Connection connectedClient, CancellationToken ct)
         {
-            // "POGOProtos.Networking.Envelopes.RequestEnvelope"
             ct.ThrowIfCancellationRequested();
             if (!connectedClient.HttpContext.body.Any())
             {
-                Logger.Write("request body is empty", LogLevel.Error);
-                return;
+                throw new Exception("request body is empty");
             }
             RequestEnvelope rqs = connectedClient.Proton<RequestEnvelope>();
             Logger.Write(rqs.ToString(), LogLevel.Response);

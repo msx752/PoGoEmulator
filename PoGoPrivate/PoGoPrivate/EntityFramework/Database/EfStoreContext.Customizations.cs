@@ -2,15 +2,15 @@
 
 namespace PoGoPrivate.EntityFramework.Database
 {
-    public partial class EfStoreContext
+    public partial class PoGoContext
     {
         private readonly DbContextOptions _options;
 
-        public EfStoreContext()
+        public PoGoContext()
         {
         }
 
-        public EfStoreContext(DbContextOptions options) : base(options)
+        public PoGoContext(DbContextOptions options) : base(options)
         {
             _options = options;
         }

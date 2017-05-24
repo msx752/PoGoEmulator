@@ -10,7 +10,7 @@ namespace PoGoPrivate.Logging
     {
         private static List<ILogger> _loggers = new List<ILogger>();
 
-        private static ConcurrentQueue<string> LogbufferList = new ConcurrentQueue<string>();
+        private static ConcurrentQueue<string> _logbufferList = new ConcurrentQueue<string>();
         private static string _lastLogMessage;
 
         /// <summary>

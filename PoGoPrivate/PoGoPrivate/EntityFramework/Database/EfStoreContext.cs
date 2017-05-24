@@ -3,7 +3,7 @@ using PoGoPrivate.EntityFramework.Database.Tables;
 
 namespace PoGoPrivate.EntityFramework.Database
 {
-    public partial class EfStoreContext : DbContext
+    public partial class PoGoContext : DbContext
     {
         public virtual DbSet<User> Users { get; set; }
 

@@ -1,10 +1,13 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
-using EfStoreContext = PoGoPrivate.EntityFramework.Database.EfStoreContext;
+using EfStoreContext = PoGoPrivate.EntityFramework.Database.PoGoContext;
 
+/// <summary>
+/// https://github.com/hoagsie/BetterEntityFramework 
+/// </summary>
 namespace PoGoPrivate.EntityFramework
 {
-    public class DataService : IDisposable
+    public class DatabaseService : IDisposable
     {
         private EfStoreContext _data;
         private DbContextOptions _lastOptions;
@@ -28,11 +31,11 @@ namespace PoGoPrivate.EntityFramework
             }
         }
 
-        public DataService()
+        public DatabaseService()
         {
         }
 
-        public DataService(DataOptionsBuilder builder)
+        public DatabaseService(DataOptionsBuilder builder)
         {
             _lastOptions = builder.Build();
         }
@@ -49,16 +52,16 @@ namespace PoGoPrivate.EntityFramework
             _data = new EfStoreContext(builder.Build());
         }
 
-        public DataService WithScopedService()
+        public DatabaseService WithScopedService()
         {
-            var scopedService = new DataService();
+            var scopedService = new DatabaseService();
             scopedService.UseConfiguration(new DataOptionsBuilder(_lastOptions));
             return scopedService;
         }
 
-        public DataService WithScopedService(DataOptionsBuilder builder)
+        public DatabaseService WithScopedService(DataOptionsBuilder builder)
         {
-            var scopedService = new DataService();
+            var scopedService = new DatabaseService();
             scopedService.UseConfiguration(builder);
             return scopedService;
         }

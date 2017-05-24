@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 namespace PoGoPrivate.Models
 {
+    /// <summary>
+    /// https://github.com/bvanderveen/httpmachine 
+    /// </summary>
     public class MyHttpContext : IHttpParserHandler
     {
         public string method, requestUri, path, queryString, fragment, headerName, headerValue, statusReason;

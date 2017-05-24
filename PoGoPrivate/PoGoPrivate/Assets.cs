@@ -7,9 +7,9 @@ namespace PoGoPrivate
 {
     public static class Assets
     {
-        public static string[] plaforms = new string[] { "android", "ios" };
-        public static Dictionary<string, object> GAME_ASSETS = new Dictionary<string, object>();
-        public static Dictionary<string, object> GAME_MASTER = new Dictionary<string, object>();
+        public static string[] Plaforms = new string[] { "android", "ios" };
+        public static Dictionary<string, object> GameAssets = new Dictionary<string, object>();
+        public static Dictionary<string, object> GameMaster = new Dictionary<string, object>();
 
         public static void ValidateModels()
         {
@@ -17,7 +17,7 @@ namespace PoGoPrivate
 
             Logger.Write("Validating Models...", Enums.LogLevel.Debug);
 #endif
-            if (!File.Exists(Path.Combine(Global.cfg.DUMP_ASSET_PATH, "game_master")))
+            if (!File.Exists(Path.Combine(Global.Cfg.DUMP_ASSET_PATH, "game_master")))
             {
                 Logger.Write("game_master not found ", Enums.LogLevel.Error);
                 throw new Exception("file not found");

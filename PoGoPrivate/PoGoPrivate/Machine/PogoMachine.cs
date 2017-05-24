@@ -9,11 +9,15 @@ namespace PoGoPrivate.Machine
 {
     public class PogoMachine
     {
-        private TcpServer slistener;
-        public TcpServer Server { get { return slistener; } }
+        #region fields
 
-        private readonly DataService database;
-        public DataService Database { get { return database; } }
+        private TcpServer _slistener;
+
+        private readonly DatabaseService _database;
+        public TcpServer Server { get { return _slistener; } }
+        public DatabaseService Database { get { return _database; } }
+
+        #endregion fields
 
         public PogoMachine()
         {
@@ -22,9 +26,9 @@ namespace PoGoPrivate.Machine
 #endif
             try
             {
-                database = new DataService();
-                var newConfig = database.Configure().Builder.UseInMemoryDatabase();
-                database.UseConfiguration(newConfig);
+                _database = new DatabaseService();
+                var newConfig = _database.Configure().Builder.UseInMemoryDatabase();
+                _database.UseConfiguration(newConfig);
                 Logger.Write("Successfuly connected to database server.");
             }
             catch (Exception e)
@@ -33,13 +37,15 @@ namespace PoGoPrivate.Machine
             }
         }
 
+        #region methods
+
         public void Run()
         {
             try
             {
-                slistener = new TcpServer();
-                slistener.StartServer(Global.ip, Global.port);
-                Logger.Write($"Listening {Global.ip}:{Global.port}");
+                _slistener = new TcpServer();
+                _slistener.StartServer(Global.Ip, Global.Port);
+                Logger.Write($"Listening {Global.Ip}:{Global.Port}");
             }
             catch (Exception e)
             {
@@ -53,7 +59,9 @@ namespace PoGoPrivate.Machine
 
             Logger.Write("machine is stopped.", LogLevel.Debug);
 #endif
-            slistener.Stop();
+            _slistener.Stop();
         }
+
+        #endregion methods
     }
 }
