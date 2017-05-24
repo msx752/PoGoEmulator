@@ -19,7 +19,7 @@ namespace PoGoEmulator.EntityFramework.Database
         {
             if (_options == null)
             {
-                optionsBuilder.UseSqlServer(@"Server=.\sqlexpress;Database=pogodb;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer(Global.Cfg.SqlConnectionString);
             }
         }
     }
