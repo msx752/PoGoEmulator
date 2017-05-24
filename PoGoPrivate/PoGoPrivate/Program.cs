@@ -45,7 +45,7 @@ namespace PoGoPrivate
                 while (true)
                 {
                     GC.Collect();
-                    Thread.Sleep((int)Global.GarbageTime.TotalMilliseconds);
+                    Thread.Sleep((int)Global.Cfg.GarbageTime.TotalMilliseconds);
                 }
             });
 

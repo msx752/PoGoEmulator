@@ -44,8 +44,8 @@ namespace PoGoPrivate.Machine
             try
             {
                 _slistener = new TcpServer();
-                _slistener.StartServer(Global.Ip, Global.Port);
-                Logger.Write($"Listening {Global.Ip}:{Global.Port}");
+                _slistener.StartServer(Global.Cfg.Ip, Global.Cfg.Port);
+                Logger.Write($"Listening {Global.Cfg.Ip}:{Global.Cfg.Port}");
             }
             catch (Exception e)
             {

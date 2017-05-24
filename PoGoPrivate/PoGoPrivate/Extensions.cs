@@ -26,7 +26,7 @@ namespace PoGoPrivate
                 var handler = new MyHttpContext();
                 var parser = new HttpParser(handler);
 
-                var buffer = new byte[Global.MaxRequestContentLength];
+                var buffer = new byte[Global.Cfg.MaxRequestContentLength];
 
                 int bytesRead = stream.Read(buffer, 0, buffer.Length);
                 Array.Resize(ref buffer, bytesRead);

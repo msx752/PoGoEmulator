@@ -86,7 +86,7 @@ namespace PoGoPrivate.Models
         {
             get
             {
-                if (stopwatch?.ElapsedMilliseconds > Global.RequestTimeout.TotalMilliseconds || completed)
+                if (stopwatch?.ElapsedMilliseconds > Global.Cfg.RequestTimeout.TotalMilliseconds || completed)
                     return true;
                 else
                     return false;
