@@ -4,11 +4,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Text;
 using PoGoPrivate.Enums;
 using PoGoPrivate.Logging;
 using System.Threading;
+using Google.Protobuf;
 using HttpMachine;
+using POGOProtos.Networking.Envelopes;
 
 namespace PoGoPrivate
 {
@@ -19,27 +22,17 @@ namespace PoGoPrivate
             return string.Join(Environment.NewLine, headers.Select(x => x.Key + ": " + x.Value).ToArray()) + Environment.NewLine;
         }
 
-        private static string ReadAllLinesWithPeek(NetworkStream stream)
-        {
-            StreamReader sr = new StreamReader(stream);
-            string input = "";
-            while (sr.Peek() >= 0)
-            {
-                input += (char)sr.Read();
-            }
-            return input;
-        }
-
-        public static MyHttpParserDelegate GetHeaders(this NetworkStream stream, CancellationToken ct)
+        public static MyHttpContext GetContext(this NetworkStream stream, CancellationToken ct)
         {
             try
             {
-                var handler = new MyHttpParserDelegate();
+                var handler = new MyHttpContext();
                 var parser = new HttpParser(handler);
 
                 var buffer = new byte[Global.maxRequestContentLength];
 
                 int bytesRead = stream.Read(buffer, 0, buffer.Length);
+                Array.Resize(ref buffer, bytesRead);
                 int d = parser.Execute(new ArraySegment<byte>(buffer, 0, bytesRead));
                 if (bytesRead != d)
                 {
@@ -67,6 +60,34 @@ namespace PoGoPrivate
                 Logger.Write(e.Message, LogLevel.Error);
             }
             return null;
+        }
+
+        public static T Proton<T>(this Connection cnnUser) where T : class
+        {
+            CodedInputStream codedStream = new CodedInputStream(cnnUser.HttpContext.body.First());
+            T serverResponse = Activator.CreateInstance(typeof(T)) as T;
+            Type tp = serverResponse.GetType();
+            var mths = tp.GetMethods();
+            MethodInfo methodMergeFrom = null;
+            for (int i = 0; i < mths.Length; i++)
+            {
+                if (mths[i].ToString() == "Void MergeFrom(Google.Protobuf.CodedInputStream)")
+                {
+                    methodMergeFrom = mths[i];
+                    break;
+                }
+            }
+            if (methodMergeFrom == null)
+                throw new Exception("undefined protobuf class");
+            methodMergeFrom.Invoke(serverResponse, new object[] { codedStream });
+            return serverResponse;
+        }
+
+        public static T[] ToArray<T>(this ArraySegment<T> arraySegment)
+        {
+            T[] array = new T[arraySegment.Count];
+            Array.Copy(arraySegment.Array, arraySegment.Offset, array, 0, arraySegment.Count);
+            return array;
         }
     }
 }

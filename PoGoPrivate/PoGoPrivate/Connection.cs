@@ -20,10 +20,10 @@ namespace PoGoPrivate
         private TcpClient client;
         private Stopwatch stopwatch;
         private NetworkStream stream;
-        private MyHttpParserDelegate _httpContext;
+        private MyHttpContext _httpContext;
         private Timer tmr;
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
-        public MyHttpParserDelegate HttpContext { get { return _httpContext; } }
+        public MyHttpContext HttpContext { get { return _httpContext; } }
         public NetworkStream Stream { get { return stream; } }
 
         public Connection(TcpClient client)
@@ -37,7 +37,7 @@ namespace PoGoPrivate
             stopwatch.Start();
             Task.Run(() => tmr.Start(), _cts.Token);
             this.stream = this.client.GetStream();
-            _httpContext = Stream.GetHeaders(_cts.Token);
+            _httpContext = Stream.GetContext(_cts.Token);
         }
 
         private void Tmr_Elapsed(object sender, ElapsedEventArgs e)

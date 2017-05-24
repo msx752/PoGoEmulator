@@ -7,19 +7,19 @@ using HttpMachine;
 
 namespace PoGoPrivate
 {
-    public class MyHttpParserDelegate : IHttpParserHandler
+    public class MyHttpContext : IHttpParserHandler
     {
         public string method, requestUri, path, queryString, fragment, headerName, headerValue, statusReason;
         public int versionMajor = -1, versionMinor = -1;
         public int? statusCode;
         public Dictionary<string, string> headers;
-        public List<ArraySegment<byte>> body;
+        public List<byte[]> body;
         public bool onHeadersEndCalled, shouldKeepAlive;
 
         public void OnMessageBegin(HttpParser parser)
         {
             headers = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
-            body = new List<ArraySegment<byte>>();
+            body = new List<byte[]>();
         }
 
         public void OnMethod(HttpParser parser, string method)
@@ -83,7 +83,7 @@ namespace PoGoPrivate
 
         public void OnBody(HttpParser parser, ArraySegment<byte> data)
         {
-            body.Add(data);
+            body.Add(data.ToArray());
         }
 
         public void OnMessageEnd(HttpParser parser)

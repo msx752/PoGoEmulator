@@ -68,10 +68,13 @@ namespace PoGoPrivate.Requests
         {
             // "POGOProtos.Networking.Envelopes.RequestEnvelope"
             ct.ThrowIfCancellationRequested();
-            var S = connectedClient.HttpContext.body.FirstOrDefault();
-            CodedInputStream codedStream = new CodedInputStream(S.Array);
-            RequestEnvelope serverResponse = new RequestEnvelope();
-            serverResponse.MergeFrom(codedStream);
+            if (!connectedClient.HttpContext.body.Any())
+            {
+                Logger.Write("request body is empty", LogLevel.Error);
+                return;
+            }
+            RequestEnvelope rqs = connectedClient.Proton<RequestEnvelope>();
+            Logger.Write(rqs.ToString(), LogLevel.Response);
         }
     }
 }
