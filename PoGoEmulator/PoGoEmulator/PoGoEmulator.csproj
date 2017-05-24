@@ -158,6 +158,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enums\ClientState.cs" />
     <Compile Include="Models\Connection.cs" />
     <Compile Include="Models\ConsoleLogger.cs" />
     <Compile Include="EntityFramework\DataOptionsBuilder.cs" />

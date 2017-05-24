@@ -44,19 +44,18 @@ namespace PoGoEmulator.Requests
             }
             catch (ObjectDisposedException e)
             {
-#if DEBUG
                 Logger.Write(e.Message, LogLevel.TaskIssue);
-#endif
+                connectedClient.Abort(RequestState.CanceledByError);
             }
             catch (OperationCanceledException e)
             {
-#if DEBUG
                 Logger.Write(e.Message, LogLevel.TaskIssue);
-#endif
+                connectedClient.Abort(RequestState.CanceledByError);
             }
             catch (Exception e)
             {
                 Logger.Write(e.Message, Enums.LogLevel.Error);
+                connectedClient.Abort(RequestState.CanceledByError);
             }
         }
 

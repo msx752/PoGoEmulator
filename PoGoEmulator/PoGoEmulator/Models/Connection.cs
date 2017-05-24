@@ -16,7 +16,6 @@ namespace PoGoEmulator.Models
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
         private MyHttpContext _httpContext;
         private TcpClient client;
-        private bool completed;
         private bool IsDisposed = false;
         private Stopwatch stopwatch;
         private NetworkStream stream;
@@ -36,44 +35,27 @@ namespace PoGoEmulator.Models
             _httpContext = Stream.GetContext(_cts.Token);
         }
 
-        public bool Finished
-        {
-            get
-            {
-                if (stopwatch?.ElapsedMilliseconds > Global.Cfg.RequestTimeout.TotalMilliseconds || completed)
-                    return true;
-                else
-                    return false;
-            }
-        }
-
         public MyHttpContext HttpContext { get { return _httpContext; } }
         public NetworkStream Stream { get { return stream; } }
 
-        public void Abort(bool isUserCanceled = false)
+        public void Abort(RequestState state)
         {
             //You can write out an abort message to the client if you like. (Stream.Write()....)
-            this.Dispose(isUserCanceled);
+            this.Dispose(state);
         }
 
-        public void Dispose(bool isUserCanceled)
+        private void Dispose(RequestState state)
         {
             if (IsDisposed) return;
-
 #if DEBUG
-            Logger.Write(
-                isUserCanceled
-                    ? $"session ended for {client.Client.RemoteEndPoint}, IsUserCanceled:{isUserCanceled}"
-                    : $"session ended for {client.Client.RemoteEndPoint}, IsCompleted:{completed}, IsCanceled:{!completed}",
-                LogLevel.Debug);
+            Logger.Write($"session ended for {client.Client.RemoteEndPoint}, Reason: '{state}'", LogLevel.Debug);
 #endif
-            completed = true;
             IsDisposed = true;
 
             tmr.Enabled = false;
             tmr.Dispose();
             _cts.Cancel(); //force stop
-            Thread.Sleep(100);
+            Thread.Sleep(10);
             tmr = null;
 
             stopwatch = null;
@@ -90,14 +72,14 @@ namespace PoGoEmulator.Models
 
         public void Dispose()
         {
-            Dispose(false);
+            Dispose(RequestState.Completed);
         }
 
         public void Execute()
         {
             try
             {
-                Logger.Write(HttpContext.Headers.JoinLines(), LogLevel.Response);
+                Logger.Write($"{HttpContext.RequestUri} from {client.Client.RemoteEndPoint}", LogLevel.Response);
                 RequestHandler.Parse(this, _cts.Token);
             }
             catch (ObjectDisposedException e)
@@ -116,7 +98,7 @@ namespace PoGoEmulator.Models
             {
                 Logger.Write(e.Message, LogLevel.Error);
             }
-            this.Abort();
+            this.Abort(RequestState.Completed);
         }
 
         private void Tmr_Elapsed(object sender, ElapsedEventArgs e)
@@ -125,9 +107,9 @@ namespace PoGoEmulator.Models
                 return;
 
             if (this.client.Client.Poll(1, SelectMode.SelectRead) && this.client.Client.Available == 0)//detect the custom aborting
-                this.Abort(true);
-            else if (Finished)
-                this.Abort();
+                this.Abort(RequestState.CanceledByUser);
+            else if (stopwatch?.ElapsedMilliseconds > Global.Cfg.RequestTimeout.TotalMilliseconds)
+                this.Abort(RequestState.Timeout);
         }
     }
 }
