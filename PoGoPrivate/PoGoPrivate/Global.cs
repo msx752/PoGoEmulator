@@ -1,6 +1,8 @@
 ﻿using PoGoPrivate.Models;
 using System;
+using System.Collections.Generic;
 using System.Net;
+using POGOProtos.Networking.Responses;
 
 namespace PoGoPrivate
 {
@@ -12,5 +14,10 @@ namespace PoGoPrivate
             RequestTimeout = new TimeSpan(0, 10, 0)
 #endif
         };
+
+        public static GameMaster GameMaster = null;
+
+        public static Dictionary<string, KeyValuePair<byte[], GetAssetDigestResponse>> GameAssets =
+            new Dictionary<string, KeyValuePair<byte[], GetAssetDigestResponse>>();
     }
 }

@@ -173,6 +173,7 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="Assets.cs" />
     <Compile Include="Models\Configs.cs" />
+    <Compile Include="Models\GameMaster.cs" />
     <Compile Include="Models\MyHttpContext.cs" />
     <Compile Include="Machine\PogoMachine.cs" />
     <Compile Include="Global.cs" />

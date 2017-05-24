@@ -65,11 +65,10 @@ namespace PoGoPrivate.Requests
         {
             ct.ThrowIfCancellationRequested();
             if (!connectedClient.HttpContext.body.Any())
-            {
                 throw new Exception("request body is empty");
-            }
-            RequestEnvelope rqs = connectedClient.Proton<RequestEnvelope>();
-            Logger.Write(rqs.ToString(), LogLevel.Response);
+
+            RequestEnvelope rqs = connectedClient.HttpContext.body.First().Proton<RequestEnvelope>();
+            //Logger.Write(rqs.ToString(), LogLevel.Response);
         }
     }
 }

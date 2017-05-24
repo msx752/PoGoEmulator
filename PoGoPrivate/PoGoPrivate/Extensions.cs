@@ -59,9 +59,25 @@ namespace PoGoPrivate
             return null;
         }
 
-        public static T Proton<T>(this Connection cnnUser) where T : class
+        //not necessary
+        //public static T Proton<T>(this Connection cnnUser) where T : class
+        //{
+        //    var serverResponse = Proton<T>(cnnUser.HttpContext.body.First());
+        //    return serverResponse;
+        //}
+
+        /// <summary>
+        /// protobuf file deserialise on pure byte[] file , (becareful object must be a type of proto )
+        /// </summary>
+        /// <typeparam name="T">
+        /// </typeparam>
+        /// <param name="protobuf">
+        /// </param>
+        /// <returns>
+        /// </returns>
+        public static T Proton<T>(this Byte[] protobuf) where T : class
         {
-            CodedInputStream codedStream = new CodedInputStream(cnnUser.HttpContext.body.First());
+            CodedInputStream codedStream = new CodedInputStream(protobuf);
             T serverResponse = Activator.CreateInstance(typeof(T)) as T;
             MethodInfo methodMergeFrom = serverResponse?.GetType().GetMethods().ToList()
                 .FirstOrDefault(p => p.ToString() == "Void MergeFrom(Google.Protobuf.CodedInputStream)");

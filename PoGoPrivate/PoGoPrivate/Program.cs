@@ -14,25 +14,39 @@ namespace PoGoPrivate
 
         private static void Main(string[] args)
         {
-            Logger.AddLogger(new ConsoleLogger(LogLevel.Info));
-            Garbage();
-            Assets.ValidateModels();
-            Task run = Task.Factory.StartNew(() =>
-           {
-               machine = new PogoMachine();
-               machine.Run();
-           });
-            string line = "";
-            do
+            try
             {
-                line = Console.ReadLine();
-                switch (line)
+                Logger.AddLogger(new ConsoleLogger(LogLevel.Info));
+
+#if DEBUG
+                Logger.Write("ON", LogLevel.Debug);
+#endif
+                Garbage();
+                Assets.ValidateAssets();
+
+                Global.GameMaster = new GameMaster();
+
+                Task run = Task.Factory.StartNew(() =>
                 {
-                    case "help":
-                        Logger.Write(" - help menu", LogLevel.Help);
-                        break;
-                }
-            } while (line != "exit");
+                    machine = new PogoMachine();
+                    machine.Run();
+                });
+                string line = "";
+                do
+                {
+                    line = Console.ReadLine();
+                    switch (line)
+                    {
+                        case "help":
+                            Logger.Write(" - help menu", LogLevel.Help);
+                            break;
+                    }
+                } while (line != "exit");
+            }
+            catch (Exception e)
+            {
+                Logger.Write(e.Message, LogLevel.Error);
+            }
             machine.Stop();
         }
 

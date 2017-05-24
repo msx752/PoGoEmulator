@@ -21,9 +21,6 @@ namespace PoGoPrivate.Machine
 
         public PogoMachine()
         {
-#if DEBUG
-            Logger.Write("ON", LogLevel.Debug);
-#endif
             try
             {
                 _database = new DatabaseService();
