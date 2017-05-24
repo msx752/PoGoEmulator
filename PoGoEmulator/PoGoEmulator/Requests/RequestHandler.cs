@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace PoGoEmulator.Requests
 {
-    public static class RequestHandler
+    public static partial class RequestHandler
     {
         public static void Parse(Connection connectedClient, CancellationToken ct)
         {
@@ -45,29 +45,18 @@ namespace PoGoEmulator.Requests
             catch (ObjectDisposedException e)
             {
                 Logger.Write(e.Message, LogLevel.TaskIssue);
-                connectedClient.Abort(RequestState.CanceledByError);
+                connectedClient.Abort(RequestState.AbortedBySystem);
             }
             catch (OperationCanceledException e)
             {
                 Logger.Write(e.Message, LogLevel.TaskIssue);
-                connectedClient.Abort(RequestState.CanceledByError);
+                connectedClient.Abort(RequestState.AbortedBySystem);
             }
             catch (Exception e)
             {
                 Logger.Write(e.Message, Enums.LogLevel.Error);
-                connectedClient.Abort(RequestState.CanceledByError);
+                connectedClient.Abort(RequestState.AbortedBySystem);
             }
-        }
-
-        // "POGOProtos.Networking.Envelopes.RequestEnvelope"
-        private static void RpcRequestParser(Connection connectedClient, CancellationToken ct)
-        {
-            ct.ThrowIfCancellationRequested();
-            if (!connectedClient.HttpContext.Body.Any())
-                throw new Exception("request body is empty");
-
-            RequestEnvelope rqs = connectedClient.HttpContext.Body.First().Proton<RequestEnvelope>();
-            //Logger.Write(rqs.ToString(), LogLevel.Response);
         }
     }
 }

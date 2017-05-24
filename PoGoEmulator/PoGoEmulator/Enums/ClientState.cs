@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace PoGoEmulator.Enums
 {
-    public enum RequestState
+    public enum RequestState : int
     {
         Completed,
         Timeout,
         CanceledByUser,
-        CanceledByError
+        AbortedBySystem
     }
 }
