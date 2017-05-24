@@ -8,9 +8,9 @@ using System.Threading;
 
 namespace PoGoPrivate.Requests
 {
-    public static class Request
+    public static class RequestHandler
     {
-        public static void Handler(Connection connectedClient, CancellationToken ct)
+        public static void Parse(Connection connectedClient, CancellationToken ct)
         {
             try
             {
