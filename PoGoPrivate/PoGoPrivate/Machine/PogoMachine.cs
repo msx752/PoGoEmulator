@@ -35,7 +35,7 @@ namespace PoGoPrivate.Machine
 
         #region methods
 
-        public void Run()
+        public PogoMachine Run()
         {
             try
             {
@@ -47,6 +47,7 @@ namespace PoGoPrivate.Machine
             {
                 Logger.Write(e.Message, LogLevel.Error);
             }
+            return this;
         }
 
         public void Stop()

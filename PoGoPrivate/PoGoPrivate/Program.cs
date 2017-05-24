@@ -44,8 +44,7 @@ namespace PoGoPrivate
 
                 Task run = Task.Factory.StartNew(() =>
                 {
-                    machine = new PogoMachine();
-                    machine.Run();
+                    machine = new PogoMachine().Run();
                 });
                 string line = "";
                 do
