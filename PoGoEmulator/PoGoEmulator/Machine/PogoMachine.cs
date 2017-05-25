@@ -29,13 +29,13 @@ namespace PoGoEmulator.Machine
             }
             catch (Exception e)
             {
-                Logger.Write(e.Message, LogLevel.Error);
+                Logger.Write(e);
             }
         }
 
         #region methods
 
-        public PogoMachine Run()
+        public void Run()
         {
             try
             {
@@ -45,9 +45,8 @@ namespace PoGoEmulator.Machine
             }
             catch (Exception e)
             {
-                Logger.Write(e.Message, LogLevel.Error);
+                Logger.Write(e);
             }
-            return this;
         }
 
         public void Stop()

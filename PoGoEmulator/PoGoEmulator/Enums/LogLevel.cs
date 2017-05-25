@@ -8,7 +8,6 @@
         Debug,
         Success,
         Help,
-        TaskIssue,
         Info
     }
 }

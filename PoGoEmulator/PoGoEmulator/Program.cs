@@ -44,7 +44,8 @@ namespace PoGoEmulator
 
                 Task run = Task.Factory.StartNew(() =>
                 {
-                    machine = new PogoMachine().Run();
+                    machine = new PogoMachine();
+                    machine.Run();
                 });
                 string line = "";
                 do
@@ -60,7 +61,7 @@ namespace PoGoEmulator
             }
             catch (Exception e)
             {
-                Logger.Write(e.Message, LogLevel.Error);
+                Logger.Write(e);
             }
             machine.Stop();
         }

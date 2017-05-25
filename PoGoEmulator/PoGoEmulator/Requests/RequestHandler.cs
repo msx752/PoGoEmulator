@@ -42,19 +42,9 @@ namespace PoGoEmulator.Requests
                         break;
                 }
             }
-            catch (ObjectDisposedException e)
-            {
-                Logger.Write(e.Message, LogLevel.TaskIssue);
-                connectedClient.Abort(RequestState.AbortedBySystem);
-            }
-            catch (OperationCanceledException e)
-            {
-                Logger.Write(e.Message, LogLevel.TaskIssue);
-                connectedClient.Abort(RequestState.AbortedBySystem);
-            }
             catch (Exception e)
             {
-                Logger.Write(e.Message, Enums.LogLevel.Error);
+                Logger.Write(e);
                 connectedClient.Abort(RequestState.AbortedBySystem);
             }
         }

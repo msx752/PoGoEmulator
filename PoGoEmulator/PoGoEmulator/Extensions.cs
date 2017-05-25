@@ -35,23 +35,11 @@ namespace PoGoEmulator
 
                 return handler;
             }
-            catch (ObjectDisposedException e)
-            {
-#if DEBUG
-                Logger.Write(e.Message, LogLevel.TaskIssue);
-#endif
-            }
-            catch (OperationCanceledException e)
-            {
-#if DEBUG
-                Logger.Write(e.Message, LogLevel.TaskIssue);
-#endif
-            }
             catch (Exception e)
             {
-                Logger.Write(e.Message, LogLevel.Error);
+                Logger.Write(e);
+                return null;
             }
-            return null;
         }
 
         public static string JoinLines(this Dictionary<string, string> headers)
