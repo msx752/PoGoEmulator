@@ -3,6 +3,9 @@ using System.Net;
 
 namespace PoGoEmulator.Models
 {
+    /// <summary>
+    /// configurable fields 
+    /// </summary>
     public class Configs
     {
         public string DUMP_ASSET_PATH { get; set; } = AppDomain.CurrentDomain.BaseDirectory + "data";

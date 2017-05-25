@@ -6,6 +6,9 @@ using System.Collections.Generic;
 
 namespace PoGoEmulator.Logging
 {
+    /// <summary>
+    /// source: https://github.com/Necrobot-Private/NecroBot/blob/master/PoGo.NecroBot.Logic/Logging/Logger.cs 
+    /// </summary>
     public static class Logger
     {
         private static string _lastLogMessage;

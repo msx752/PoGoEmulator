@@ -12,6 +12,9 @@ using Timer = System.Timers.Timer;
 
 namespace PoGoEmulator.Models
 {
+    /// <summary>
+    /// request timeout checker 
+    /// </summary>
     public class TimeoutTick
     {
         private Timer _tmr;

@@ -16,6 +16,15 @@ namespace PoGoEmulator
 {
     public static class Extensions
     {
+        /// <summary>
+        /// HTTPCONTEXT generator 
+        /// </summary>
+        /// <param name="stream">
+        /// </param>
+        /// <param name="ct">
+        /// </param>
+        /// <returns>
+        /// </returns>
         public static MyHttpContext GetContext(this NetworkStream stream, CancellationToken ct)
         {
             try
@@ -42,11 +51,6 @@ namespace PoGoEmulator
                 Logger.Write(e);
                 return null;
             }
-        }
-
-        public static string JoinLines(this Dictionary<string, string> headers)
-        {
-            return string.Join(Environment.NewLine, headers.Select(x => x.Key + ": " + x.Value).ToArray()) + Environment.NewLine;
         }
 
         //not necessary
@@ -78,6 +82,7 @@ namespace PoGoEmulator
                 throw new Exception("undefined protobuf class");
             methodMergeFrom.Invoke(serverResponse, new object[] { codedStream });
 
+            //every request will check whether legal or not
             if (checkAuthentication)//for user requests
             {
                 var requestAuthInfo = serverResponse.GetType().GetProperties().ToList()
@@ -94,6 +99,15 @@ namespace PoGoEmulator
             return array;
         }
 
+        /// <summary>
+        /// global caster 
+        /// </summary>
+        /// <typeparam name="T">
+        /// </typeparam>
+        /// <param name="obj">
+        /// </param>
+        /// <returns>
+        /// </returns>
         public static T Cast<T>(this object obj)
         {
             return (T)obj;

@@ -21,7 +21,7 @@ namespace PoGoEmulator.Database
         {
             if (_options == null)
             {
-                optionsBuilder.UseSqlServer(Global.Cfg.SqlConnectionString);
+                optionsBuilder.UseSqlServer(Global.Cfg.SqlConnectionString);//setactivemultiple=true whether necessary or not ?
             }
         }
 

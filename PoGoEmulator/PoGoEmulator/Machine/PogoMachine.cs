@@ -10,28 +10,12 @@ namespace PoGoEmulator.Machine
     {
         #region fields
 
-        //private readonly DatabaseService _database;
-        private TcpServer _slistener;
-
-        //public DatabaseService Database { get { return _database; } }
-        public TcpServer Server { get { return _slistener; } }
+        /// <summary>
+        /// request server 
+        /// </summary>
+        public TcpServer Server { get; private set; }
 
         #endregion fields
-
-        public PogoMachine()
-        {
-            try
-            {
-                //_database = new DatabaseService();
-                //var newConfig = _database.Configure().Builder.UseInMemoryDatabase();
-                //_database.UseConfiguration(newConfig);
-                Logger.Write("Successfuly connected to database server.");
-            }
-            catch (Exception e)
-            {
-                Logger.Write(e);
-            }
-        }
 
         #region methods
 
@@ -39,9 +23,10 @@ namespace PoGoEmulator.Machine
         {
             try
             {
-                _slistener = new TcpServer();
-                _slistener.StartServer(Global.Cfg.Ip, Global.Cfg.Port);
+                Server = new TcpServer();
+                Server.StartServer(Global.Cfg.Ip, Global.Cfg.Port);
                 Logger.Write($"Listening {Global.Cfg.Ip}:{Global.Cfg.Port}");
+                Logger.Write("Server is running...");
             }
             catch (Exception e)
             {
@@ -55,7 +40,7 @@ namespace PoGoEmulator.Machine
 
             Logger.Write("machine is stopped.", LogLevel.Debug);
 #endif
-            _slistener.Stop();
+            Server.Stop();
         }
 
         #endregion methods

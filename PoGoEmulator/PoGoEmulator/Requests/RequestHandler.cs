@@ -9,18 +9,32 @@ using System.Threading;
 
 namespace PoGoEmulator.Requests
 {
+    /// <summary>
+    /// server request handler 
+    /// </summary>
     public static partial class RequestHandler
     {
-        public static ConcurrentDictionary<string, string> UserTokens { get; private set; }
+        /// <summary>
+        /// global authenticated user informations 
+        /// </summary>
+        public static ConcurrentDictionary<string, string> AuthedUserTokens { get; private set; }
 
         static RequestHandler()
         {
-            int initialCapacity = 101;
+            //MICROSOFT EXPLANATION: https://msdn.microsoft.com/tr-tr/library/dd287191(v=vs.110).aspx
+            int initialCapacity = 101;//is it auto increase ?
             int numProcs = Environment.ProcessorCount;
             int concurrencyLevel = numProcs * 2;
-            UserTokens = new ConcurrentDictionary<string, string>(concurrencyLevel, initialCapacity);
+            AuthedUserTokens = new ConcurrentDictionary<string, string>(concurrencyLevel, initialCapacity);
         }
 
+        /// <summary>
+        /// request router 
+        /// </summary>
+        /// <param name="connectedClient">
+        /// </param>
+        /// <param name="ct">
+        /// </param>
         public static void Parse(Connection connectedClient, CancellationToken ct)
         {
             try
@@ -49,7 +63,7 @@ namespace PoGoEmulator.Requests
                         break;
 
                     default:
-                        throw new Exception($"Unknown request url: {url}");
+                        throw new Exception($"Undefined request url: {url}");
                         break;
                 }
             }

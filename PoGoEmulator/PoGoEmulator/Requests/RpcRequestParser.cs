@@ -14,8 +14,6 @@ namespace PoGoEmulator.Requests
         private static void RpcRequestParser(Connection connectedClient, CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();
-            if (!connectedClient.HttpContext.Body.Any())
-                throw new Exception("request body is empty");
 
             RequestEnvelope rqs = connectedClient.HttpContext.Body.First().Proton<RequestEnvelope>();
         }

@@ -3,6 +3,7 @@ using PoGoEmulator.Logging;
 using PoGoEmulator.Machine;
 using PoGoEmulator.Models;
 using System;
+using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -32,6 +33,9 @@ namespace PoGoEmulator
         {
             try
             {
+                Thread.CurrentThread.CurrentCulture =
+                    Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-GB");
+
                 Logger.AddLogger(new ConsoleLogger(LogLevel.Info));
 
 #if DEBUG

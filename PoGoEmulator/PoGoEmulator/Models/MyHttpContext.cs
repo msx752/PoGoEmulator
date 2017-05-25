@@ -1,6 +1,7 @@
 ﻿using HttpMachine;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PoGoEmulator.Models
 {
@@ -27,6 +28,7 @@ namespace PoGoEmulator.Models
 
         public void OnBody(HttpParser parser, ArraySegment<byte> data)
         {
+            //remove the pure data after the serializing but now it's ok.
             Body.Add(data.ToArray());
         }
 
@@ -37,8 +39,6 @@ namespace PoGoEmulator.Models
 
         public void OnHeaderName(HttpParser parser, string name)
         {
-            //Console.WriteLine("OnHeaderName:  '" + str + "'");
-
             if (!string.IsNullOrEmpty(HeaderValue))
                 CommitHeader();
 
@@ -59,8 +59,6 @@ namespace PoGoEmulator.Models
 
         public void OnHeaderValue(HttpParser parser, string value)
         {
-            //Console.WriteLine("OnHeaderValue:  '" + str + "'");
-
             if (string.IsNullOrEmpty(HeaderName))
                 throw new Exception("Got header value without name.");
 
@@ -73,9 +71,17 @@ namespace PoGoEmulator.Models
             Body = new List<byte[]>();
         }
 
+        /// <summary>
+        /// end trigger 
+        /// </summary>
+        /// <param name="parser">
+        /// </param>
         public void OnMessageEnd(HttpParser parser)
         {
-            // Console.WriteLine("OnMessageEnd");
+            if (!Body.Any())
+                throw new Exception("request body is empty");
+
+            //can i check authorize in here ???
         }
 
         public void OnMethod(HttpParser parser, string method)

@@ -12,19 +12,21 @@ using POGOProtos.Networking.Envelopes;
 
 namespace PoGoEmulator.Requests
 {
+    /// <summary>
+    /// is it necessary or not , i dont know much more about JWT validation 
+    /// </summary>
     public static class GoogleRequest
     {
-        //is it necessary or not , i dont know much more about JWT validation
         public static bool IsValidToken(RequestEnvelope.Types.AuthInfo auth)
         {
-            if (auth.Provider != "google") new Exception("not implemented yet");
+            if (auth.Provider != "google") new Exception("not implemented yet");//login with username and password is not implemented
 
             JwtSecurityTokenHandler jwth = new JwtSecurityTokenHandler();
             var userJwtToken = jwth.ReadJwtToken(auth.Token.Contents).Payload;
             object userEmail;
             userJwtToken.TryGetValue("email", out userEmail);
             string cachedJwtToken;
-            var isExists = RequestHandler.UserTokens.TryGetValue(userEmail.ToString(), out cachedJwtToken);
+            var isExists = RequestHandler.AuthedUserTokens.TryGetValue(userEmail.ToString(), out cachedJwtToken);
             if (isExists)
             {
                 if (cachedJwtToken == auth.Token.Contents)
@@ -44,7 +46,7 @@ namespace PoGoEmulator.Requests
             googleJwtToken.TryGetValue("email", out googleEmail);
             if (userEmail.ToString() == googleEmail.ToString())
             {
-                if (RequestHandler.UserTokens.AddOrUpdate(googleEmail.ToString(), userJwtToken,
+                if (RequestHandler.AuthedUserTokens.AddOrUpdate(googleEmail.ToString(), userJwtToken,
                         (key, oldValue) => userJwtToken) != null)
                     return true;
             }

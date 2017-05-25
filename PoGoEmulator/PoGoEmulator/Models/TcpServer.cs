@@ -8,16 +8,24 @@ using System.Threading.Tasks;
 
 namespace PoGoEmulator.Models
 {
+    /// <summary>
+    /// Create new instance of TcpServer. 
+    /// </summary>
     public class TcpServer
     {
-        #region Public.
+        private CancellationToken _ct;
+        private CancellationTokenSource _cts = new CancellationTokenSource();
+        private TcpListener _listener;
+        private bool listening = false;
 
-        // Create new instance of TcpServer.
-        public TcpServer()
-        {
-        }
-
-        public async void StartServer(IPAddress ip, int port) //non blocking listener
+        /// <summary>
+        /// non blocking listener 
+        /// </summary>
+        /// <param name="ip">
+        /// </param>
+        /// <param name="port">
+        /// </param>
+        public async void StartServer(IPAddress ip, int port)
         {
             try
             {
@@ -44,7 +52,9 @@ namespace PoGoEmulator.Models
             }
         }
 
-        // Stops receiving incoming requests.
+        /// <summary>
+        /// Stops receiving incoming requests. 
+        /// </summary>
         public void Stop()
         {
             listening = false;
@@ -62,20 +72,14 @@ namespace PoGoEmulator.Models
             _listener.Stop();
         }
 
+        /// <summary>
+        /// async handling 
+        /// </summary>
+        /// <param name="client">
+        /// </param>
         private void HandleClient(Connection client)
         {
             client.Execute();
         }
-
-        #endregion Public.
-
-        #region Fields.
-
-        private CancellationToken _ct;
-        private CancellationTokenSource _cts = new CancellationTokenSource();
-        private TcpListener _listener;
-        private bool listening = false;
-
-        #endregion Fields.
     }
 }
