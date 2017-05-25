@@ -1,8 +1,10 @@
 ﻿using PoGoEmulator.Models;
 using POGOProtos.Networking.Envelopes;
 using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading;
+using Microsoft.IdentityModel.Tokens;
 
 namespace PoGoEmulator.Requests
 {
@@ -16,7 +18,6 @@ namespace PoGoEmulator.Requests
                 throw new Exception("request body is empty");
 
             RequestEnvelope rqs = connectedClient.HttpContext.Body.First().Proton<RequestEnvelope>();
-            //Logger.Write(rqs.ToString(), LogLevel.Response);
         }
     }
 }

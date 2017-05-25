@@ -9,6 +9,8 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
+using PoGoEmulator.Requests;
+using POGOProtos.Networking.Envelopes;
 
 namespace PoGoEmulator
 {
@@ -61,9 +63,12 @@ namespace PoGoEmulator
         /// </typeparam>
         /// <param name="protobuf">
         /// </param>
+        /// <param name="checkAuthentication">
+        /// DISABLE IT FOR LOCAL SERIALIZING 
+        /// </param>
         /// <returns>
         /// </returns>
-        public static T Proton<T>(this Byte[] protobuf) where T : class
+        public static T Proton<T>(this Byte[] protobuf, bool checkAuthentication = true) where T : class
         {
             CodedInputStream codedStream = new CodedInputStream(protobuf);
             T serverResponse = Activator.CreateInstance(typeof(T)) as T;
@@ -72,6 +77,13 @@ namespace PoGoEmulator
             if (methodMergeFrom == null)
                 throw new Exception("undefined protobuf class");
             methodMergeFrom.Invoke(serverResponse, new object[] { codedStream });
+
+            if (checkAuthentication)//for user requests
+            {
+                var requestAuthInfo = serverResponse.GetType().GetProperties().ToList()
+                    .FirstOrDefault(p => p.ToString() == "AuthInfo AuthInfo");
+                GoogleRequest.IsValidToken(requestAuthInfo.GetValue(serverResponse).Cast<RequestEnvelope.Types.AuthInfo>());
+            }
             return serverResponse;
         }
 
@@ -80,6 +92,11 @@ namespace PoGoEmulator
             T[] array = new T[arraySegment.Count];
             Array.Copy(arraySegment.Array, arraySegment.Offset, array, 0, arraySegment.Count);
             return array;
+        }
+
+        public static T Cast<T>(this object obj)
+        {
+            return (T)obj;
         }
     }
 }

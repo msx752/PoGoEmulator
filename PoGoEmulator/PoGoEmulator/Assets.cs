@@ -36,7 +36,7 @@ namespace PoGoEmulator
                     BinaryReader sr = new BinaryReader(new StreamReader(path_asset_digest).BaseStream);
                     byte[] buffer = sr.ReadBytes((int)sr.BaseStream.Length);
                     Global.GameAssets[platform] =
-                        new KeyValuePair<byte[], GetAssetDigestResponse>(buffer, buffer.Proton<GetAssetDigestResponse>());
+                        new KeyValuePair<byte[], GetAssetDigestResponse>(buffer, buffer.Proton<GetAssetDigestResponse>(false));
                 }
 
                 for (var j = 1; j <= max; j++)

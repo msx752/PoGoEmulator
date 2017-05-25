@@ -3,6 +3,7 @@ using PoGoEmulator.Logging;
 using PoGoEmulator.Models;
 using POGOProtos.Networking.Envelopes;
 using System;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
 
@@ -10,6 +11,16 @@ namespace PoGoEmulator.Requests
 {
     public static partial class RequestHandler
     {
+        public static ConcurrentDictionary<string, string> UserTokens { get; private set; }
+
+        static RequestHandler()
+        {
+            int initialCapacity = 101;
+            int numProcs = Environment.ProcessorCount;
+            int concurrencyLevel = numProcs * 2;
+            UserTokens = new ConcurrentDictionary<string, string>(concurrencyLevel, initialCapacity);
+        }
+
         public static void Parse(Connection connectedClient, CancellationToken ct)
         {
             try
