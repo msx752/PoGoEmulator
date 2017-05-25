@@ -55,7 +55,7 @@ namespace PoGoEmulator.Requests
                         //        string s1 = i.ToString();
                         //    }
                         //}
-                        RpcRequestParser(connectedClient, ct);
+                        RpcRequestParser(connectedClient, url.Segments[1] == "plfe/", ct);
                         break;
 
                     case "model/":

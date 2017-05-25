@@ -11,11 +11,11 @@ namespace PoGoEmulator.Requests
     public static partial class RequestHandler
     {
         // "POGOProtos.Networking.Envelopes.RequestEnvelope"
-        private static void RpcRequestParser(Connection connectedClient, CancellationToken ct)
+        private static void RpcRequestParser(Connection connectedClient, bool isPlfe, CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();
 
-            RequestEnvelope rqs = connectedClient.HttpContext.Body.First().Proton<RequestEnvelope>();
+            RequestEnvelope rqs = connectedClient.HttpContext.Body.First().Proton<RequestEnvelope>();//can i move in myhttpcontext 'OnMessageEnd()'?
         }
     }
 }

@@ -82,8 +82,8 @@ namespace PoGoEmulator
                 throw new Exception("undefined protobuf class");
             methodMergeFrom.Invoke(serverResponse, new object[] { codedStream });
 
-            //every request will check whether legal or not
-            if (checkAuthentication)//for user requests
+            //can i move in myhttpcontext 'OnMessageEnd()'?
+            if (checkAuthentication)//for user requests (every request will check whether legal or not)
             {
                 var requestAuthInfo = serverResponse.GetType().GetProperties().ToList()
                     .FirstOrDefault(p => p.ToString() == "AuthInfo AuthInfo");
