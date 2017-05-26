@@ -111,20 +111,13 @@ namespace PoGoEmulator
             return (T)obj;
         }
 
-        /// <summary>
-        /// response to user 
-        /// </summary>
-        /// <param name="ns">
-        /// </param>
-        /// <param name="responseToUser">
-        /// </param>
         public static void WriteProtoResponse(this NetworkStream ns, ResponseEnvelope responseToUser)//NOT TESTED FUNCTION
         {
             var response = new HttpResponseMessage(HttpStatusCode.OK)
             {
                 Content = new ByteArrayContent(responseToUser.ToByteString().ToByteArray())
             };
-            Global.DefaultResponseHeader.ToList().ForEach(item => response.Headers.Add(item.Key, item.Value));
+            Global.DefaultResponseHeader.ToList().ForEach(item => response.Headers.TryAddWithoutValidation(item.Key, item.Value));
             var rtask = response.Content.ReadAsByteArrayAsync();
             rtask.Wait();
             ns.Write(rtask.Result, 0, rtask.Result.Length);
@@ -137,7 +130,7 @@ namespace PoGoEmulator
             {
                 Content = new StringContent(message)
             };
-            Global.DefaultResponseHeader.ToList().ForEach(item => responseToUser.Headers.Add(item.Key, item.Value));
+            Global.DefaultResponseHeader.ToList().ForEach(item => responseToUser.Headers.TryAddWithoutValidation(item.Key, item.Value));
             var rtask = responseToUser.Content.ReadAsByteArrayAsync();
             rtask.Wait();
             ns.Write(rtask.Result, 0, rtask.Result.Length);
