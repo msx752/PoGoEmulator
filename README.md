@@ -1,4 +1,5 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/uwjuc6f75nw458c7/branch/master?svg=true)](https://ci.appveyor.com/project/mustafasalihaslm/pogoemulator/branch/master)
+[![Stories in Ready](https://badge.waffle.io/msx752/PoGoEmulator.png?label=ready&title=Ready)](http://waffle.io/msx752/PoGoEmulator)
 
 # PoGoEmulator
 
