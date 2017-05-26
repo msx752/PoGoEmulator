@@ -1,3 +1,5 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/uwjuc6f75nw458c7/branch/master?svg=true)](https://ci.appveyor.com/project/mustafasalihaslm/pogoemulator/branch/master)
+
 # PoGoEmulator
 
 # Installation
