@@ -15,7 +15,8 @@ namespace PoGoEmulator.Requests
         {
             ct.ThrowIfCancellationRequested();
 
-            RequestEnvelope rqs = connectedClient.HttpContext.Body.First().Proton<RequestEnvelope>();//can i move in myhttpcontext 'OnMessageEnd()'?
+            var rqs = connectedClient.HttpContext;
+            // rqs.ResponseEnvelope //do something
         }
     }
 }

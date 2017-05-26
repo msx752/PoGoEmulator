@@ -1,7 +1,9 @@
 ﻿using HttpMachine;
+using POGOProtos.Networking.Envelopes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using PoGoEmulator.Requests;
 
 namespace PoGoEmulator.Models
 {
@@ -10,6 +12,17 @@ namespace PoGoEmulator.Models
     /// </summary>
     public class MyHttpContext : IHttpParserHandler
     {
+        public MyHttpContext()
+        {
+            ResponseProto = new ResponseEnvelope();
+        }
+
+        public MyHttpContext(bool checkUserAuthentication) : this()
+        {
+            CheckUserAuth = checkUserAuthentication;
+        }
+
+        public bool CheckUserAuth { get; private set; }
         public List<byte[]> Body { get; set; }
         public string Fragment { get; set; }
         public string HeaderName { get; set; }
@@ -26,10 +39,21 @@ namespace PoGoEmulator.Models
         public int VersionMajor { get; set; } = -1;
         public int VersionMinor { get; set; } = -1;
 
+        /// <summary>
+        /// request from user 
+        /// </summary>
+        public RequestEnvelope RequestProto { get; set; }
+
+        /// <summary>
+        /// response to user 
+        /// </summary>
+        public ResponseEnvelope ResponseProto { get; set; }
+
         public void OnBody(HttpParser parser, ArraySegment<byte> data)
         {
             //remove the pure data after the serializing but now it's ok.
             Body.Add(data.ToArray());
+            RequestProto = Body.First().Proton<RequestEnvelope>();
         }
 
         public void OnFragment(HttpParser parser, string fragment)
@@ -71,19 +95,6 @@ namespace PoGoEmulator.Models
             Body = new List<byte[]>();
         }
 
-        /// <summary>
-        /// end trigger 
-        /// </summary>
-        /// <param name="parser">
-        /// </param>
-        public void OnMessageEnd(HttpParser parser)
-        {
-            if (!Body.Any())
-                throw new Exception("request body is empty");
-
-            //can i check authorize in here ???
-        }
-
         public void OnMethod(HttpParser parser, string method)
         {
             this.Method = method;
@@ -104,6 +115,22 @@ namespace PoGoEmulator.Models
             //Console.WriteLine("Committing header '" + headerName + "' : '" + headerValue + "'");
             Headers[HeaderName] = HeaderValue;
             HeaderName = HeaderValue = null;
+        }
+
+        /// <summary>
+        /// end trigger 
+        /// </summary>
+        /// <param name="parser">
+        /// </param>
+        public void OnMessageEnd(HttpParser parser)
+        {
+            if (RequestProto == null)
+                throw new Exception("request body is empty");
+
+            if (CheckUserAuth)//for user requests (every request will check whether authed or not)
+            {
+                GoogleRequest.CheckUserValidToken(RequestProto.AuthInfo);
+            }
         }
     }
 }
