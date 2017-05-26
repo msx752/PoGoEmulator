@@ -1,6 +1,6 @@
 # PoGoEmulator
 
-# Usage
+# Installation
 - install to Computer [Nox App Player](https://www.bignox.com/blog/category/releasenote/)
 - install to Nox [Xposed Installer(rooted device)](http://repo.xposed.info/module/de.robv.android.xposed.installer)
 - install to XposedModules [Xposed Pokemon Module(configure it with emulator ip:port)](http://repo.xposed.info/module/com.vivek.xposedpokemon)
