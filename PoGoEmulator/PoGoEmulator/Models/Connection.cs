@@ -82,20 +82,20 @@ namespace PoGoEmulator.Models
                 Stream.WriteBadRequest(HttpStatusCode.BadRequest, $"session ended Reason: '{state}'");
             }
 
-            Database.Dispose();
-            Tmrtick.Stop();
+            Database?.Dispose();
+            Tmrtick?.Stop();
             Tmrtick = null;
             _cts.Cancel(); //force stop
             HttpContext = null;
 
-            Client.Close();
+            Client?.Close();
 
-            ((IDisposable)Client).Dispose();
+            ((IDisposable)Client)?.Dispose();
 
             Client = null;
 
-            Stream.Close();
-            Stream.Dispose();
+            Stream?.Close();
+            Stream?.Dispose();
             Stream = null;
         }
 

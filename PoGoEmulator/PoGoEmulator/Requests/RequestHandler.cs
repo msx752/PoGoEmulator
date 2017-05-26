@@ -64,7 +64,7 @@ namespace PoGoEmulator.Requests
 
                     default:
                         throw new Exception($"Undefined request url: {url}");
-                        break;
+                        //break;
                 }
             }
             catch (Exception e)
