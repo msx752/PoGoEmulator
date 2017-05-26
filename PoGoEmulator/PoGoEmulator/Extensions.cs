@@ -11,6 +11,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using PoGoEmulator.Requests;
 using POGOProtos.Networking.Envelopes;
@@ -113,13 +114,13 @@ namespace PoGoEmulator
 
         public static void WriteProtoResponse(this NetworkStream ns, ResponseEnvelope responseToUser)//NOT TESTED FUNCTION
         {
-            var writer = new StreamWriter(ns);
-            writer.WriteLine($"HTTP/1.0 200 OK");//statuscode updateable in responseEnvelope
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"HTTP/1.0 200 OK");//statuscode updateable in responseEnvelope
+            Global.DefaultResponseHeader.ToList().ForEach(item => sb.AppendLine($"{item.Key}: {item.Value}"));
             var content = responseToUser.ToByteString().ToStringUtf8();
-            Global.DefaultResponseHeader.ToList()
-                .ForEach(item => writer.WriteLine($"{item.Key}: {item.Value}"));
-            writer.WriteLine("Content-Length: " + content.Length);
-            writer.WriteLine("");
+            sb.AppendLine("Content-Length: " + (content.Length + sb.Length + 2));
+            sb.AppendLine("");
+            var writer = new StreamWriter(ns);
             writer.WriteLine(content);
             writer.Flush();
         }
@@ -129,14 +130,13 @@ namespace PoGoEmulator
             ResponseEnvelope responseToUser = new ResponseEnvelope();
             responseToUser.StatusCode = (int)code;
             responseToUser.Error = message;
-            var writer = new StreamWriter(ns);
-            writer.WriteLine($"HTTP/1.0 200 OK");
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"HTTP/1.0 200 OK");//statuscode updateable in responseEnvelope
+            Global.DefaultResponseHeader.ToList().ForEach(item => sb.AppendLine($"{item.Key}: {item.Value}"));
             var content = responseToUser.ToByteString().ToStringUtf8();
-            Global.DefaultResponseHeader.ToList()
-                .ForEach(item => writer.WriteLine($"{item.Key}: {item.Value}"));
-
-            writer.WriteLine("Content-Length: " + (content.Length));
-            writer.WriteLine("");
+            sb.AppendLine("Content-Length: " + (content.Length + sb.Length + 2));
+            sb.AppendLine("");
+            var writer = new StreamWriter(ns);
             writer.WriteLine(content);
             writer.Flush();
         }
