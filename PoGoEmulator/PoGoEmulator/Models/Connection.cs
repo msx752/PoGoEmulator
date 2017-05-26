@@ -35,10 +35,12 @@ namespace PoGoEmulator.Models
         public NetworkStream Stream { get; private set; }
         public TimeoutTick Tmrtick { get; private set; }
 
-        public void Abort(RequestState state)
+        public void Abort(RequestState state, Exception e = null)
         {
+            if (state == RequestState.Completed && e != null)
+                throw new Exception("impossible request", e);
             //You can write out an abort message to the client if you like. (Stream.Write()....)
-            Dispose(state);
+            Dispose(state, e);
         }
 
         public void Dispose()
@@ -58,13 +60,13 @@ namespace PoGoEmulator.Models
             catch (Exception e)
             {
                 Logger.Write(e);
-                Abort(RequestState.AbortedBySystem);
+                Abort(RequestState.AbortedBySystem, e);
                 return;
             }
             Abort(RequestState.Completed);
         }
 
-        private void Dispose(RequestState state)
+        private void Dispose(RequestState state, Exception e = null)
         {
             if (_isDisposed || _cts.IsCancellationRequested) return;
 #if DEBUG
@@ -79,7 +81,7 @@ namespace PoGoEmulator.Models
             }
             else
             {
-                Stream.WriteBadRequest(HttpStatusCode.BadRequest, $"session ended Reason: '{state}'");
+                Stream.WriteProtoResponse(HttpStatusCode.BadRequest, $"session ended Reason: '{state}', Message:'{e?.Message}'");
             }
 
             Database?.Dispose();
@@ -105,9 +107,9 @@ namespace PoGoEmulator.Models
                 return;
 
             if (Client.Client.Poll(1, SelectMode.SelectRead) && Client.Client.Available == 0)//detect the custom aborting
-                Abort(RequestState.CanceledByUser);
+                Abort(RequestState.CanceledByUser, new Exception("canceled"));
             else if (Tmrtick.Stopwatch.ElapsedMilliseconds > Global.Cfg.RequestTimeout.TotalMilliseconds)
-                Abort(RequestState.Timeout);
+                Abort(RequestState.Timeout, new Exception("connectionTimeout"));
         }
     }
 }

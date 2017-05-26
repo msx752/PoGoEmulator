@@ -112,32 +112,69 @@ namespace PoGoEmulator
             return (T)obj;
         }
 
+        /// <summary>
+        /// successful response send s 
+        /// </summary>
+        /// <param name="ns">
+        /// active connection 
+        /// </param>
+        /// <param name="responseToUser">
+        /// configured user data 
+        /// </param>
         public static void WriteProtoResponse(this NetworkStream ns, ResponseEnvelope responseToUser)//NOT TESTED FUNCTION
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"HTTP/1.0 200 OK");//statuscode updateable in responseEnvelope
             Global.DefaultResponseHeader.ToList().ForEach(item => sb.AppendLine($"{item.Key}: {item.Value}"));
-            var content = responseToUser.ToByteString().ToStringUtf8();
-            sb.AppendLine("Content-Length: " + (content.Length + sb.Length + 2));
+            var bodyContent = responseToUser.ToByteString().ToStringUtf8();
+            sb.AppendLine("Content-Length: " + (bodyContent.Length + sb.Length + 2));
             sb.AppendLine("");
-            var writer = new StreamWriter(ns);
-            writer.WriteLine(content);
-            writer.Flush();
+            ns.WriteHttpResponse(sb.ToString(), bodyContent);
         }
 
-        public static void WriteBadRequest(this NetworkStream ns, HttpStatusCode code, string message)
+        /// <summary>
+        /// error sends 
+        /// </summary>
+        /// <param name="ns">
+        /// active connection 
+        /// </param>
+        /// <param name="statusCode">
+        /// selet only unsuccessful statusCodes 
+        /// </param>
+        /// <param name="errorMessage">
+        /// error message 
+        /// </param>
+        public static void WriteProtoResponse(this NetworkStream ns, HttpStatusCode statusCode, string errorMessage)
         {
             ResponseEnvelope responseToUser = new ResponseEnvelope();
-            responseToUser.StatusCode = (int)code;
-            responseToUser.Error = message;
+            responseToUser.StatusCode = (int)statusCode;
+            responseToUser.Error = errorMessage;
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"HTTP/1.0 200 OK");//statuscode updateable in responseEnvelope
             Global.DefaultResponseHeader.ToList().ForEach(item => sb.AppendLine($"{item.Key}: {item.Value}"));
-            var content = responseToUser.ToByteString().ToStringUtf8();
-            sb.AppendLine("Content-Length: " + (content.Length + sb.Length + 2));
+            var bodyContent = responseToUser.ToByteString().ToStringUtf8();
+            sb.AppendLine("Content-Length: " + (bodyContent.Length + sb.Length + 2));
             sb.AppendLine("");
+            ns.WriteHttpResponse(sb.ToString(), bodyContent);
+        }
+
+        /// <summary>
+        /// http sender 
+        /// </summary>
+        /// <param name="ns">
+        /// active connection 
+        /// </param>
+        /// <param name="header">
+        /// such as 'Content-Length','Encoding' 
+        /// </param>
+        /// <param name="body">
+        /// such as ' <html> </html>' 
+        /// </param>
+        public static void WriteHttpResponse(this NetworkStream ns, string header, string body)
+        {
             var writer = new StreamWriter(ns);
-            writer.WriteLine(content);
+            writer.WriteLine(header);
+            writer.WriteLine(body);
             writer.Flush();
         }
     }
