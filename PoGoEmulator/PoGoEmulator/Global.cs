@@ -28,5 +28,11 @@ namespace PoGoEmulator
         /// static datas 
         /// </summary>
         public static GameMaster GameMaster = null;
+
+        public static Dictionary<string, string> DefaultResponseHeader { get; set; } = new Dictionary<string, string>()
+        {
+            {"Accept-Encoding", "gzip"},
+            {"Content-Type", "application/x-www-form-urlencoded" }
+        };
     }
 }

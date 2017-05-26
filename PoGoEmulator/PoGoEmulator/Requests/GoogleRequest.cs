@@ -17,7 +17,7 @@ namespace PoGoEmulator.Requests
     /// </summary>
     public static class GoogleRequest
     {
-        public static bool IsValidToken(RequestEnvelope.Types.AuthInfo auth)
+        public static bool CheckUserValidToken(RequestEnvelope.Types.AuthInfo auth)
         {
             if (auth.Provider != "google") new Exception("not implemented yet");//login with username and password is not implemented
 

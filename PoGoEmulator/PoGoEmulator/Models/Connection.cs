@@ -1,10 +1,16 @@
 ﻿using System;
+using System.IO;
+using System.Net;
+using System.Net.Http;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
+using Google.Protobuf;
 using PoGoEmulator.Database;
 using PoGoEmulator.Enums;
 using PoGoEmulator.Logging;
 using PoGoEmulator.Requests;
+using POGOProtos.Networking.Envelopes;
 
 namespace PoGoEmulator.Models
 {
@@ -19,7 +25,7 @@ namespace PoGoEmulator.Models
             this.Client = client;
             Tmrtick = new TimeoutTick(_cts.Token, TimeoutChecker, true);
             Stream = this.Client.GetStream();
-            HttpContext = Stream.GetContext(_cts.Token);
+            HttpContext = Stream.GetContext(_cts.Token, true);
             Database = new PoGoDbContext();
         }
 
@@ -66,21 +72,30 @@ namespace PoGoEmulator.Models
 #endif
             _isDisposed = true;
 
-            if (state == RequestState.Completed)
+            if (state == RequestState.Completed)//response to user if request successful
+            {
                 Database.SaveChanges();
+                Stream.WriteProtoResponse(HttpContext.ResponseProto);
+            }
+            else
+            {
+                Stream.WriteBadRequest(HttpStatusCode.BadRequest, $"session ended Reason: '{state}'");
+            }
 
-            Database.Dispose();
-            Tmrtick.Stop();
+            Database?.Dispose();
+            Tmrtick?.Stop();
             Tmrtick = null;
             _cts.Cancel(); //force stop
             HttpContext = null;
 
-            Client.Close();
-            ((IDisposable)Client).Dispose();
+            Client?.Close();
+
+            ((IDisposable)Client)?.Dispose();
+
             Client = null;
 
-            Stream.Close();
-            Stream.Dispose();
+            Stream?.Close();
+            Stream?.Dispose();
             Stream = null;
         }
 

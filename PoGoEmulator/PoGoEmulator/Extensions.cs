@@ -5,7 +5,10 @@ using PoGoEmulator.Logging;
 using PoGoEmulator.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
@@ -23,13 +26,15 @@ namespace PoGoEmulator
         /// </param>
         /// <param name="ct">
         /// </param>
+        /// <param name="checkUserAuthentication">
+        /// </param>
         /// <returns>
         /// </returns>
-        public static MyHttpContext GetContext(this NetworkStream stream, CancellationToken ct)
+        public static MyHttpContext GetContext(this NetworkStream stream, CancellationToken ct, bool checkUserAuthentication)
         {
             try
             {
-                var handler = new MyHttpContext();
+                var handler = new MyHttpContext(checkUserAuthentication);
                 var parser = new HttpParser(handler);
 
                 var buffer = new byte[Global.Cfg.MaxRequestContentLength];
@@ -82,13 +87,6 @@ namespace PoGoEmulator
                 throw new Exception("undefined protobuf class");
             methodMergeFrom.Invoke(serverResponse, new object[] { codedStream });
 
-            //can i move in myhttpcontext 'OnMessageEnd()'?
-            if (checkAuthentication)//for user requests (every request will check whether legal or not)
-            {
-                var requestAuthInfo = serverResponse.GetType().GetProperties().ToList()
-                    .FirstOrDefault(p => p.ToString() == "AuthInfo AuthInfo");
-                GoogleRequest.IsValidToken(requestAuthInfo.GetValue(serverResponse).Cast<RequestEnvelope.Types.AuthInfo>());
-            }
             return serverResponse;
         }
 
@@ -111,6 +109,32 @@ namespace PoGoEmulator
         public static T Cast<T>(this object obj)
         {
             return (T)obj;
+        }
+
+        public static void WriteProtoResponse(this NetworkStream ns, ResponseEnvelope responseToUser)//NOT TESTED FUNCTION
+        {
+            var response = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new ByteArrayContent(responseToUser.ToByteString().ToByteArray())
+            };
+            Global.DefaultResponseHeader.ToList().ForEach(item => response.Headers.TryAddWithoutValidation(item.Key, item.Value));
+            var rtask = response.Content.ReadAsByteArrayAsync();
+            rtask.Wait();
+            ns.Write(rtask.Result, 0, rtask.Result.Length);
+            ns.Flush();
+        }
+
+        public static void WriteBadRequest(this NetworkStream ns, HttpStatusCode code, string message)
+        {
+            HttpResponseMessage responseToUser = new HttpResponseMessage(code)
+            {
+                Content = new StringContent(message)
+            };
+            Global.DefaultResponseHeader.ToList().ForEach(item => responseToUser.Headers.TryAddWithoutValidation(item.Key, item.Value));
+            var rtask = responseToUser.Content.ReadAsByteArrayAsync();
+            rtask.Wait();
+            ns.Write(rtask.Result, 0, rtask.Result.Length);
+            ns.Flush();
         }
     }
 }
