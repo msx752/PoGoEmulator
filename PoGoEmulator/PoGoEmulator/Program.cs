@@ -67,7 +67,8 @@ namespace PoGoEmulator
             {
                 Logger.Write(e);
             }
-            machine.Stop();
+            machine?.Stop();
+            Console.ReadLine();
         }
     }
 }
