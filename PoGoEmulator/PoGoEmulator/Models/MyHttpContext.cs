@@ -3,6 +3,7 @@ using POGOProtos.Networking.Envelopes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using PoGoEmulator.Requests;
 
 namespace PoGoEmulator.Models
@@ -128,9 +129,9 @@ namespace PoGoEmulator.Models
                 throw new Exception("request body is empty");
 
             if (CheckUserAuth)//for user requests (every request will check whether authed or not)
-            {
                 GoogleRequest.CheckUserValidToken(RequestProto.AuthInfo);
-            }
+
+            StatusCode = (int)HttpStatusCode.OK;//do not change this
         }
     }
 }

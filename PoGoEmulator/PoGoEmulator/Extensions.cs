@@ -113,28 +113,32 @@ namespace PoGoEmulator
 
         public static void WriteProtoResponse(this NetworkStream ns, ResponseEnvelope responseToUser)//NOT TESTED FUNCTION
         {
-            var response = new HttpResponseMessage(HttpStatusCode.OK)
-            {
-                Content = new ByteArrayContent(responseToUser.ToByteString().ToByteArray())
-            };
-            Global.DefaultResponseHeader.ToList().ForEach(item => response.Headers.TryAddWithoutValidation(item.Key, item.Value));
-            var rtask = response.Content.ReadAsByteArrayAsync();
-            rtask.Wait();
-            ns.Write(rtask.Result, 0, rtask.Result.Length);
-            ns.Flush();
+            var writer = new StreamWriter(ns);
+            writer.WriteLine($"HTTP/1.0 200 OK");//statuscode updateable in responseEnvelope
+            var content = responseToUser.ToByteString().ToStringUtf8();
+            Global.DefaultResponseHeader.ToList()
+                .ForEach(item => writer.WriteLine($"{item.Key}: {item.Value}"));
+            writer.WriteLine("Content-Length: " + content.Length);
+            writer.WriteLine("");
+            writer.WriteLine(content);
+            writer.Flush();
         }
 
         public static void WriteBadRequest(this NetworkStream ns, HttpStatusCode code, string message)
         {
-            HttpResponseMessage responseToUser = new HttpResponseMessage(code)
-            {
-                Content = new StringContent(message)
-            };
-            Global.DefaultResponseHeader.ToList().ForEach(item => responseToUser.Headers.TryAddWithoutValidation(item.Key, item.Value));
-            var rtask = responseToUser.Content.ReadAsByteArrayAsync();
-            rtask.Wait();
-            ns.Write(rtask.Result, 0, rtask.Result.Length);
-            ns.Flush();
+            ResponseEnvelope responseToUser = new ResponseEnvelope();
+            responseToUser.StatusCode = (int)code;
+            responseToUser.Error = message;
+            var writer = new StreamWriter(ns);
+            writer.WriteLine($"HTTP/1.0 200 OK");
+            var content = responseToUser.ToByteString().ToStringUtf8();
+            Global.DefaultResponseHeader.ToList()
+                .ForEach(item => writer.WriteLine($"{item.Key}: {item.Value}"));
+
+            writer.WriteLine("Content-Length: " + (content.Length));
+            writer.WriteLine("");
+            writer.WriteLine(content);
+            writer.Flush();
         }
     }
 }
