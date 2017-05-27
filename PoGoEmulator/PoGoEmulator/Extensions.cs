@@ -176,20 +176,6 @@ namespace PoGoEmulator
             writer.Flush();
         }
 
-        public static void DoAuth(this MyHttpContext context)
-        {
-            context.Response.StatusCode = 53;
-            context.Response.RequestId = context.Request.RequestId;
-            context.Response.ApiUrl = "pgorelease.nianticlabs.com/custom";
-            context.Response.AuthTicket = new AuthTicket()
-            {
-                Start = ByteString.Empty,
-                ExpireTimestampMs = DateTime.Now.UnixTime(new TimeSpan(0, 30, 0)),
-                End = ByteString.Empty
-            };
-            Global.AuthenticatedUsers.AddOrUpdate(context.UserEmail, true, (k, v) => true);
-        }
-
         public static ulong UnixTime(this DateTime dt, TimeSpan ts)
         {
             var timeSpan = (dt.Add(ts).ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0));

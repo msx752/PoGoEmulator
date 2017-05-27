@@ -7,6 +7,7 @@ using System.Threading;
 using Microsoft.IdentityModel.Tokens;
 using PoGoEmulator.Database.Tables;
 using PoGoEmulator.Logging;
+using PoGoEmulator.Responses;
 
 namespace PoGoEmulator.Requests
 {
@@ -64,8 +65,10 @@ namespace PoGoEmulator.Requests
                     }
                 }
 
-                foreach (var rew in r.Request.Requests)
+                foreach (var re in r.Request.Requests)
                 {
+                    r.ProcessResponse(re);
+                    //r.Response.Returns.Add(rew.RequestMessage);
                 }
             }
             else
