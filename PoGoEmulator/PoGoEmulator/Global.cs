@@ -36,7 +36,7 @@ namespace PoGoEmulator
             {"Content-Type", "application/x-www-form-urlencoded" }
         };
 
-        public static ConcurrentDictionary<string, bool> AuthenticatedUsers { get; set; } =
-            new ConcurrentDictionary<string, bool>();//it must be re-configure in the future because user must be logout in somewhere (do i need store authTicket too ?)
+        public static ConcurrentDictionary<string, CacheUserData> AuthenticatedUsers { get; set; } =
+            new ConcurrentDictionary<string, CacheUserData>();//it must be re-configure in the future because user must be logout in somewhere (do i need store authTicket too ?)
     }
 }

@@ -218,12 +218,14 @@
   <ItemGroup>
     <Compile Include="Database\PoGoDbContext.cs" />
     <Compile Include="Database\Tables\User.cs" />
+    <Compile Include="Encryption.cs" />
     <Compile Include="Enums\ClientState.cs" />
     <Compile Include="Migrations\20170524193132_UserTable.cs" />
     <Compile Include="Migrations\20170524193132_UserTable.designer.cs">
       <DependentUpon>20170524193132_UserTable.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\PoGoDbContextModelSnapshot.cs" />
+    <Compile Include="Models\CacheUserData.cs" />
     <Compile Include="Models\Connection.cs" />
     <Compile Include="Models\ConsoleLogger.cs" />
     <Compile Include="Enums\LogLevel.cs" />

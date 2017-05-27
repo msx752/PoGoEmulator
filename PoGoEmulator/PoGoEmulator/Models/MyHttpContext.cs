@@ -61,16 +61,22 @@ namespace PoGoEmulator.Models
             }
         }
 
+        public CacheUserData CachedUserData
+        {
+            get
+            {
+                CacheUserData state;
+                Global.AuthenticatedUsers.TryGetValue(UserEmail, out state);
+                return state;
+            }
+        }
+
         public bool IsAuthenticated
         {
             get
             {
-                bool state;
-                var snc = Global.AuthenticatedUsers.TryGetValue(UserEmail, out state);
-                if (!snc)
-                    return false;
-                else
-                    return state;
+                CacheUserData state = CachedUserData;
+                return CachedUserData != null && state.IsAuthenticated;
             }
         }
 

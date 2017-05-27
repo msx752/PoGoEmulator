@@ -172,7 +172,7 @@ namespace PoGoEmulator
         {
             var writer = new StreamWriter(ns);
             writer.WriteLine(header);
-            writer.WriteLine(body);
+            writer.Write(body);
             writer.Flush();
         }
 
