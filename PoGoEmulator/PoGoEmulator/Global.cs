@@ -32,8 +32,11 @@ namespace PoGoEmulator
 
         public static Dictionary<string, string> DefaultResponseHeader { get; set; } = new Dictionary<string, string>()
         {
-            {"Accept-Encoding", "gzip"},
-            {"Content-Type", "application/x-www-form-urlencoded" }
+            {"Alt-Svc", "clear"},
+            {"Transfer-Encoding", "chunked" },
+            {"Cache-Control", "no-cache" },
+            {"Server", "nginx/1.11.10" },
+            {"Via", "1.1 google" }  //fakeee :)
         };
 
         public static ConcurrentDictionary<string, CacheUserData> AuthenticatedUsers { get; set; } =

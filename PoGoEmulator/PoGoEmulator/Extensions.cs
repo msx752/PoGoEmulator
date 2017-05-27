@@ -5,6 +5,7 @@ using PoGoEmulator.Logging;
 using PoGoEmulator.Models;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -123,10 +124,7 @@ namespace PoGoEmulator
         /// </param>
         public static void WriteProtoResponse(this NetworkStream ns, ResponseEnvelope responseToUser)//NOT TESTED FUNCTION
         {
-            var sb = new StringBuilder();
-            sb.AppendLine($"HTTP/1.0 200 OK");
-            Global.DefaultResponseHeader.ToList().ForEach(item => sb.AppendLine($"{item.Key}: {item.Value}"));
-            ns.WriteHttpResponse(sb, responseToUser.ToByteString());
+            ns.WriteHttpResponse(responseToUser.ToByteString());
         }
 
         /// <summary>
@@ -148,26 +146,14 @@ namespace PoGoEmulator
                 StatusCode = (int)statusCode,
                 Error = errorMessage
             };
-            var sb = new StringBuilder();
-            sb.AppendLine($"HTTP/1.0 200 OK");//statuscode updateable in responseEnvelope
-            Global.DefaultResponseHeader.ToList().ForEach(item => sb.AppendLine($"{item.Key}: {item.Value}"));
-            ns.WriteHttpResponse(sb, responseToUser.ToByteString());
+            ns.WriteHttpResponse(responseToUser.ToByteString());
         }
 
-        /// <summary>
-        /// http sender 
-        /// </summary>
-        /// <param name="ns">
-        /// active connection 
-        /// </param>
-        /// <param name="header">
-        /// such as 'Content-Length','Encoding' 
-        /// </param>
-        /// <param name="body">
-        /// such as ' <html> </html>' 
-        /// </param>
-        public static void WriteHttpResponse(this NetworkStream ns, StringBuilder header, ByteString body)
+        public static void WriteHttpResponse(this NetworkStream ns, ByteString body)
         {
+            var header = new StringBuilder();
+            Global.DefaultResponseHeader.ToList().ForEach(item => header.AppendLine($"{item.Key}: {item.Value}"));
+            header.AppendLine($"Date: {string.Format(new CultureInfo("en-GB"), "{0:ddd, dd MMM yyyy hh:mm:ss}", DateTime.UtcNow)} GMT");
             header.AppendLine("Content-Length: " + (body.Length + header.Length + 2));
             header.AppendLine("");
             var writer = new StreamWriter(ns);
