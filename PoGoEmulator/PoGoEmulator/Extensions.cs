@@ -123,12 +123,10 @@ namespace PoGoEmulator
         /// </param>
         public static void WriteProtoResponse(this NetworkStream ns, ResponseEnvelope responseToUser)//NOT TESTED FUNCTION
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             sb.AppendLine($"HTTP/1.0 200 OK");
             Global.DefaultResponseHeader.ToList().ForEach(item => sb.AppendLine($"{item.Key}: {item.Value}"));
-            var bodyContent = responseToUser.ToByteString().ToStringUtf8();
-            sb.AppendLine("Content-Length: " + (bodyContent.Length + sb.Length + 2));
-            ns.WriteHttpResponse(sb.ToString(), bodyContent);
+            ns.WriteHttpResponse(sb, responseToUser.ToByteString());
         }
 
         /// <summary>
@@ -145,15 +143,15 @@ namespace PoGoEmulator
         /// </param>
         public static void WriteProtoResponse(this NetworkStream ns, HttpStatusCode statusCode, string errorMessage)
         {
-            ResponseEnvelope responseToUser = new ResponseEnvelope();
-            responseToUser.StatusCode = (int)statusCode;
-            responseToUser.Error = errorMessage;
-            StringBuilder sb = new StringBuilder();
+            var responseToUser = new ResponseEnvelope
+            {
+                StatusCode = (int)statusCode,
+                Error = errorMessage
+            };
+            var sb = new StringBuilder();
             sb.AppendLine($"HTTP/1.0 200 OK");//statuscode updateable in responseEnvelope
             Global.DefaultResponseHeader.ToList().ForEach(item => sb.AppendLine($"{item.Key}: {item.Value}"));
-            var bodyContent = responseToUser.ToByteString().ToStringUtf8();
-            sb.AppendLine("Content-Length: " + (bodyContent.Length + sb.Length + 2));
-            ns.WriteHttpResponse(sb.ToString(), bodyContent);
+            ns.WriteHttpResponse(sb, responseToUser.ToByteString());
         }
 
         /// <summary>
@@ -168,11 +166,13 @@ namespace PoGoEmulator
         /// <param name="body">
         /// such as ' <html> </html>' 
         /// </param>
-        public static void WriteHttpResponse(this NetworkStream ns, string header, string body)
+        public static void WriteHttpResponse(this NetworkStream ns, StringBuilder header, ByteString body)
         {
+            header.AppendLine("Content-Length: " + (body.Length + header.Length + 2));
+            header.AppendLine("");
             var writer = new StreamWriter(ns);
-            writer.WriteLine(header);
-            writer.Write(body);
+            writer.WriteLine(header.ToString());
+            writer.Write(body.ToByteArray());
             writer.Flush();
         }
 
