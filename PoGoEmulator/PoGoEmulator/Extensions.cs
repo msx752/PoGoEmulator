@@ -37,26 +37,26 @@ namespace PoGoEmulator
             try
             {
                 var handler = new MyHttpContext(checkUserAuthentication);
-                var parser = new HttpParser(handler);
+                var httpParser = new HttpParser(handler);
 
                 var buffer = new byte[Global.Cfg.MaxRequestContentLength];
 
-                int bytesRead = stream.Read(buffer, 0, buffer.Length);
+                var bytesRead = stream.Read(buffer, 0, buffer.Length);
                 Array.Resize(ref buffer, bytesRead);
-                int d = parser.Execute(new ArraySegment<byte>(buffer, 0, bytesRead));
+                var d = httpParser.Execute(new ArraySegment<byte>(buffer, 0, bytesRead));
                 if (bytesRead != d)
-                {
                     throw new Exception("data not matching");
-                }
-                // ensure you get the last callbacks.
-                parser.Execute(default(ArraySegment<byte>));
 
+                //// ensure you get the last callbacks.
+                //parser.Execute(default(ArraySegment<byte>));
+                if (handler.Request == null)
+                    Logger.Write(Encoding.Default.GetString(buffer), LogLevel.Response);
                 return handler;
             }
             catch (Exception e)
             {
                 Logger.Write(e);
-                return null;
+                throw;
             }
         }
 
@@ -162,10 +162,10 @@ namespace PoGoEmulator
             writer.Flush();
         }
 
-        public static ulong UnixTime(this DateTime dt, TimeSpan ts)
+        public static ulong ToUnixTime(this DateTime dt, TimeSpan ts)
         {
             var timeSpan = (dt.Add(ts).ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0));
-            return (ulong)timeSpan.TotalSeconds;
+            return (ulong)timeSpan.TotalSeconds * 1000;
         }
     }
 }

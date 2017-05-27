@@ -22,11 +22,11 @@ namespace PoGoEmulator.Models
         public Connection(TcpClient client)
         {
             _cts.Token.ThrowIfCancellationRequested();
-            this.Client = client;
+            Client = client;
             Tmrtick = new TimeoutTick(_cts.Token, TimeoutChecker, true);
-            Stream = this.Client.GetStream();
-            HttpContext = Stream.GetContext(_cts.Token, true);
+            Stream = Client.GetStream();
             Database = new PoGoDbContext();
+            HttpContext = Stream.GetContext(_cts.Token, true);
         }
 
         public TcpClient Client { get; private set; }
@@ -43,18 +43,16 @@ namespace PoGoEmulator.Models
             Dispose(state, e);
         }
 
-        public void Dispose()
-        {
-            Abort(RequestState.Completed);
-        }
-
-        public void Execute()
+        public void Answer()
         {
             try
             {
 #if DEBUG
                 Logger.Write($"{HttpContext.RequestUri} from {Client.Client.RemoteEndPoint}", LogLevel.Response);
 #endif
+                if (HttpContext.Request == null)
+                    throw new Exception("'HttpContext.Request' is EMPTY");
+
                 RequestHandler.Parse(this, _cts.Token);
             }
             catch (Exception e)
@@ -63,6 +61,11 @@ namespace PoGoEmulator.Models
                 Abort(RequestState.AbortedBySystem, e);
                 return;
             }
+            Abort(RequestState.Completed);
+        }
+
+        public void Dispose()
+        {
             Abort(RequestState.Completed);
         }
 
