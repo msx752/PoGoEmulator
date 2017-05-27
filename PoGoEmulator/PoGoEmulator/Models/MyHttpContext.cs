@@ -2,6 +2,7 @@
 using POGOProtos.Networking.Envelopes;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
 using PoGoEmulator.Requests;
@@ -15,7 +16,7 @@ namespace PoGoEmulator.Models
     {
         public MyHttpContext()
         {
-            ResponseProto = new ResponseEnvelope();
+            Response = new ResponseEnvelope();
         }
 
         public MyHttpContext(bool checkUserAuthentication) : this()
@@ -41,20 +42,53 @@ namespace PoGoEmulator.Models
         public int VersionMinor { get; set; } = -1;
 
         /// <summary>
-        /// request from user 
+        /// authenticated userEmail 
         /// </summary>
-        public RequestEnvelope RequestProto { get; set; }
+        public string UserEmail
+        {
+            get
+            {
+                if (!Request.AuthInfo.Token.Contents.Any())
+                    return null;
+                else
+                {
+                    JwtSecurityTokenHandler jwth = new JwtSecurityTokenHandler();
+                    var userJwtToken = jwth.ReadJwtToken(Request.AuthInfo.Token.Contents).Payload;
+                    object userEmail;
+                    userJwtToken.TryGetValue("email", out userEmail);
+                    return userEmail?.ToString().ToLower();
+                }
+            }
+        }
+
+        public bool IsAuthenticated
+        {
+            get
+            {
+                bool state;
+                var snc = Global.AuthenticatedUsers.TryGetValue(UserEmail, out state);
+                if (!snc)
+                    return false;
+                else
+                    return state;
+            }
+        }
 
         /// <summary>
-        /// response to user 
+        /// request from user 
         /// </summary>
-        public ResponseEnvelope ResponseProto { get; set; }
+        public RequestEnvelope Request { get; set; }
+
+        /// <summary>
+        /// configure it for response to user 
+        /// </summary>
+        public ResponseEnvelope Response { get; set; }
 
         public void OnBody(HttpParser parser, ArraySegment<byte> data)
         {
             //remove the pure data after the serializing but now it's ok.
             Body.Add(data.ToArray());
-            RequestProto = Body.First().Proton<RequestEnvelope>();
+            Request = Body.First().Proton<RequestEnvelope>();
         }
 
         public void OnFragment(HttpParser parser, string fragment)
@@ -125,11 +159,11 @@ namespace PoGoEmulator.Models
         /// </param>
         public void OnMessageEnd(HttpParser parser)
         {
-            if (RequestProto == null)
+            if (Request == null)
                 throw new Exception("request body is empty");
 
             if (CheckUserAuth)//for user requests (every request will check whether authed or not)
-                GoogleRequest.CheckUserValidToken(RequestProto.AuthInfo);
+                GoogleRequest.CheckUserValidToken(Request.AuthInfo);
 
             StatusCode = (int)HttpStatusCode.OK;//do not change this
         }

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using POGOProtos.Networking.Responses;
+using System.Collections.Concurrent;
 
 namespace PoGoEmulator
 {
@@ -34,5 +35,8 @@ namespace PoGoEmulator
             {"Accept-Encoding", "gzip"},
             {"Content-Type", "application/x-www-form-urlencoded" }
         };
+
+        public static ConcurrentDictionary<string, bool> AuthenticatedUsers { get; set; } =
+            new ConcurrentDictionary<string, bool>();//it must be re-configure in the future because user must be logout in somewhere (do i need store authTicket too ?)
     }
 }

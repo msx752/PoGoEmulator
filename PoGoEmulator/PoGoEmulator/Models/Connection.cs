@@ -77,7 +77,7 @@ namespace PoGoEmulator.Models
             if (state == RequestState.Completed)//response to user if request successful
             {
                 Database.SaveChanges();
-                Stream.WriteProtoResponse(HttpContext.ResponseProto);
+                Stream.WriteProtoResponse(HttpContext.Response);
             }
             else
             {

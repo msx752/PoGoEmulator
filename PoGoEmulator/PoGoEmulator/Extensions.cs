@@ -124,11 +124,10 @@ namespace PoGoEmulator
         public static void WriteProtoResponse(this NetworkStream ns, ResponseEnvelope responseToUser)//NOT TESTED FUNCTION
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"HTTP/1.0 200 OK");//statuscode updateable in responseEnvelope
+            sb.AppendLine($"HTTP/1.0 200 OK");
             Global.DefaultResponseHeader.ToList().ForEach(item => sb.AppendLine($"{item.Key}: {item.Value}"));
             var bodyContent = responseToUser.ToByteString().ToStringUtf8();
             sb.AppendLine("Content-Length: " + (bodyContent.Length + sb.Length + 2));
-            sb.AppendLine("");
             ns.WriteHttpResponse(sb.ToString(), bodyContent);
         }
 
@@ -154,7 +153,6 @@ namespace PoGoEmulator
             Global.DefaultResponseHeader.ToList().ForEach(item => sb.AppendLine($"{item.Key}: {item.Value}"));
             var bodyContent = responseToUser.ToByteString().ToStringUtf8();
             sb.AppendLine("Content-Length: " + (bodyContent.Length + sb.Length + 2));
-            sb.AppendLine("");
             ns.WriteHttpResponse(sb.ToString(), bodyContent);
         }
 
@@ -176,6 +174,26 @@ namespace PoGoEmulator
             writer.WriteLine(header);
             writer.WriteLine(body);
             writer.Flush();
+        }
+
+        public static void DoAuth(this MyHttpContext context)
+        {
+            context.Response.StatusCode = 53;
+            context.Response.RequestId = context.Request.RequestId;
+            context.Response.ApiUrl = "pgorelease.nianticlabs.com/custom";
+            context.Response.AuthTicket = new AuthTicket()
+            {
+                Start = ByteString.Empty,
+                ExpireTimestampMs = DateTime.Now.UnixTime(new TimeSpan(0, 30, 0)),
+                End = ByteString.Empty
+            };
+            Global.AuthenticatedUsers.AddOrUpdate(context.UserEmail, true, (k, v) => true);
+        }
+
+        public static ulong UnixTime(this DateTime dt, TimeSpan ts)
+        {
+            var timeSpan = (dt.Add(ts).ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0));
+            return (ulong)timeSpan.TotalSeconds;
         }
     }
 }
