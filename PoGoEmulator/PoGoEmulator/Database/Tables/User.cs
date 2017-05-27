@@ -29,7 +29,7 @@ namespace PoGoEmulator.Database.Tables
         public string items { get; set; } = "{}";
 
         public double latitude { get; set; }
-        public short level { get; set; }
+        public short level { get; set; } = 1;
         public double longitude { get; set; }
         public int pokecoins { get; set; }
 

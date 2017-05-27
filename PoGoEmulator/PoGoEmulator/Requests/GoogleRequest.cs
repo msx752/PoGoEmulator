@@ -26,7 +26,7 @@ namespace PoGoEmulator.Requests
             object userEmail;
             userJwtToken.TryGetValue("email", out userEmail);
             string cachedJwtToken;
-            var isExists = RequestHandler.AuthedUserTokens.TryGetValue(userEmail.ToString(), out cachedJwtToken);
+            var isExists = RequestHandler.AuthedUserTokens.TryGetValue(userEmail.ToString().ToLower(), out cachedJwtToken);
             if (isExists)
             {
                 if (cachedJwtToken == auth.Token.Contents)
@@ -46,7 +46,7 @@ namespace PoGoEmulator.Requests
             googleJwtToken.TryGetValue("email", out googleEmail);
             if (userEmail.ToString() == googleEmail.ToString())
             {
-                if (RequestHandler.AuthedUserTokens.AddOrUpdate(googleEmail.ToString(), userJwtToken,
+                if (RequestHandler.AuthedUserTokens.AddOrUpdate(googleEmail.ToString().ToLower(), userJwtToken,
                         (key, oldValue) => userJwtToken) != null)
                     return true;
             }

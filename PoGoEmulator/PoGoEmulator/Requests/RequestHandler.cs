@@ -70,7 +70,7 @@ namespace PoGoEmulator.Requests
             catch (Exception e)
             {
                 Logger.Write(e);
-                connectedClient.Abort(RequestState.AbortedBySystem);
+                connectedClient.Abort(RequestState.AbortedBySystem, e);
             }
         }
     }

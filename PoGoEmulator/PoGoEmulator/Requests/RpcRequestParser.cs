@@ -5,6 +5,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading;
 using Microsoft.IdentityModel.Tokens;
+using PoGoEmulator.Database.Tables;
+using PoGoEmulator.Logging;
+using PoGoEmulator.Responses;
 
 namespace PoGoEmulator.Requests
 {
@@ -14,9 +17,15 @@ namespace PoGoEmulator.Requests
         private static void RpcRequestParser(Connection connectedClient, bool isPlfe, CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();
-
-            var rqs = connectedClient.HttpContext;
-            // rqs.ResponseEnvelope //do something
+            var usr = connectedClient.GetPlayerByRequest();
+            if (isPlfe)
+            {
+                connectedClient.OnRequest();
+            }
+            else
+            {
+                throw new Exception("not implemented");
+            }
         }
     }
 }

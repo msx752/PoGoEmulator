@@ -202,6 +202,7 @@
       <HintPath>$(SolutionDir)\packages\System.Text.Encodings.Web.4.3.1\lib\netstandard1.0\System.Text.Encodings.Web.dll</HintPath>
     </Reference>
     <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -217,12 +218,14 @@
   <ItemGroup>
     <Compile Include="Database\PoGoDbContext.cs" />
     <Compile Include="Database\Tables\User.cs" />
+    <Compile Include="Encryption.cs" />
     <Compile Include="Enums\ClientState.cs" />
     <Compile Include="Migrations\20170524193132_UserTable.cs" />
     <Compile Include="Migrations\20170524193132_UserTable.designer.cs">
       <DependentUpon>20170524193132_UserTable.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\PoGoDbContextModelSnapshot.cs" />
+    <Compile Include="Models\CacheUserData.cs" />
     <Compile Include="Models\Connection.cs" />
     <Compile Include="Models\ConsoleLogger.cs" />
     <Compile Include="Enums\LogLevel.cs" />
@@ -242,6 +245,7 @@
     <Compile Include="Requests\RequestHandler.cs" />
     <Compile Include="Models\TcpServer.cs" />
     <Compile Include="Requests\RpcRequestParser.cs" />
+    <Compile Include="Responses\Response.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

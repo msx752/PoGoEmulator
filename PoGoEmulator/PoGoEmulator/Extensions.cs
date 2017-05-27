@@ -11,6 +11,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using PoGoEmulator.Requests;
 using POGOProtos.Networking.Envelopes;
@@ -111,30 +112,74 @@ namespace PoGoEmulator
             return (T)obj;
         }
 
+        /// <summary>
+        /// successful response send s 
+        /// </summary>
+        /// <param name="ns">
+        /// active connection 
+        /// </param>
+        /// <param name="responseToUser">
+        /// configured user data 
+        /// </param>
         public static void WriteProtoResponse(this NetworkStream ns, ResponseEnvelope responseToUser)//NOT TESTED FUNCTION
         {
-            var response = new HttpResponseMessage(HttpStatusCode.OK)
-            {
-                Content = new ByteArrayContent(responseToUser.ToByteString().ToByteArray())
-            };
-            Global.DefaultResponseHeader.ToList().ForEach(item => response.Headers.TryAddWithoutValidation(item.Key, item.Value));
-            var rtask = response.Content.ReadAsByteArrayAsync();
-            rtask.Wait();
-            ns.Write(rtask.Result, 0, rtask.Result.Length);
-            ns.Flush();
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"HTTP/1.0 200 OK");
+            Global.DefaultResponseHeader.ToList().ForEach(item => sb.AppendLine($"{item.Key}: {item.Value}"));
+            var bodyContent = responseToUser.ToByteString().ToStringUtf8();
+            sb.AppendLine("Content-Length: " + (bodyContent.Length + sb.Length + 2));
+            ns.WriteHttpResponse(sb.ToString(), bodyContent);
         }
 
-        public static void WriteBadRequest(this NetworkStream ns, HttpStatusCode code, string message)
+        /// <summary>
+        /// error sends 
+        /// </summary>
+        /// <param name="ns">
+        /// active connection 
+        /// </param>
+        /// <param name="statusCode">
+        /// selet only unsuccessful statusCodes 
+        /// </param>
+        /// <param name="errorMessage">
+        /// error message 
+        /// </param>
+        public static void WriteProtoResponse(this NetworkStream ns, HttpStatusCode statusCode, string errorMessage)
         {
-            HttpResponseMessage responseToUser = new HttpResponseMessage(code)
-            {
-                Content = new StringContent(message)
-            };
-            Global.DefaultResponseHeader.ToList().ForEach(item => responseToUser.Headers.TryAddWithoutValidation(item.Key, item.Value));
-            var rtask = responseToUser.Content.ReadAsByteArrayAsync();
-            rtask.Wait();
-            ns.Write(rtask.Result, 0, rtask.Result.Length);
-            ns.Flush();
+            ResponseEnvelope responseToUser = new ResponseEnvelope();
+            responseToUser.StatusCode = (int)statusCode;
+            responseToUser.Error = errorMessage;
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"HTTP/1.0 200 OK");//statuscode updateable in responseEnvelope
+            Global.DefaultResponseHeader.ToList().ForEach(item => sb.AppendLine($"{item.Key}: {item.Value}"));
+            var bodyContent = responseToUser.ToByteString().ToStringUtf8();
+            sb.AppendLine("Content-Length: " + (bodyContent.Length + sb.Length + 2));
+            ns.WriteHttpResponse(sb.ToString(), bodyContent);
+        }
+
+        /// <summary>
+        /// http sender 
+        /// </summary>
+        /// <param name="ns">
+        /// active connection 
+        /// </param>
+        /// <param name="header">
+        /// such as 'Content-Length','Encoding' 
+        /// </param>
+        /// <param name="body">
+        /// such as ' <html> </html>' 
+        /// </param>
+        public static void WriteHttpResponse(this NetworkStream ns, string header, string body)
+        {
+            var writer = new StreamWriter(ns);
+            writer.WriteLine(header);
+            writer.Write(body);
+            writer.Flush();
+        }
+
+        public static ulong UnixTime(this DateTime dt, TimeSpan ts)
+        {
+            var timeSpan = (dt.Add(ts).ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0));
+            return (ulong)timeSpan.TotalSeconds;
         }
     }
 }
