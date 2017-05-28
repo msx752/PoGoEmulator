@@ -5,6 +5,7 @@ using PoGoEmulator.Logging;
 using PoGoEmulator.Models;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -20,42 +21,31 @@ namespace PoGoEmulator
 {
     public static class Extensions
     {
-        /// <summary>
-        /// HTTPCONTEXT generator 
-        /// </summary>
-        /// <param name="stream">
-        /// </param>
-        /// <param name="ct">
-        /// </param>
-        /// <param name="checkUserAuthentication">
-        /// </param>
-        /// <returns>
-        /// </returns>
         public static MyHttpContext GetContext(this NetworkStream stream, CancellationToken ct, bool checkUserAuthentication)
         {
             try
             {
                 var handler = new MyHttpContext(checkUserAuthentication);
-                var parser = new HttpParser(handler);
-
+                var httpParser = new HttpParser(handler);
                 var buffer = new byte[Global.Cfg.MaxRequestContentLength];
 
-                int bytesRead = stream.Read(buffer, 0, buffer.Length);
+                var bytesRead = stream.Read(buffer, 0, buffer.Length);
                 Array.Resize(ref buffer, bytesRead);
-                int d = parser.Execute(new ArraySegment<byte>(buffer, 0, bytesRead));
+                var d = httpParser.Execute(new ArraySegment<byte>(buffer, 0, bytesRead));
                 if (bytesRead != d)
-                {
                     throw new Exception("data not matching");
-                }
-                // ensure you get the last callbacks.
-                parser.Execute(default(ArraySegment<byte>));
 
+                //// ensure you get the last callbacks.
+                //httpParser.Execute(default(ArraySegment<byte>));
+
+                //if (handler.Request == null)
+                //Logger.Write(Encoding.Default.GetString(buffer), LogLevel.Response);
                 return handler;
             }
             catch (Exception e)
             {
                 Logger.Write(e);
-                return null;
+                throw;
             }
         }
 
@@ -123,12 +113,7 @@ namespace PoGoEmulator
         /// </param>
         public static void WriteProtoResponse(this NetworkStream ns, ResponseEnvelope responseToUser)//NOT TESTED FUNCTION
         {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"HTTP/1.0 200 OK");
-            Global.DefaultResponseHeader.ToList().ForEach(item => sb.AppendLine($"{item.Key}: {item.Value}"));
-            var bodyContent = responseToUser.ToByteString().ToStringUtf8();
-            sb.AppendLine("Content-Length: " + (bodyContent.Length + sb.Length + 2));
-            ns.WriteHttpResponse(sb.ToString(), bodyContent);
+            ns.WriteHttpResponse(responseToUser.ToByteString());
         }
 
         /// <summary>
@@ -145,41 +130,38 @@ namespace PoGoEmulator
         /// </param>
         public static void WriteProtoResponse(this NetworkStream ns, HttpStatusCode statusCode, string errorMessage)
         {
-            ResponseEnvelope responseToUser = new ResponseEnvelope();
-            responseToUser.StatusCode = (int)statusCode;
-            responseToUser.Error = errorMessage;
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"HTTP/1.0 200 OK");//statuscode updateable in responseEnvelope
-            Global.DefaultResponseHeader.ToList().ForEach(item => sb.AppendLine($"{item.Key}: {item.Value}"));
-            var bodyContent = responseToUser.ToByteString().ToStringUtf8();
-            sb.AppendLine("Content-Length: " + (bodyContent.Length + sb.Length + 2));
-            ns.WriteHttpResponse(sb.ToString(), bodyContent);
+            var responseToUser = new ResponseEnvelope
+            {
+                StatusCode = (int)statusCode,
+                Error = errorMessage
+            };
+            ns.WriteHttpResponse(responseToUser.ToByteString());
         }
 
-        /// <summary>
-        /// http sender 
-        /// </summary>
-        /// <param name="ns">
-        /// active connection 
-        /// </param>
-        /// <param name="header">
-        /// such as 'Content-Length','Encoding' 
-        /// </param>
-        /// <param name="body">
-        /// such as ' <html> </html>' 
-        /// </param>
-        public static void WriteHttpResponse(this NetworkStream ns, string header, string body)
+        public static void WriteHttpResponse(this NetworkStream ns, ByteString body)
         {
+            var responseData = new StringBuilder();
+            responseData.AppendLine("HTTP/1.1 200 OK");
+            Global.DefaultResponseHeader.ToList().ForEach(item => responseData.AppendLine($"{item.Key}: {item.Value}"));
+            responseData.AppendLine($"Date: {string.Format(new CultureInfo("en-GB"), "{0:ddd, dd MMM yyyy hh:mm:ss}", DateTime.UtcNow)} GMT");
+            responseData.AppendLine($"Content-Length: {body.Length}");
+            responseData.AppendLine("");
+            if (body.Length > 0)
+                responseData.AppendLine(body.ToStringUtf8());
             var writer = new StreamWriter(ns);
-            writer.WriteLine(header);
-            writer.Write(body);
+            writer.Write(responseData.ToString());
             writer.Flush();
+#if DEBUG
+            Logger.Write("\r\n" + responseData.ToString(), LogLevel.Response);
+#endif
         }
 
-        public static ulong UnixTime(this DateTime dt, TimeSpan ts)
+        public static ulong ToUnixTime(this DateTime datetime, TimeSpan ts)
         {
-            var timeSpan = (dt.Add(ts).ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0));
-            return (ulong)timeSpan.TotalSeconds;
+            DateTime dt = DateTime.UtcNow;
+            dt = dt.Add(ts);
+            var timeSpan = (dt.ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0));
+            return (ulong)timeSpan.TotalSeconds * 1000;
         }
     }
 }

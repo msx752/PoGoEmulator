@@ -32,8 +32,8 @@ namespace PoGoEmulator
 
         public static Dictionary<string, string> DefaultResponseHeader { get; set; } = new Dictionary<string, string>()
         {
-            {"Accept-Encoding", "gzip"},
-            {"Content-Type", "application/x-www-form-urlencoded" }
+            {"Connection", "keep-alive"},
+            {"Server", "C#.NET"},
         };
 
         public static ConcurrentDictionary<string, CacheUserData> AuthenticatedUsers { get; set; } =
