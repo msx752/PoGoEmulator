@@ -31,7 +31,7 @@ namespace PoGoEmulator.Models
         public string QueryString { get; set; }
         public string RequestUri { get; set; }
         public bool ShouldKeepAlive { get; set; }
-        public int? StatusCode { get; set; }
+        public HttpStatusCode StatusCode { get; set; } = HttpStatusCode.BadRequest;
         public string StatusReason { get; set; }
         public int VersionMajor { get; set; } = -1;
         public int VersionMinor { get; set; } = -1;
@@ -159,7 +159,7 @@ namespace PoGoEmulator.Models
             if (CheckUserAuth)//for user requests (every request will check whether authed or not)
                 GoogleRequest.CheckUserValidToken(Request.AuthInfo);
 
-            StatusCode = (int)HttpStatusCode.OK;//do not change this
+            StatusCode = HttpStatusCode.OK;//do not change this
         }
     }
 }

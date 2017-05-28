@@ -63,12 +63,9 @@ namespace PoGoEmulator
         /// </typeparam>
         /// <param name="protobuf">
         /// </param>
-        /// <param name="checkAuthentication">
-        /// DISABLE IT FOR LOCAL SERIALIZING 
-        /// </param>
         /// <returns>
         /// </returns>
-        public static T Proton<T>(this Byte[] protobuf, bool checkAuthentication = true) where T : class
+        public static T Proton<T>(this Byte[] protobuf) where T : class
         {
             CodedInputStream codedStream = new CodedInputStream(protobuf);
             T serverResponse = Activator.CreateInstance(typeof(T)) as T;
@@ -102,32 +99,11 @@ namespace PoGoEmulator
             return (T)obj;
         }
 
-        /// <summary>
-        /// successful response send s 
-        /// </summary>
-        /// <param name="ns">
-        /// active connection 
-        /// </param>
-        /// <param name="responseToUser">
-        /// configured user data 
-        /// </param>
         public static void WriteProtoResponse(this NetworkStream ns, ResponseEnvelope responseToUser)//NOT TESTED FUNCTION
         {
             ns.WriteHttpResponse(responseToUser.ToByteString());
         }
 
-        /// <summary>
-        /// error sends 
-        /// </summary>
-        /// <param name="ns">
-        /// active connection 
-        /// </param>
-        /// <param name="statusCode">
-        /// selet only unsuccessful statusCodes 
-        /// </param>
-        /// <param name="errorMessage">
-        /// error message 
-        /// </param>
         public static void WriteProtoResponse(this NetworkStream ns, HttpStatusCode statusCode, string errorMessage)
         {
             var responseToUser = new ResponseEnvelope
@@ -148,12 +124,17 @@ namespace PoGoEmulator
             responseData.AppendLine("");
             if (body.Length > 0)
                 responseData.AppendLine(body.ToStringUtf8());
-            var writer = new StreamWriter(ns);
-            writer.Write(responseData.ToString());
-            writer.Flush();
+            ns.Write(responseData.ToString());
+        }
+
+        public static void Write(this NetworkStream ns, string data)
+        {
 #if DEBUG
-            Logger.Write("\r\n" + responseData.ToString(), LogLevel.Response);
+            Logger.Write("\r\n" + data, LogLevel.Response);
 #endif
+            Byte[] b = Encoding.Default.GetBytes(data);
+            ns.Write(b, 0, b.Length);
+            ns.Flush();
         }
 
         public static ulong ToUnixTime(this DateTime datetime, TimeSpan ts)
