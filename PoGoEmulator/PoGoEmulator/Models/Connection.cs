@@ -27,7 +27,6 @@ namespace PoGoEmulator.Models
             Stream = Client.GetStream();
             Database = new PoGoDbContext();
             HttpContext = Stream.GetContext(_cts.Token, true);
-            Answer();
         }
 
         public TcpClient Client { get; private set; }
@@ -52,13 +51,7 @@ namespace PoGoEmulator.Models
                 Logger.Write($"{HttpContext.RequestUri} from {Client.Client.RemoteEndPoint}", LogLevel.Response);
 #endif
                 if (HttpContext.Request == null)
-                {
                     throw new Exception("'HttpContext.Request' is EMPTY");
-                }
-                else
-                {
-                    Logger.Write(HttpContext.Request.ToString(), LogLevel.Request);
-                }
 
                 RequestHandler.Parse(this, _cts.Token);
             }
@@ -87,7 +80,6 @@ namespace PoGoEmulator.Models
             if (state == RequestState.Completed)//response to user if request successful
             {
                 Database.SaveChanges();
-                Logger.Write(HttpContext.Response.ToString(), LogLevel.Response);
                 Stream.WriteProtoResponse(HttpContext.Response);
             }
             else

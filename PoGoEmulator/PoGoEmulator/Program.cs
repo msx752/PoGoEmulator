@@ -15,17 +15,18 @@ namespace PoGoEmulator
 
         public static void Garbage()
         {
-#if DEBUG
-            Logger.Write("GarbageCollector is working", LogLevel.Debug);
-#endif
-            new Thread(new ThreadStart(() =>
+            #region Start GC Collector
+
+            Task.Run(() =>
             {
                 while (true)
                 {
                     GC.Collect();
                     Thread.Sleep((int)Global.Cfg.GarbageTime.TotalMilliseconds);
                 }
-            })).Start();
+            });
+
+            #endregion Start GC Collector
         }
 
         private static void Main(string[] args)
@@ -45,7 +46,11 @@ namespace PoGoEmulator
 
                 Global.GameMaster = new GameMaster();
 
-                machine = new PogoMachine();
+                Task run = Task.Factory.StartNew(() =>
+                {
+                    machine = new PogoMachine();
+                    machine.Run();
+                });
                 string line = "";
                 do
                 {

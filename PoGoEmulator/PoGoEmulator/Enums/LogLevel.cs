@@ -5,7 +5,6 @@
         None,
         Error,
         Response,
-        Request,
         Debug,
         Success,
         Help,

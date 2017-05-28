@@ -38,6 +38,7 @@ namespace PoGoEmulator
             {
                 var handler = new MyHttpContext(checkUserAuthentication);
                 var httpParser = new HttpParser(handler);
+
                 var buffer = new byte[Global.Cfg.MaxRequestContentLength];
 
                 var bytesRead = stream.Read(buffer, 0, buffer.Length);
@@ -47,10 +48,9 @@ namespace PoGoEmulator
                     throw new Exception("data not matching");
 
                 //// ensure you get the last callbacks.
-                //httpParser.Execute(default(ArraySegment<byte>));
-
-                //if (handler.Request == null)
-                //Logger.Write(Encoding.Default.GetString(buffer), LogLevel.Response);
+                //parser.Execute(default(ArraySegment<byte>));
+                if (handler.Request == null)
+                    Logger.Write(Encoding.Default.GetString(buffer), LogLevel.Response);
                 return handler;
             }
             catch (Exception e)

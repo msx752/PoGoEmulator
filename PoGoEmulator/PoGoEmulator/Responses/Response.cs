@@ -26,15 +26,15 @@ namespace PoGoEmulator.Responses
 
         public static void AuthenticatePlayer(this MyHttpContext context)
         {
-            context.Response.StatusCode = 53;
-            context.Response.RequestId = context.Request.RequestId;
-            context.Response.ApiUrl = "pgorelease.nianticlabs.com/custom";
-            context.Response.AuthTicket = new AuthTicket()
-            {
-                Start = ByteString.CopyFrom(),
-                ExpireTimestampMs = DateTime.Now.ToUnixTime(new TimeSpan(0, 30, 0)),
-                End = ByteString.CopyFrom()
-            };
+            //context.Response.StatusCode = 53;
+            //context.Response.RequestId = context.Request.RequestId;
+            //context.Response.ApiUrl = "pgorelease.nianticlabs.com/custom";
+            //context.Response.AuthTicket = new AuthTicket()
+            //{
+            //    Start = ByteString.Empty,
+            //    ExpireTimestampMs = DateTime.Now.UnixTime(new TimeSpan(0, 30, 0)),
+            //    End = ByteString.Empty
+            //};
             var oauth = context.CachedUserData;
             if (oauth != null)
             {
@@ -81,7 +81,7 @@ namespace PoGoEmulator.Responses
             if (!context.IsAuthenticated)
             {
                 context.AuthenticatePlayer();
-                return;//request ended
+                //return;//request ended
             }
 
             if (connectedClient.HttpContext.CachedUserData.HasSignature == false)//gets device information

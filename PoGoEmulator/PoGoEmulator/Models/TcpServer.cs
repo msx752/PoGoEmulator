@@ -22,32 +22,34 @@ namespace PoGoEmulator.Models
         /// </param>
         /// <param name="port">
         /// </param>
-        public void StartServer(IPAddress ip, int port)
+        public async void StartServer(IPAddress ip, int port)
         {
             try
             {
                 listening = true;
                 _listener = new TcpListener(ip, port);
                 _listener.Start(1000);
-                Logger.Write($"Listening {Global.Cfg.Ip}:{Global.Cfg.Port}", LogLevel.Success);
-                Logger.Write("Server is running...", LogLevel.Success);
 
                 _ct = _cts.Token;
                 while (listening)
                 {
-                    var client = _listener.AcceptTcpClient();
-                    new Thread(Queue).Start(new Connection(client));
+                    var client = await _listener.AcceptTcpClientAsync().ConfigureAwait(false);
+
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+                    await Task.Factory.StartNew(async () =>
+                    {
+                        new Connection(client).Answer();
+                    }, _ct);
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+
                     //quit shutdown//client.Client.Close();//client.Client.Dispose();
                 }
             }
             catch (Exception e)
             {
+                Logger.Write(e.Message, LogLevel.Error);
                 throw e;
             }
-        }
-
-        private void Queue(object state)
-        {
         }
 
         /// <summary>

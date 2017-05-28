@@ -43,7 +43,7 @@ namespace PoGoEmulator.Models
         {
             get
             {
-                if (!Request.AuthInfo.Token.Contents.Any())
+                if (Request == null || !Request.AuthInfo.Token.Contents.Any())
                     return null;
                 else
                 {
