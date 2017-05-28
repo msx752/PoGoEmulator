@@ -113,7 +113,7 @@ namespace PoGoEmulator
         /// </param>
         public static void WriteProtoResponse(this NetworkStream ns, ResponseEnvelope responseToUser)//NOT TESTED FUNCTION
         {
-            ns.WriteHttpResponse(responseToUser.ToByteString().ToArray());
+            ns.WriteHttpResponse(responseToUser.ToByteString());
         }
 
         /// <summary>
@@ -135,18 +135,19 @@ namespace PoGoEmulator
                 StatusCode = (int)statusCode,
                 Error = errorMessage
             };
-            ns.WriteHttpResponse(responseToUser.ToByteString().ToArray());
+            ns.WriteHttpResponse(responseToUser.ToByteString());
         }
 
-        public static void WriteHttpResponse(this NetworkStream ns, byte[] body)
+        public static void WriteHttpResponse(this NetworkStream ns, ByteString body)
         {
             var responseData = new StringBuilder();
             responseData.AppendLine("HTTP/1.1 200 OK");
             Global.DefaultResponseHeader.ToList().ForEach(item => responseData.AppendLine($"{item.Key}: {item.Value}"));
             responseData.AppendLine($"Date: {string.Format(new CultureInfo("en-GB"), "{0:ddd, dd MMM yyyy hh:mm:ss}", DateTime.UtcNow)} GMT");
-            responseData.AppendLine($"Content-Length: {responseData.Length + 2}");
+            responseData.AppendLine($"Content-Length: {body.Length}");
             responseData.AppendLine("");
-            responseData.AppendLine(Encoding.Default.GetString(body));
+            if (body.Length > 0)
+                responseData.AppendLine(body.ToStringUtf8());
             var writer = new StreamWriter(ns);
             writer.Write(responseData.ToString());
             writer.Flush();
@@ -155,9 +156,11 @@ namespace PoGoEmulator
 #endif
         }
 
-        public static ulong ToUnixTime(this DateTime dt, TimeSpan ts)
+        public static ulong ToUnixTime(this DateTime datetime, TimeSpan ts)
         {
-            var timeSpan = (dt.Add(ts).ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0));
+            DateTime dt = DateTime.UtcNow;
+            dt = dt.Add(ts);
+            var timeSpan = (dt.ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0));
             return (ulong)timeSpan.TotalSeconds * 1000;
         }
     }
