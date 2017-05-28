@@ -33,14 +33,20 @@ namespace PoGoEmulator.Models
                 _ct = _cts.Token;
                 while (listening)
                 {
+#if DEBUG
+                    Logger.Write("waiting connection..", LogLevel.Debug);
+#endif
                     var client = await _listener.AcceptTcpClientAsync().ConfigureAwait(false);
 
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-                    await Task.Factory.StartNew(async () =>
-                    {
-                        new Connection(client).Answer();
-                    }, _ct);
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+#pragma warning disable 4014
+                    Task.Factory.StartNew(() =>
+#pragma warning restore 4014
+                  {
+#if DEBUG
+                      Logger.Write($"connected from {client.Client.RemoteEndPoint}", LogLevel.Debug);
+#endif
+                      new Connection(client).Answer();
+                  }, _ct);
 
                     //quit shutdown//client.Client.Close();//client.Client.Dispose();
                 }

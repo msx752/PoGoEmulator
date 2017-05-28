@@ -47,9 +47,6 @@ namespace PoGoEmulator.Models
         {
             try
             {
-#if DEBUG
-                Logger.Write($"{HttpContext.RequestUri} from {Client.Client.RemoteEndPoint}", LogLevel.Response);
-#endif
                 if (HttpContext.Request == null)
                     throw new Exception("'HttpContext.Request' is EMPTY");
 
