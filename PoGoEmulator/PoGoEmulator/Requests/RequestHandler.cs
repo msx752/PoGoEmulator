@@ -69,8 +69,9 @@ namespace PoGoEmulator.Requests
             }
             catch (Exception e)
             {
-                Logger.Write(e);
-                connectedClient.Abort(RequestState.AbortedBySystem, e);
+                throw e;
+                //Logger.Write(e);
+                //connectedClient.Abort(RequestState.AbortedBySystem, e);
             }
         }
     }

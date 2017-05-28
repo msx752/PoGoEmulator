@@ -3,11 +3,17 @@ using PoGoEmulator.Enums;
 using PoGoEmulator.Logging;
 using PoGoEmulator.Models;
 using System;
+using System.Threading;
 
 namespace PoGoEmulator.Machine
 {
     public class PogoMachine
     {
+        public PogoMachine()
+        {
+            new Thread(Run).Start();
+        }
+
         #region fields
 
         /// <summary>
@@ -25,12 +31,10 @@ namespace PoGoEmulator.Machine
             {
                 Server = new TcpServer();
                 Server.StartServer(Global.Cfg.Ip, Global.Cfg.Port);
-                Logger.Write($"Listening {Global.Cfg.Ip}:{Global.Cfg.Port}");
-                Logger.Write("Server is running...");
             }
             catch (Exception e)
             {
-                Logger.Write(e);
+                throw e;
             }
         }
 
