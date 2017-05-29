@@ -4,6 +4,7 @@ using PoGoEmulator.Machine;
 using PoGoEmulator.Models;
 using System;
 using System.Globalization;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -33,6 +34,7 @@ namespace PoGoEmulator
         {
             try
             {
+                Console.OutputEncoding = Encoding.UTF8;
                 Thread.CurrentThread.CurrentCulture =
                     Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-GB");
 

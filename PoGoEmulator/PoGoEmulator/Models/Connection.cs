@@ -22,39 +22,34 @@ namespace PoGoEmulator.Models
         public Connection(TcpClient client)
         {
             _cts.Token.ThrowIfCancellationRequested();
-            this.Client = client;
-            Tmrtick = new TimeoutTick(_cts.Token, TimeoutChecker, true);
-            Stream = this.Client.GetStream();
-            HttpContext = Stream.GetContext(_cts.Token, true);
+            Client = client;
+            Tmrtick = new TimeoutTick(_cts.Token, this, true);
+            Stream = new HttpNetworkStream(Client.GetStream());
             Database = new PoGoDbContext();
         }
 
         public TcpClient Client { get; private set; }
         public PoGoDbContext Database { get; private set; }
         public MyHttpContext HttpContext { get; private set; }
-        public NetworkStream Stream { get; private set; }
+        public HttpNetworkStream Stream { get; private set; }
         public TimeoutTick Tmrtick { get; private set; }
 
         public void Abort(RequestState state, Exception e = null)
         {
             if (state == RequestState.Completed && e != null)
                 throw new Exception("impossible request", e);
-            //You can write out an abort message to the client if you like. (Stream.Write()....)
+
             Dispose(state, e);
         }
 
-        public void Dispose()
-        {
-            Abort(RequestState.Completed);
-        }
-
-        public void Execute()
+        public void Answer()
         {
             try
             {
-#if DEBUG
-                Logger.Write($"{HttpContext.RequestUri} from {Client.Client.RemoteEndPoint}", LogLevel.Response);
-#endif
+                HttpContext = Stream.GetContext(true);
+                if (HttpContext.Request == null)
+                    throw new Exception("'HttpContext.Request' is EMPTY");
+
                 RequestHandler.Parse(this, _cts.Token);
             }
             catch (Exception e)
@@ -63,6 +58,11 @@ namespace PoGoEmulator.Models
                 Abort(RequestState.AbortedBySystem, e);
                 return;
             }
+            Abort(RequestState.Completed);
+        }
+
+        public void Dispose()
+        {
             Abort(RequestState.Completed);
         }
 
@@ -84,32 +84,14 @@ namespace PoGoEmulator.Models
                 Stream.WriteProtoResponse(HttpStatusCode.BadRequest, $"session ended Reason: '{state}', Message:'{e?.Message}'");
             }
 
+            Stream.Close();
+            Client?.Close();
+            ((IDisposable)Client)?.Dispose();
             Database?.Dispose();
             Tmrtick?.Stop();
             Tmrtick = null;
-            _cts.Cancel(); //force stop
             HttpContext = null;
-
-            Client?.Close();
-
-            ((IDisposable)Client)?.Dispose();
-
-            Client = null;
-
-            Stream?.Close();
-            Stream?.Dispose();
-            Stream = null;
-        }
-
-        private void TimeoutChecker()
-        {
-            if (_cts.Token.IsCancellationRequested)
-                return;
-
-            if (Client.Client.Poll(1, SelectMode.SelectRead) && Client.Client.Available == 0)//detect the custom aborting
-                Abort(RequestState.CanceledByUser, new Exception("canceled"));
-            else if (Tmrtick.Stopwatch.ElapsedMilliseconds > Global.Cfg.RequestTimeout.TotalMilliseconds)
-                Abort(RequestState.Timeout, new Exception("connectionTimeout"));
+            _cts.Cancel(); //force stop
         }
     }
 }
