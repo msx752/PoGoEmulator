@@ -14,21 +14,16 @@ namespace PoGoEmulator.Models
     /// </summary>
     public class MyHttpContext : IHttpParserHandler
     {
-        public MyHttpContext()
-        {
-            Response = new ResponseEnvelope();
-        }
-
-        public MyHttpContext(bool checkUserAuthentication) : this()
+        public MyHttpContext(bool checkUserAuthentication)
         {
             CheckUserAuth = checkUserAuthentication;
         }
 
         public bool CheckUserAuth { get; private set; }
-        public List<byte[]> Body { get; set; }
+        public List<byte[]> Body { get; set; } = new List<byte[]>();
         public string Fragment { get; set; }
         public string HeaderName { get; set; }
-        public Dictionary<string, string> Headers { get; set; }
+        public Dictionary<string, string> Headers { get; set; } = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
         public string HeaderValue { get; set; }
         public string Method { get; set; }
         public bool OnHeadersEndCalled { get; set; }
@@ -36,19 +31,19 @@ namespace PoGoEmulator.Models
         public string QueryString { get; set; }
         public string RequestUri { get; set; }
         public bool ShouldKeepAlive { get; set; }
-        public int? StatusCode { get; set; }
+        public HttpStatusCode StatusCode { get; set; } = HttpStatusCode.BadRequest;
         public string StatusReason { get; set; }
         public int VersionMajor { get; set; } = -1;
         public int VersionMinor { get; set; } = -1;
 
-        /// <summary>
-        /// authenticated userEmail 
-        /// </summary>
+        // <summary>
+        // authenticated userEmail 
+        // </summary>
         public string UserEmail
         {
             get
             {
-                if (!Request.AuthInfo.Token.Contents.Any())
+                if (Request == null || !Request.AuthInfo.Token.Contents.Any())
                     return null;
                 else
                 {
@@ -83,12 +78,12 @@ namespace PoGoEmulator.Models
         /// <summary>
         /// request from user 
         /// </summary>
-        public RequestEnvelope Request { get; set; }
+        public RequestEnvelope Request { get; private set; }
 
         /// <summary>
         /// configure it for response to user 
         /// </summary>
-        public ResponseEnvelope Response { get; set; }
+        public ResponseEnvelope Response { get; private set; } = new ResponseEnvelope();
 
         public void OnBody(HttpParser parser, ArraySegment<byte> data)
         {
@@ -132,8 +127,6 @@ namespace PoGoEmulator.Models
 
         public void OnMessageBegin(HttpParser parser)
         {
-            Headers = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
-            Body = new List<byte[]>();
         }
 
         public void OnMethod(HttpParser parser, string method)
@@ -158,11 +151,6 @@ namespace PoGoEmulator.Models
             HeaderName = HeaderValue = null;
         }
 
-        /// <summary>
-        /// end trigger 
-        /// </summary>
-        /// <param name="parser">
-        /// </param>
         public void OnMessageEnd(HttpParser parser)
         {
             if (Request == null)
@@ -171,7 +159,7 @@ namespace PoGoEmulator.Models
             if (CheckUserAuth)//for user requests (every request will check whether authed or not)
                 GoogleRequest.CheckUserValidToken(Request.AuthInfo);
 
-            StatusCode = (int)HttpStatusCode.OK;//do not change this
+            StatusCode = HttpStatusCode.OK;//do not change this
         }
     }
 }
