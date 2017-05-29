@@ -21,7 +21,21 @@ namespace PoGoEmulator
 {
     public static class Extensions
     {
-        public static MyHttpContext GetContext(this HttpNetworkStream stream, CancellationToken ct, bool checkUserAuthentication)
+        /// <summary>
+        /// global caster 
+        /// </summary>
+        /// <typeparam name="T">
+        /// </typeparam>
+        /// <param name="obj">
+        /// </param>
+        /// <returns>
+        /// </returns>
+        public static T Cast<T>(this object obj)
+        {
+            return (T)obj;
+        }
+
+        public static MyHttpContext GetContext(this HttpNetworkStream stream, bool checkUserAuthentication)
         {
             try
             {
@@ -36,8 +50,7 @@ namespace PoGoEmulator
             }
             catch (Exception e)
             {
-                Logger.Write(e);
-                throw;
+                throw e;
             }
         }
 
@@ -70,18 +83,32 @@ namespace PoGoEmulator
             return array;
         }
 
-        /// <summary>
-        /// global caster 
-        /// </summary>
-        /// <typeparam name="T">
-        /// </typeparam>
-        /// <param name="obj">
-        /// </param>
-        /// <returns>
-        /// </returns>
-        public static T Cast<T>(this object obj)
+        public static ulong ToUnixTime(this DateTime datetime, TimeSpan ts)
         {
-            return (T)obj;
+            DateTime dt = DateTime.UtcNow;
+            dt = dt.Add(ts);
+            var timeSpan = (dt.ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0));
+            return (ulong)timeSpan.TotalSeconds * 1000;
+        }
+
+        public static void WriteHttpResponse(this HttpNetworkStream ns, ByteString responseBody)
+        {
+            var responseString =
+                "HTTP/1.1 200 OK\r\n" +
+                $"Content-Length: {responseBody.Length}\r\n" +
+                "Connection: keep-alive" +
+                "\r\n";
+
+            //var responseHeader = new StringBuilder();
+            //responseHeader.AppendLine("HTTP/1.1 200 OK");
+            //Global.DefaultResponseHeader.ToList().ForEach(item => responseHeader.AppendLine($"{item.Key}: {item.Value}"));
+            //responseHeader.AppendLine($"Date: {string.Format(new CultureInfo("en-GB"), "{0:ddd, dd MMM yyyy hh:mm:ss}", DateTime.UtcNow)} GMT");
+            //responseHeader.AppendLine($"Content-Length: {responseBody.Length}");
+            //responseHeader.AppendLine("");
+
+            ns.Write(responseString);
+            ns.Write(responseBody.ToArray());
+            ns.SendHttpResponse();
         }
 
         public static void WriteProtoResponse(this HttpNetworkStream ns, ResponseEnvelope responseToUser)
@@ -97,28 +124,6 @@ namespace PoGoEmulator
                 Error = errorMessage
             };
             ns.WriteHttpResponse(responseToUser.ToByteString());
-        }
-
-        public static void WriteHttpResponse(this HttpNetworkStream ns, ByteString responseBody)
-        {
-            var responseHeader = new StringBuilder();
-            responseHeader.AppendLine("HTTP/1.1 200 OK");
-            Global.DefaultResponseHeader.ToList().ForEach(item => responseHeader.AppendLine($"{item.Key}: {item.Value}"));
-            responseHeader.AppendLine($"Date: {string.Format(new CultureInfo("en-GB"), "{0:ddd, dd MMM yyyy hh:mm:ss}", DateTime.UtcNow)} GMT");
-            responseHeader.AppendLine($"Content-Length: {responseBody.Length}");
-            responseHeader.AppendLine("");
-
-            ns.Write(responseHeader);
-            ns.Write(responseBody.ToArray());
-            ns.Flush();
-        }
-
-        public static ulong ToUnixTime(this DateTime datetime, TimeSpan ts)
-        {
-            DateTime dt = DateTime.UtcNow;
-            dt = dt.Add(ts);
-            var timeSpan = (dt.ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0));
-            return (ulong)timeSpan.TotalSeconds * 1000;
         }
     }
 }

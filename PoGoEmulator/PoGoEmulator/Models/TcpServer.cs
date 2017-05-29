@@ -47,8 +47,6 @@ namespace PoGoEmulator.Models
 #endif
                       new Connection(client).Answer();
                   }, _ct);
-
-                    //quit shutdown//client.Client.Close();//client.Client.Dispose();
                 }
             }
             catch (Exception e)

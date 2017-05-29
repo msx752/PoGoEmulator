@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -10,11 +11,6 @@ namespace PoGoEmulator.Models
     public class HttpNetworkStream : IDisposable
     {
         private byte[] _sendBuffer = new byte[0];
-        public byte[] SendBuffer { get { return _sendBuffer; } }
-        public int Position { get; private set; }
-
-        public Encoding Encode { get; } = Encoding.UTF8;
-        private NetworkStream NStream { get; }
 
         /// <summary>
         /// </summary>
@@ -38,6 +34,32 @@ namespace PoGoEmulator.Models
         public HttpNetworkStream(NetworkStream ns, Encoding enc = null) : this(enc)
         {
             NStream = ns;
+            Sw = new StreamWriter(NStream);
+        }
+
+        public Encoding Encode { get; } = Encoding.UTF8;
+        public int Position { get; private set; }
+        public byte[] SendBuffer { get { return _sendBuffer; } }
+        private NetworkStream NStream { get; }
+        private StreamWriter Sw { get; }
+
+        public void Close()
+        {
+            Dispose();
+        }
+
+        public byte[] CopyBuffer(int startIndex)
+        {
+            int lenght = Math.Abs(startIndex - Position);
+            byte[] selected = new byte[lenght];
+            Array.Copy(_sendBuffer, startIndex, selected, 0, selected.Length);
+            return selected;
+        }
+
+        public void Dispose()
+        {
+            NStream.Close();
+            _sendBuffer = null;
         }
 
         public int Read(byte[] buffer, int offset, int size)
@@ -52,6 +74,13 @@ namespace PoGoEmulator.Models
             int len = Read(b, 0, b.Length);
             Array.Resize(ref b, len);
             return b;
+        }
+
+        public void SendHttpResponse()
+        {
+            if (Position == 0) return;
+            NStream.Write(SendBuffer, 0, Position);
+            NStream.Close();
         }
 
         public void Write(StringBuilder sb)
@@ -70,31 +99,7 @@ namespace PoGoEmulator.Models
             if (byteData.Length == 0) return;
             Array.Resize(ref _sendBuffer, _sendBuffer.Length + byteData.Length);
             Array.Copy(byteData, 0, _sendBuffer, Position, byteData.Length);
-            Position = _sendBuffer.Length;
-        }
-
-        public void Flush()
-        {
-            NStream?.Write(SendBuffer, 0, Position);
-            NStream?.Flush();
-        }
-
-        public byte[] SelectBuffer(int startIndex)
-        {
-            int lenght = Math.Abs(startIndex - Position);
-            byte[] selected = new byte[lenght];
-            Array.Copy(_sendBuffer, startIndex, selected, 0, selected.Length);
-            return selected;
-        }
-
-        public void Dispose()
-        {
-            _sendBuffer = null;
-        }
-
-        public void Close()
-        {
-            NStream.Close();
+            Position += byteData.Length;
         }
     }
 }

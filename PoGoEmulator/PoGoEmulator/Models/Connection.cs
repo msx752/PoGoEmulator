@@ -23,10 +23,9 @@ namespace PoGoEmulator.Models
         {
             _cts.Token.ThrowIfCancellationRequested();
             Client = client;
-            Tmrtick = new TimeoutTick(_cts.Token, TimeoutChecker, true);
+            Tmrtick = new TimeoutTick(_cts.Token, this, true);
             Stream = new HttpNetworkStream(Client.GetStream());
             Database = new PoGoDbContext();
-            HttpContext = Stream.GetContext(_cts.Token, true);
         }
 
         public TcpClient Client { get; private set; }
@@ -39,7 +38,7 @@ namespace PoGoEmulator.Models
         {
             if (state == RequestState.Completed && e != null)
                 throw new Exception("impossible request", e);
-            //You can write out an abort message to the client if you like. (Stream.Write()....)
+
             Dispose(state, e);
         }
 
@@ -47,6 +46,7 @@ namespace PoGoEmulator.Models
         {
             try
             {
+                HttpContext = Stream.GetContext(true);
                 if (HttpContext.Request == null)
                     throw new Exception("'HttpContext.Request' is EMPTY");
 
@@ -84,32 +84,14 @@ namespace PoGoEmulator.Models
                 Stream.WriteProtoResponse(HttpStatusCode.BadRequest, $"session ended Reason: '{state}', Message:'{e?.Message}'");
             }
 
+            Stream.Close();
+            Client?.Close();
+            ((IDisposable)Client)?.Dispose();
             Database?.Dispose();
             Tmrtick?.Stop();
             Tmrtick = null;
-            _cts.Cancel(); //force stop
             HttpContext = null;
-
-            //Client?.Close();
-
-            //((IDisposable)Client)?.Dispose();
-
-            //Client = null;
-
-            //Stream?.Close();
-            //Stream?.Dispose();
-            //Stream = null;
-        }
-
-        private void TimeoutChecker()
-        {
-            if (_cts.Token.IsCancellationRequested)
-                return;
-
-            if (Client.Client.Poll(1, SelectMode.SelectRead) && Client.Client.Available == 0)//detect the custom aborting
-                Abort(RequestState.CanceledByUser, new Exception("canceled"));
-            else if (Tmrtick.Stopwatch.ElapsedMilliseconds > Global.Cfg.RequestTimeout.TotalMilliseconds)
-                Abort(RequestState.Timeout, new Exception("connectionTimeout"));
+            _cts.Cancel(); //force stop
         }
     }
 }
