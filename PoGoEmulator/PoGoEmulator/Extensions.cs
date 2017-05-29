@@ -21,25 +21,17 @@ namespace PoGoEmulator
 {
     public static class Extensions
     {
-        public static MyHttpContext GetContext(this NetworkStream stream, CancellationToken ct, bool checkUserAuthentication)
+        public static MyHttpContext GetContext(this HttpNetworkStream stream, CancellationToken ct, bool checkUserAuthentication)
         {
             try
             {
                 var handler = new MyHttpContext(checkUserAuthentication);
                 var httpParser = new HttpParser(handler);
-                var buffer = new byte[Global.Cfg.MaxRequestContentLength];
-
-                var bytesRead = stream.Read(buffer, 0, buffer.Length);
-                Array.Resize(ref buffer, bytesRead);
-                var d = httpParser.Execute(new ArraySegment<byte>(buffer, 0, bytesRead));
-                if (bytesRead != d)
+                var buffer = stream.ReadBuffer(Global.Cfg.MaxRequestContentLength);
+                var d = httpParser.Execute(new ArraySegment<byte>(buffer, 0, buffer.Length));
+                if (buffer.Length != d)
                     throw new Exception("data not matching");
 
-                //// ensure you get the last callbacks.
-                //httpParser.Execute(default(ArraySegment<byte>));
-
-                //if (handler.Request == null)
-                //Logger.Write(Encoding.Default.GetString(buffer), LogLevel.Response);
                 return handler;
             }
             catch (Exception e)
@@ -48,13 +40,6 @@ namespace PoGoEmulator
                 throw;
             }
         }
-
-        //not necessary
-        //public static T Proton<T>(this Connection cnnUser) where T : class
-        //{
-        //    var serverResponse = Proton<T>(cnnUser.HttpContext.body.First());
-        //    return serverResponse;
-        //}
 
         /// <summary>
         /// protobuf file deserialise on pure byte[] file , (becareful object must be a type of proto )
@@ -99,12 +84,12 @@ namespace PoGoEmulator
             return (T)obj;
         }
 
-        public static void WriteProtoResponse(this NetworkStream ns, ResponseEnvelope responseToUser)//NOT TESTED FUNCTION
+        public static void WriteProtoResponse(this HttpNetworkStream ns, ResponseEnvelope responseToUser)
         {
             ns.WriteHttpResponse(responseToUser.ToByteString());
         }
 
-        public static void WriteProtoResponse(this NetworkStream ns, HttpStatusCode statusCode, string errorMessage)
+        public static void WriteProtoResponse(this HttpNetworkStream ns, HttpStatusCode statusCode, string errorMessage)
         {
             var responseToUser = new ResponseEnvelope
             {
@@ -114,26 +99,17 @@ namespace PoGoEmulator
             ns.WriteHttpResponse(responseToUser.ToByteString());
         }
 
-        public static void WriteHttpResponse(this NetworkStream ns, ByteString body)
+        public static void WriteHttpResponse(this HttpNetworkStream ns, ByteString responseBody)
         {
-            var responseData = new StringBuilder();
-            responseData.AppendLine("HTTP/1.1 200 OK");
-            Global.DefaultResponseHeader.ToList().ForEach(item => responseData.AppendLine($"{item.Key}: {item.Value}"));
-            responseData.AppendLine($"Date: {string.Format(new CultureInfo("en-GB"), "{0:ddd, dd MMM yyyy hh:mm:ss}", DateTime.UtcNow)} GMT");
-            responseData.AppendLine($"Content-Length: {body.Length}");
-            responseData.AppendLine("");
-            if (body.Length > 0)
-                responseData.AppendLine(body.ToStringUtf8());
-            ns.Write(responseData.ToString());
-        }
+            var responseHeader = new StringBuilder();
+            responseHeader.AppendLine("HTTP/1.1 200 OK");
+            Global.DefaultResponseHeader.ToList().ForEach(item => responseHeader.AppendLine($"{item.Key}: {item.Value}"));
+            responseHeader.AppendLine($"Date: {string.Format(new CultureInfo("en-GB"), "{0:ddd, dd MMM yyyy hh:mm:ss}", DateTime.UtcNow)} GMT");
+            responseHeader.AppendLine($"Content-Length: {responseBody.Length}");
+            responseHeader.AppendLine("");
 
-        public static void Write(this NetworkStream ns, string data)
-        {
-#if DEBUG
-            Logger.Write("\r\n" + data, LogLevel.Response);
-#endif
-            Byte[] b = Encoding.Default.GetBytes(data);
-            ns.Write(b, 0, b.Length);
+            ns.Write(responseHeader);
+            ns.Write(responseBody.ToArray());
             ns.Flush();
         }
 

@@ -24,7 +24,7 @@ namespace PoGoEmulator.Models
             _cts.Token.ThrowIfCancellationRequested();
             Client = client;
             Tmrtick = new TimeoutTick(_cts.Token, TimeoutChecker, true);
-            Stream = Client.GetStream();
+            Stream = new HttpNetworkStream(Client.GetStream());
             Database = new PoGoDbContext();
             HttpContext = Stream.GetContext(_cts.Token, true);
         }
@@ -32,7 +32,7 @@ namespace PoGoEmulator.Models
         public TcpClient Client { get; private set; }
         public PoGoDbContext Database { get; private set; }
         public MyHttpContext HttpContext { get; private set; }
-        public NetworkStream Stream { get; private set; }
+        public HttpNetworkStream Stream { get; private set; }
         public TimeoutTick Tmrtick { get; private set; }
 
         public void Abort(RequestState state, Exception e = null)
@@ -90,15 +90,15 @@ namespace PoGoEmulator.Models
             _cts.Cancel(); //force stop
             HttpContext = null;
 
-            Client?.Close();
+            //Client?.Close();
 
-            ((IDisposable)Client)?.Dispose();
+            //((IDisposable)Client)?.Dispose();
 
-            Client = null;
+            //Client = null;
 
-            Stream?.Close();
-            Stream?.Dispose();
-            Stream = null;
+            //Stream?.Close();
+            //Stream?.Dispose();
+            //Stream = null;
         }
 
         private void TimeoutChecker()
