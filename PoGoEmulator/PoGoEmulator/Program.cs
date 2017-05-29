@@ -1,12 +1,15 @@
 ﻿using PoGoEmulator.Enums;
+using PoGoEmulator.Forms;
 using PoGoEmulator.Logging;
 using PoGoEmulator.Machine;
 using PoGoEmulator.Models;
+using PoGoEmulator.Win32;
 using System;
 using System.Globalization;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace PoGoEmulator
 {
@@ -32,6 +35,10 @@ namespace PoGoEmulator
 
         private static void Main(string[] args)
         {
+            Application.EnableVisualStyles();
+            ConsoleHelper.AllocConsole();
+            Application.Run(new MainForm(args));
+
             try
             {
                 Console.OutputEncoding = Encoding.UTF8;

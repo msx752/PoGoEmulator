@@ -57,35 +57,21 @@ namespace PoGoEmulator
             OnLogWrite?.Invoke(this, new LogWriteEventArgs { Message = finalMessage, Level = level, Color = color });
 
             // ReSharper disable once SwitchStatementMissingSomeCases
-            Color _color = new Color();
+            Color _color = new Color(); 
+            //TODO: review
+            
             Dictionary<LogLevel, Color> colors = new Dictionary<LogLevel, Color>()
             {
-                //TODO: review
-                /*
                 { LogLevel.Error, Color.Red },
-                { LogLevel.Caught, Color.Green },
-                { LogLevel.Info, Color.DarkCyan } ,
-                { LogLevel.Warning, Color.FromArgb(255, 128, 128, 0) } ,
-                { LogLevel.Pokestop, Color.Cyan }  ,
-                { LogLevel.Farming, Color.Magenta },
-                { LogLevel.Sniper, Color.White },
-                { LogLevel.Recycling, Color.DarkMagenta },
-                { LogLevel.Flee, Color.FromArgb(255, 128, 128, 0) },
-                { LogLevel.Transfer, Color.DarkGreen },
-                { LogLevel.Evolve, Color.DarkGreen },
-                { LogLevel.Berry, Color.FromArgb(255, 128, 128, 0) },
-                { LogLevel.Egg, Color.FromArgb(255, 128, 128, 0) },
-                { LogLevel.Debug, Color.Gray },
-                { LogLevel.Update, Color.White },
-                { LogLevel.New, Color.Green },
-                { LogLevel.SoftBan, Color.Red },
-                { LogLevel.LevelUp, Color.Magenta },
-                { LogLevel.Gym, Color.Magenta },
-                { LogLevel.Service, Color.White }
-                */
+                { LogLevel.Response, Color.FromArgb(255, 128, 128, 0) },
+                { LogLevel.Info, Color.White } ,
+                { LogLevel.Debug, Color.Gray } ,
+                { LogLevel.Help, Color.Gray }  ,
+                { LogLevel.Success, Color.Green },
             };
 
             _color = colors[level];
+            
 
             if (string.IsNullOrEmpty(color.ToString()) || color.ToString() != "Black")
             {

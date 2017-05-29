@@ -34,10 +34,15 @@ namespace PoGoEmulator.Forms
     public partial class MainForm : System.Windows.Forms.Form
     {
         public static MainForm Instance;
+        public static SynchronizationContext SynchronizationContext;
+        private string[] args;
 
         public MainForm(string[] _args)
         {
             InitializeComponent();
+            SynchronizationContext = SynchronizationContext.Current;
+            Instance = this;
+            args = _args;
         }
         private static DateTime LastClearLog = DateTime.Now;
 
@@ -61,6 +66,11 @@ namespace PoGoEmulator.Forms
             Instance.logTextBox.SelectionColor = color;
             Instance.logTextBox.AppendText(text + $"\r\n");
             Instance.logTextBox.ScrollToCaret();
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            ConsoleHelper.HideConsoleWindow();
         }
     }
 }
