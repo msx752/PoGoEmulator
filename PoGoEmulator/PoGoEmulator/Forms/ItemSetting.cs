@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 using POGOProtos.Inventory.Item;
 
-namespace RocketBot2
+namespace PoGoEmulator
 {
     public partial class ItemSetting : UserControl {
 

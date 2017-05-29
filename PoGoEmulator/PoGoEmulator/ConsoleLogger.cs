@@ -1,22 +1,22 @@
 #region using directives
 
 using System;
-using RocketBot2.Forms;
+using PoGoEmulator.Forms;
 using System.Text;
 using System.Collections.Generic;
 using PoGoEmulator.Enums;
 using PoGoEmulator.Logging;
 using System.Drawing;
+using PoGoEmulator.Interfaces;
 
 #endregion
 
-namespace RocketBot2
+namespace PoGoEmulator
 {
     /// <summary>
     ///     The ConsoleLogger is a simple logger which writes all logs to the Console.
     /// </summary>
-    internal class ConsoleLogger 
-    {
+    internal class ConsoleLogger :ILogger    {
         // Log write event definition.
         private delegate void LogWriteHandler(object sender, LogWriteEventArgs e);
 

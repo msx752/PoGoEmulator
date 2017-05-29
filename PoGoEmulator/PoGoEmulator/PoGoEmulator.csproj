@@ -316,8 +316,6 @@
     <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings" />
-    <None Include="Resources\PokemonGO-Assets\.git" />
-    <None Include="Resources\PokemonGO-Assets\README.md" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="$(SolutionDir)\POGOProtos\POGOProtos.csproj">

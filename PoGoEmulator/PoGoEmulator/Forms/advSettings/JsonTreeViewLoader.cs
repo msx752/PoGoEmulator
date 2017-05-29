@@ -1,7 +1,7 @@
 ﻿using System.Windows.Forms;
 using Newtonsoft.Json.Linq;
 
-namespace RocketBot2.Forms.advSettings
+namespace PoGoEmulator.Forms.advSettings
 {
 	public static class JsonTreeViewLoader
 	{

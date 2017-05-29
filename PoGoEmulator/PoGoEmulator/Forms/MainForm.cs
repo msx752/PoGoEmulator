@@ -7,9 +7,9 @@ using POGOProtos.Data;
 using POGOProtos.Inventory.Item;
 using POGOProtos.Map.Fort;
 using POGOProtos.Map.Pokemon;
-using RocketBot2.CommandLineUtility;
-using RocketBot2.Helpers;
-using RocketBot2.Win32;
+using PoGoEmulator.CommandLineUtility;
+using PoGoEmulator.Helpers;
+using PoGoEmulator.Win32;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -29,7 +29,7 @@ using System.Windows.Forms;
 #endregion
 
 
-namespace RocketBot2.Forms
+namespace PoGoEmulator.Forms
 {
     public partial class MainForm : System.Windows.Forms.Form
     {

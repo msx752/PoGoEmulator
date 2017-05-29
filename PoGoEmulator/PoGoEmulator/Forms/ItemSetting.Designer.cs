@@ -1,4 +1,4 @@
-﻿namespace RocketBot2 {
+﻿namespace PoGoEmulator {
     partial class ItemSetting {
         /// <summary> 
         /// Required designer variable.

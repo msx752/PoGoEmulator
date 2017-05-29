@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Windows.Forms;
 using POGOProtos.Inventory.Item;
-using RocketBot2.Helpers;
+using PoGoEmulator.Helpers;
 using System.Globalization;
 
-namespace RocketBot2.Forms
+namespace PoGoEmulator.Forms
 {
     public partial class ItemBox : UserControl
     {

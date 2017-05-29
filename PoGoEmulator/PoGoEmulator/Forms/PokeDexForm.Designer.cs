@@ -1,4 +1,4 @@
-﻿namespace RocketBot2.Forms
+﻿namespace PoGoEmulator.Forms
 {
     partial class PokeDexForm
     {

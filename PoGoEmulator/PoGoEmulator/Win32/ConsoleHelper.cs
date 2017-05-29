@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace RocketBot2.Win32
+namespace PoGoEmulator.Win32
 {
     internal static class NativeMethods
     {

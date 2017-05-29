@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 #endregion
 
-namespace RocketBot2.CommandLineUtility
+namespace PoGoEmulator.CommandLineUtility
 {
     /// <summary>
     ///     Arguments class

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace RocketBot2.Forms
+namespace PoGoEmulator.Forms
 {
     partial class MainForm : IDisposable
     {
