@@ -1,0 +1,3 @@
+[submodule "PoGoEmulator/PoGoEmulator/Resources/PokemonGO-Assets"]
+	path = PoGoEmulator/PoGoEmulator/Resources/PokemonGO-Assets
+	url = ../../Necrobot-Private/PokemonGO-Assets.git
