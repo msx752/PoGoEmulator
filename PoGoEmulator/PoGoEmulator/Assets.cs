@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using PoGoEmulator.Models;
 using POGOProtos.Networking.Responses;
 
 namespace PoGoEmulator

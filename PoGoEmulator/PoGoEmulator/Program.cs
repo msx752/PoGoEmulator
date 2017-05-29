@@ -1,12 +1,15 @@
 ﻿using PoGoEmulator.Enums;
+using PoGoEmulator.Forms;
 using PoGoEmulator.Logging;
 using PoGoEmulator.Machine;
 using PoGoEmulator.Models;
+using PoGoEmulator.Win32;
 using System;
 using System.Globalization;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace PoGoEmulator
 {
@@ -32,11 +35,16 @@ namespace PoGoEmulator
 
         private static void Main(string[] args)
         {
+            Application.EnableVisualStyles();
+            //for app winexe 
+            //ConsoleHelper.AllocConsole();
+            Application.Run(new MainForm(args));
+
             try
             {
                 Console.OutputEncoding = Encoding.UTF8;
                 Thread.CurrentThread.CurrentCulture =
-                    Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-GB");
+                Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-GB");
 
                 Logger.AddLogger(new ConsoleLogger(LogLevel.Info));
 
@@ -62,6 +70,9 @@ namespace PoGoEmulator
                         case "help":
                             Logger.Write(" - help menu", LogLevel.Help);
                             break;
+                        /*case "gui":
+                            StartGui();
+                            break;*/
                     }
                 } while (line != "exit");
             }

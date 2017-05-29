@@ -1,7 +1,6 @@
 ﻿using PoGoEmulator.Models;
 using System;
 using System.Collections.Generic;
-using System.Net;
 using POGOProtos.Networking.Responses;
 using System.Collections.Concurrent;
 
