@@ -5,7 +5,7 @@ using System.IO;
 
 #endregion
 
-namespace RocketBot2.Resources
+namespace PoGoEmulator.Resources
 {
     internal class ProgressBar
     {

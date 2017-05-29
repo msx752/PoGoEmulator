@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace RocketBot2.Resources {
+namespace PoGoEmulator.Resources {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace RocketBot2.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RocketBot2.Resources.PokemonDB", typeof(PokemonDB).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("PoGoEmulator.Resources.PokemonDB", typeof(PokemonDB).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
