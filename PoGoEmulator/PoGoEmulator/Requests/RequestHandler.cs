@@ -1,10 +1,8 @@
 ﻿using PoGoEmulator.Enums;
 using PoGoEmulator.Logging;
 using PoGoEmulator.Models;
-using POGOProtos.Networking.Envelopes;
 using System;
 using System.Collections.Concurrent;
-using System.Linq;
 using System.Threading;
 
 namespace PoGoEmulator.Requests

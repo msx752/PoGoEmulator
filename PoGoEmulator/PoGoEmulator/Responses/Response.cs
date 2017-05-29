@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Google.Protobuf;
 using Google.Protobuf.Collections;
 using PoGoEmulator.Database.Tables;
@@ -12,7 +10,6 @@ using PoGoEmulator.Models;
 using POGOProtos.Enums;
 using POGOProtos.Networking.Envelopes;
 using POGOProtos.Networking.Requests;
-using POGOProtos.Networking.Requests.Messages;
 using POGOProtos.Networking.Responses;
 
 namespace PoGoEmulator.Responses

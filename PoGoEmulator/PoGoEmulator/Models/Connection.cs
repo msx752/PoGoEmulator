@@ -1,16 +1,11 @@
 ﻿using System;
-using System.IO;
 using System.Net;
-using System.Net.Http;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
-using Google.Protobuf;
 using PoGoEmulator.Database;
 using PoGoEmulator.Enums;
 using PoGoEmulator.Logging;
 using PoGoEmulator.Requests;
-using POGOProtos.Networking.Envelopes;
 
 namespace PoGoEmulator.Models
 {

@@ -62,6 +62,9 @@ namespace PoGoEmulator
                         case "help":
                             Logger.Write(" - help menu", LogLevel.Help);
                             break;
+                        /*case "gui":
+                            StartGui();
+                            break;*/
                     }
                 } while (line != "exit");
             }

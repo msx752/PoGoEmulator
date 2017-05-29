@@ -1,20 +1,10 @@
 ﻿using Google.Protobuf;
 using HttpMachine;
-using PoGoEmulator.Enums;
-using PoGoEmulator.Logging;
 using PoGoEmulator.Models;
 using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Net.Sockets;
 using System.Reflection;
-using System.Text;
-using System.Threading;
-using PoGoEmulator.Requests;
 using POGOProtos.Networking.Envelopes;
 
 namespace PoGoEmulator

@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PoGoEmulator.Enums;
+﻿using PoGoEmulator.Enums;
 using PoGoEmulator.Logging;
 using PoGoEmulator.Models;
 using System;

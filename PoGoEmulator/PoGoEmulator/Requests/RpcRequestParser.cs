@@ -1,12 +1,6 @@
 ﻿using PoGoEmulator.Models;
-using POGOProtos.Networking.Envelopes;
 using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Threading;
-using Microsoft.IdentityModel.Tokens;
-using PoGoEmulator.Database.Tables;
-using PoGoEmulator.Logging;
 using PoGoEmulator.Responses;
 
 namespace PoGoEmulator.Requests
