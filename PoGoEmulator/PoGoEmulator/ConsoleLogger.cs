@@ -46,11 +46,11 @@ namespace PoGoEmulator
         public void Write(string message, LogLevel level = LogLevel.Info, ConsoleColor color = ConsoleColor.Black)
         {
             // Remember to change to a font that supports your language, otherwise it'll still show as ???.
-            Console.OutputEncoding = Encoding.UTF8;
+            //Console.OutputEncoding = Encoding.UTF8;
             if (level > _maxLogLevel)
                 return;
 
-            var finalMessage = Logger.GetFinalMessage(message.Replace("NecroBot", "RocketBot"), level, color);
+            var finalMessage = Logger.GetFinalMessage(message, level, color);
             Console.WriteLine(finalMessage);
 
             // Fire log write event.
@@ -102,20 +102,23 @@ namespace PoGoEmulator
 
         private class LogWriteEventArgs
         {
+            public string message;
             public string Message
             {
-                get { return Message; }
-                set { Message = value; }
+                get { return message; }
+                set { message = value; }
             }
+            public LogLevel level;
             public LogLevel Level
             {
-                get { return Level; }
-                set { Level = value; }
+                get { return level; }
+                set { level = value; }
             }
+            public ConsoleColor color;
             public ConsoleColor Color
             {
-                get { return Color; }
-                set { Color = value; }
+                get { return color; }
+                set { color = value; }
             }
         }
         private event LogWriteHandler OnLogWrite;

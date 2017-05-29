@@ -36,14 +36,23 @@ namespace PoGoEmulator.Forms
         public static MainForm Instance;
         public static SynchronizationContext SynchronizationContext;
         private string[] args;
-
+ 
         public MainForm(string[] _args)
         {
             InitializeComponent();
             SynchronizationContext = SynchronizationContext.Current;
             Instance = this;
             args = _args;
+            AppDomain currentDomain = AppDomain.CurrentDomain;
+            currentDomain.UnhandledException += new UnhandledExceptionEventHandler(ErrorHandler);
         }
+
+        private void ErrorHandler(object sender, UnhandledExceptionEventArgs e)
+        {
+            Debug.WriteLine(e.ExceptionObject.ToString());
+            ConsoleHelper.ShowConsoleWindow();
+        }
+
         private static DateTime LastClearLog = DateTime.Now;
 
         public static void ColoredConsoleWrite(Color color, string text)
@@ -70,7 +79,22 @@ namespace PoGoEmulator.Forms
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            InitializeMap();
             ConsoleHelper.HideConsoleWindow();
+        }
+
+        private void InitializeMap()
+        {
+            var lat = 40.7681770900937;
+            var lng = -73.9814966214881;
+            GMapControl1.MapProvider = GoogleMapProvider.Instance;
+            GMapControl1.Manager.Mode = AccessMode.ServerOnly;
+            GMapProvider.WebProxy = null;
+            GMapControl1.Position = new PointLatLng(lat, lng);
+            GMapControl1.DragButton = MouseButtons.Left;
+            GMapControl1.MinZoom = 2;
+            GMapControl1.MaxZoom = 18;
+            GMapControl1.Zoom = 15;
         }
     }
 }

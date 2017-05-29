@@ -36,14 +36,15 @@ namespace PoGoEmulator
         private static void Main(string[] args)
         {
             Application.EnableVisualStyles();
-            ConsoleHelper.AllocConsole();
+            //for app winexe 
+            //ConsoleHelper.AllocConsole();
             Application.Run(new MainForm(args));
 
             try
             {
                 Console.OutputEncoding = Encoding.UTF8;
                 Thread.CurrentThread.CurrentCulture =
-                    Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-GB");
+                Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-GB");
 
                 Logger.AddLogger(new ConsoleLogger(LogLevel.Info));
 
