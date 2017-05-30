@@ -109,7 +109,7 @@ configuration: Release
 
 build:
   # MSBuild verbosity level
-  project: PoGoEmulatorApiApi.sln
+  project: PoGoEmulatorApi.sln
   publish_nuget: true
   publish_nuget_symbols: true
   include_nuget_references: true
