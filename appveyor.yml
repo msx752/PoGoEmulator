@@ -55,11 +55,6 @@ clone_depth:  5
 
 # environment variables
 environment:
-#  matrix:
-#    - ruby_version: "21" # Older version, but matches Travis-CI
-#    - ruby_version: "21-x64"
-
-  
 CHANGELOG_GITHUB_TOKEN: 
   secure: QcKCFS7oLerve4UOpe314Y3jok6BAXbbAyorTwQqykQjJHaTDLzDhhphiZ+l6h1m
 auth_token: 
@@ -70,6 +65,11 @@ github_email:
   secure: XZXS5+eJOubB91e0LtqIEinf84icR3+URjbX5YbWnc8=
 github_user: 
   secure: K1enFpkh00HL+0rlpKbUfQ==
+  
+#  matrix:
+#    - ruby_version: "21" # Older version, but matches Travis-CI
+#    - ruby_version: "21-x64"
+
 # build cache to preserve files/folders between builds
 #cache:
 #  - packages -> **\packages.config  # preserve packages directory in the root of build folder but will reset it if packages.config is modified
