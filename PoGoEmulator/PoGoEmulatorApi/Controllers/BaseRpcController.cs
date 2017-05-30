@@ -90,7 +90,7 @@ namespace PoGoEmulatorApi.Controllers
             res.Headers.TryAddWithoutValidation("Connection", "keep-alive");
             res.Headers.TryAddWithoutValidation("PoGoEmulator", ".NET 4.6.2 MVC API");
             res.Headers.TryAddWithoutValidation("Date", $"{string.Format(new CultureInfo("en-GB"), "{0:ddd, dd MMM yyyy hh:mm:ss}", DateTime.UtcNow)} GMT");
-            if (code == HttpStatusCode.OK && CurrentException == null)
+            if (code == HttpStatusCode.OK)
             {
                 res.Content = new ByteArrayContent(ProtoResponse.ToByteArray());
                 Database.SaveChanges();

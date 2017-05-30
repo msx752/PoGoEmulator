@@ -292,9 +292,12 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Assets\Asset.cs" />
     <Compile Include="Assets\GameMaster.cs" />
+    <Compile Include="Controllers\AuthorizedController.cs" />
     <Compile Include="Controllers\CustomController.cs" />
+    <Compile Include="Controllers\CustomOldController.cs" />
     <Compile Include="Controllers\ModelController.cs" />
     <Compile Include="Controllers\PlfeController.cs" />
+    <Compile Include="Controllers\Plfe_OldController.cs" />
     <Compile Include="Controllers\BaseRpcController.cs" />
     <Compile Include="Database\PoGoDbContext.cs" />
     <Compile Include="Database\Tables\OwnedPokemon.cs" />

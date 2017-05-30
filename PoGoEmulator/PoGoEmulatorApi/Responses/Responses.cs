@@ -1,4 +1,5 @@
-﻿using Google.Protobuf;
+﻿using System.Net.Http;
+using Google.Protobuf;
 using Google.Protobuf.Collections;
 using PoGoEmulatorApi.Controllers;
 using POGOProtos.Networking.Envelopes;
@@ -8,7 +9,7 @@ namespace PoGoEmulatorApi
 {
     public static class Response
     {
-        public static void EnvelopResponse(this BaseRpcController brcontroller, RepeatedField<ByteString> returns = null)
+        public static HttpResponseMessage EnvelopResponse(this BaseRpcController brcontroller, RepeatedField<ByteString> returns = null)
         {
             if (returns != null)
             {
@@ -19,14 +20,11 @@ namespace PoGoEmulatorApi
             {
                 brcontroller.Log.Dbg($"ReturnsCount:null");
             }
+
             if (brcontroller.ProtoRequest.AuthTicket != null)
             {
                 brcontroller.Log.Dbg($"brcontroller.ProtoRequest.AuthTicket: {brcontroller.ProtoRequest.AuthTicket}");
                 brcontroller.ProtoResponse.AuthTicket = new AuthTicket() { };
-            }
-            else
-            {
-                brcontroller.Log.Dbg($"brcontroller.ProtoRequest.AuthTicket: null");
             }
 
             brcontroller.Log.Dbg($"brcontroller.ProtoResponse.Unknown6.ResponseType: ADDED 1");
@@ -39,6 +37,7 @@ namespace PoGoEmulatorApi
                 }
             });
             brcontroller.ProtoResponse.StatusCode = 1;
+            return brcontroller.Rpc();
         }
     }
 }
