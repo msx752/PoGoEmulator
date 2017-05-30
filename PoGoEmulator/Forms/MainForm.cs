@@ -79,6 +79,9 @@ namespace PoGoEmulator.Forms
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            this.splitContainer1.SplitterDistance = this.splitContainer1.Width / 100 * 45; // Splits left & right splitter panes @ 45%/55% of the window width
+            this.splitContainer2.SplitterDistance = this.splitContainer2.Height / 100 * 45;// Always keeps the logger window @ 45%/55% of the window height
+            this.Refresh(); // Force screen refresh before items are poppulated
             InitializeMap();
             ConsoleHelper.HideConsoleWindow();
         }
