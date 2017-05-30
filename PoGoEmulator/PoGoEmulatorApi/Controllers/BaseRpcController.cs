@@ -94,9 +94,13 @@ namespace PoGoEmulatorApi.Controllers
             {
                 res.Content = new ByteArrayContent(ProtoResponse.ToByteArray());
                 Database.SaveChanges();
+                Log.Dbg($"succesfully responding");
             }
             else
+            {
+                Log.Dbg($"unsuccesfully responding error: {CurrentException.Message}");
                 res.Content = new StringContent(CurrentException.Message);
+            }
             return res;
         }
 
@@ -106,19 +110,27 @@ namespace PoGoEmulatorApi.Controllers
         {
             get
             {
-                if (ProtoRequest == null) return "";
-                if (ProtoRequest.AuthInfo == null) return "";
-                if (Request == null || !ProtoRequest.AuthInfo.Token.Contents.Any())
+                if (ProtoRequest?.AuthInfo == null)
+                {
+                    Log.Dbg($"Error: ProtoRequest.AuthInfo is NULL");
                     return "";
+                }
+                if (Request == null || !ProtoRequest.AuthInfo.Token.Contents.Any())
+                {
+                    Log.Dbg($"Error: Request is NULL or token contents is NULL");
+                    return "";
+                }
                 else
                 {
                     if (_useremail == null)
                     {
+                        Log.Dbg($"_useremail is null ");
                         JwtSecurityTokenHandler jwth = new JwtSecurityTokenHandler();
                         var userJwtToken = jwth.ReadJwtToken(ProtoRequest.AuthInfo.Token.Contents).Payload;
                         object userEmail;
                         userJwtToken.TryGetValue("email", out userEmail);
                         _useremail = userEmail?.ToString().ToLower();
+                        Log.Dbg($"_useremail is set to {_useremail}");
                     }
                     return _useremail;
                 }
@@ -131,6 +143,7 @@ namespace PoGoEmulatorApi.Controllers
             {
                 CacheUserData state;
                 WebApiApplication.AuthenticatedUsers.TryGetValue(UserEmail, out state);
+                Log.Dbg($"is CachedCurrentUser NULL?: {state == null}");
                 return state;
             }
         }
@@ -140,7 +153,9 @@ namespace PoGoEmulatorApi.Controllers
             get
             {
                 CacheUserData state = CachedCurrentUser;
-                return CachedCurrentUser != null && state.IsAuthenticated;
+                bool r = CachedCurrentUser != null && state.IsAuthenticated;
+                Log.Dbg($"Is Authenticated?: {r}");
+                return r;
             }
         }
 
@@ -149,9 +164,10 @@ namespace PoGoEmulatorApi.Controllers
             if (UserEmail == null)
                 throw new Exception("detected->USER NOT FOUND");
 
-            var user = Database.Users.SingleOrDefault(p => p.email == UserEmail);
+            var user = Database.Users.FirstOrDefault(p => p.email == UserEmail);
             if (user == null)
             {
+                Log.Dbg($"user is null adding now");
                 user = new User
                 {
                     email = UserEmail,
@@ -161,6 +177,7 @@ namespace PoGoEmulatorApi.Controllers
                     latitude = ProtoRequest.Latitude,
                 };
                 Database.Users.Add(user);
+                Log.Dbg($"user is added: {user.email}");
             }
             else
             {
@@ -168,7 +185,27 @@ namespace PoGoEmulatorApi.Controllers
                 user.longitude = ProtoRequest.Longitude;
                 user.latitude = ProtoRequest.Latitude;
                 Database.Users.Update(user);
+                Log.Dbg($"user is updated: {user.email}");
             }
+            Database.SaveChanges();
+        }
+
+        public void UpdateCachedUser()
+        {
+            var oauth = CachedCurrentUser;
+            if (oauth != null)
+            {
+                oauth.IsAuthenticated = true;
+            }
+            else
+            {
+                oauth = new CacheUserData()
+                {
+                    IsAuthenticated = true
+                };
+            }
+            WebApiApplication.AuthenticatedUsers.AddOrUpdate(UserEmail, oauth, (k, v) => oauth);
+            Log.Dbg($"CachedCurrentUser is updated: {CachedCurrentUser.IsAuthenticated}");
         }
     }
 }

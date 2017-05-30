@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Web;
 using System.Web.Http.Tracing;
 using Google.Protobuf;
+using log4net;
 using PoGoEmulatorApi.Controllers;
 
 namespace PoGoEmulatorApi
@@ -34,6 +35,20 @@ namespace PoGoEmulatorApi
             dt = dt.Add(ts.Value);
             var timeSpan = (dt.ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0));
             return (ulong)timeSpan.TotalSeconds * 1000;
+        }
+
+        /// <summary>
+        /// custom extension 
+        /// </summary>
+        /// <param name="log">
+        /// </param>
+        /// <param name="message">
+        /// </param>
+        public static void Dbg(this ILog log, string message)
+        {
+#if DEBUG
+            log.Debug(message);
+#endif
         }
     }
 }

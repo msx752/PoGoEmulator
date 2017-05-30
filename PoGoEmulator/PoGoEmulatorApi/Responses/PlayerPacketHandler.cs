@@ -37,6 +37,8 @@ namespace PoGoEmulatorApi.Responses
                     {
                         sfp.Result = SetFavoritePokemonResponse.Types.Result.ErrorPokemonNotFound;
                     }
+
+                    brc.Log.Dbg($"TypeOfResponseMessage: {nameof(SetFavoritePokemonResponse)}");
                     return sfp.ToByteString();
 
                 case RequestType.LevelUpRewards:
@@ -47,11 +49,13 @@ namespace PoGoEmulatorApi.Responses
                         new ItemAward(){ ItemId=ItemId.ItemPokeBall, ItemCount=2},
                         new ItemAward(){ ItemId=ItemId.ItemTroyDisk, ItemCount=2}
                     });
+                    brc.Log.Dbg($"TypeOfResponseMessage: {nameof(LevelUpRewardsResponse)}");
                     return lur.ToByteString();
 
                 case RequestType.ReleasePokemon:
                     ReleasePokemonResponse rp = brc.ReleasePokemon((ReleasePokemonMessage)msg);
 
+                    brc.Log.Dbg($"TypeOfResponseMessage: {nameof(ReleasePokemonResponse)}");
                     return rp.ToByteString();
 
                 case RequestType.UpgradePokemon:
@@ -65,6 +69,8 @@ namespace PoGoEmulatorApi.Responses
                     //{
                     //    up.Result = UpgradePokemonResponse.Types.Result.ErrorPokemonNotFound;
                     //}
+
+                    brc.Log.Dbg($"TypeOfResponseMessage: {nameof(UpgradePokemonResponse)}");
                     return up.ToByteString();
 
                 case RequestType.GetPlayerProfile:
@@ -84,6 +90,8 @@ namespace PoGoEmulatorApi.Responses
                 //    return sa.ToByteString();
 
                 case RequestType.GetPlayer:
+
+                    brc.Log.Dbg($"TypeOfResponseMessage: {nameof(GetPlayerResponse)}");
                     return new GetPlayer().From(brc);
 
                 case RequestType.GetInventory:
@@ -96,10 +104,14 @@ namespace PoGoEmulatorApi.Responses
                         NewTimestampMs = (long)DateTime.Now.ToUnixTime()
                     };
                     gi.InventoryDelta.InventoryItems.AddRange(items);
+
+                    brc.Log.Dbg($"TypeOfResponseMessage: {nameof(GetInventoryResponse)}");
                     return gi.ToByteString();
 
                 case RequestType.GetAssetDigest:
                     var gad = GlobalSettings.GameAssets[brc.CachedCurrentUser.Platform].Value;
+
+                    brc.Log.Dbg($"TypeOfResponseMessage: {nameof(GetAssetDigestResponse)}");
                     return gad.ToByteString();
 
                 //case RequestType.NicknamePokemon:
@@ -107,13 +119,17 @@ namespace PoGoEmulatorApi.Responses
                 //    return np.ToByteString();
 
                 case RequestType.GetHatchedEggs:
-                    LevelUpRewardsResponse ghe = new LevelUpRewardsResponse();
-                    ghe.Result = LevelUpRewardsResponse.Types.Result.Success;
+                    GetHatchedEggsResponse ghe = new GetHatchedEggsResponse();
+                    ghe.Success = true;
+
+                    brc.Log.Dbg($"TypeOfResponseMessage: {nameof(GetHatchedEggsResponse)}");
                     return ghe.ToByteString();
 
                 case RequestType.CheckAwardedBadges:
-                    LevelUpRewardsResponse cab = new LevelUpRewardsResponse();
-                    cab.Result = LevelUpRewardsResponse.Types.Result.Success;
+                    CheckAwardedBadgesResponse cab = new CheckAwardedBadgesResponse();
+                    cab.Success = true;
+
+                    brc.Log.Dbg($"TypeOfResponseMessage: {nameof(CheckAwardedBadgesResponse)}");
                     return cab.ToByteString();
 
                 //case RequestType.RecycleInventoryItem:

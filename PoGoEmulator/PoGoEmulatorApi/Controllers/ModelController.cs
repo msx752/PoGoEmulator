@@ -19,6 +19,7 @@ namespace PoGoEmulatorApi.Controllers
             RpcType = Enums.RpcRequestType.Model;
 
             UpdatePlayerLocation();
+            UpdateCachedUser();
         }
 
         [System.Web.Http.HttpPost]

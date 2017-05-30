@@ -12,12 +12,24 @@ namespace PoGoEmulatorApi
         {
             if (returns != null)
             {
+                brcontroller.Log.Dbg($"ReturnsCount:{returns.Count}");
                 brcontroller.ProtoResponse.Returns.AddRange(returns);
             }
-
+            else
+            {
+                brcontroller.Log.Dbg($"ReturnsCount:null");
+            }
             if (brcontroller.ProtoRequest.AuthTicket != null)
+            {
+                brcontroller.Log.Dbg($"brcontroller.ProtoRequest.AuthTicket: {brcontroller.ProtoRequest.AuthTicket}");
                 brcontroller.ProtoResponse.AuthTicket = new AuthTicket() { };
+            }
+            else
+            {
+                brcontroller.Log.Dbg($"brcontroller.ProtoRequest.AuthTicket: null");
+            }
 
+            brcontroller.Log.Dbg($"brcontroller.ProtoResponse.Unknown6.ResponseType: ADDED 1");
             brcontroller.ProtoResponse.Unknown6.Add(new Unknown6Response()
             {
                 ResponseType = 6,

@@ -18,9 +18,6 @@ namespace PoGoEmulatorApi.Responses
                 CodedInputStream codedStream = new CodedInputStream(req.RequestMessage.ToByteArray());
                 var strType = $"POGOProtos.Networking.Requests.Messages.{type}Message";
                 object msg = Activator.CreateInstance(FindTypeOfObject(strType));
-                if (msg == null)
-                {
-                }
                 MethodInfo methodMergeFrom = msg?.GetType()
                     .GetMethods()
                     .ToList()
@@ -28,6 +25,7 @@ namespace PoGoEmulatorApi.Responses
 
                 methodMergeFrom.Invoke(msg, new object[] { codedStream });
 
+                brcontroller.Log.Dbg($"TypeOfRequestMessage: {strType}");
                 switch (type)
                 {
                     //player
@@ -91,6 +89,8 @@ namespace PoGoEmulatorApi.Responses
         public static RepeatedField<ByteString> ProcessRequests(this BaseRpcController brcontroller)
         {
             RepeatedField<ByteString> Body = new RepeatedField<ByteString>();
+
+            brcontroller.Log.Dbg($"brcontroller.ProtoRequest.Requests.Count: {brcontroller.ProtoRequest.Requests.Count}");
             foreach (var req in brcontroller.ProtoRequest.Requests)
             {
                 Body.Add(brcontroller.ProcessResponse(req));

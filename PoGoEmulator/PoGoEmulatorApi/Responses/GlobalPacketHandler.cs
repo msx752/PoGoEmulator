@@ -39,6 +39,8 @@ namespace PoGoEmulatorApi.Responses
                     {
                         ChallengeUrl = " "
                     };
+
+                    brc.Log.Dbg($"TypeOfResponseMessage: {nameof(CheckChallengeResponse)}");
                     return c.ToByteString();
 
                 //case RequestType.GetDownloadUrls:
@@ -80,6 +82,7 @@ namespace PoGoEmulatorApi.Responses
                         MinimumClientVersion = "0.35.0",
                     };
 
+                    brc.Log.Dbg($"TypeOfResponseMessage: {nameof(DownloadSettingsResponse)}");
                     return ds.ToByteString();
 
                 case RequestType.DownloadRemoteConfigVersion:
@@ -87,10 +90,14 @@ namespace PoGoEmulatorApi.Responses
                     drcv.Result = DownloadRemoteConfigVersionResponse.Types.Result.Success;
                     drcv.ItemTemplatesTimestampMs = 1471650700946;
                     drcv.AssetDigestTimestampMs = 1467338276561000;
+
+                    brc.Log.Dbg($"TypeOfResponseMessage: {nameof(DownloadRemoteConfigVersionResponse)}");
                     return drcv.ToByteString();
 
                 case RequestType.DownloadItemTemplates:
                     var dit = GlobalSettings.GameMaster.Decode;
+
+                    brc.Log.Dbg($"TypeOfResponseMessage: {nameof(DownloadItemTemplatesResponse)}");
                     return dit.ToByteString();
 
                 default:

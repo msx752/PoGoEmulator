@@ -27,6 +27,7 @@ namespace PoGoEmulatorApi.Controllers
             Log = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
             RpcType = Enums.RpcRequestType.Plfe;
             UpdatePlayerLocation();
+            UpdateCachedUser();
         }
 
         [System.Web.Http.HttpPost]
@@ -43,20 +44,8 @@ namespace PoGoEmulatorApi.Controllers
                     ExpireTimestampMs = 1496119787409,
                     End = ByteString.Empty,
                 };
-                var oauth = CachedCurrentUser;
-                if (oauth != null)
-                {
-                    oauth.IsAuthenticated = true;
-                }
-                else
-                {
-                    oauth = new CacheUserData()
-                    {
-                        IsAuthenticated = true
-                    };
-                }
-                WebApiApplication.AuthenticatedUsers.AddOrUpdate(UserEmail, oauth, (k, v) => oauth);
             }
+
             return base.Rpc();
         }
     }

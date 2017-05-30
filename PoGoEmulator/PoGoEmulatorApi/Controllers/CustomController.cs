@@ -23,6 +23,7 @@ namespace PoGoEmulatorApi.Controllers
             RpcType = Enums.RpcRequestType.Custom;
 
             UpdatePlayerLocation();
+            UpdateCachedUser();
         }
 
         [System.Web.Http.HttpPost]
@@ -30,6 +31,7 @@ namespace PoGoEmulatorApi.Controllers
         {
             try
             {
+                Log.Debug($"HasSignature:{CachedCurrentUser.HasSignature}");
                 if (CachedCurrentUser.HasSignature == false)
                 {
                     if (ProtoResponse.Unknown6 != null)
@@ -56,10 +58,13 @@ namespace PoGoEmulatorApi.Controllers
                     }
                 }
 
+                Log.Debug($"HasSignature:{CachedCurrentUser.HasSignature}, Platform:{CachedCurrentUser.Platform}");
+                Log.Debug($"ProtoRequest.Requests.Count:{ProtoRequest.Requests.Count}");
                 if (ProtoRequest.Requests.Count == 0)
                 {
                     if (ProtoRequest.Unknown6 != null && ProtoRequest.Unknown6.RequestType == 6)
                     {
+                        Log.Debug($"ProtoRequest.Unknown6.RequestType:{ProtoRequest.Unknown6.RequestType}");
                         this.EnvelopResponse();
                         return base.Rpc();
                     }
