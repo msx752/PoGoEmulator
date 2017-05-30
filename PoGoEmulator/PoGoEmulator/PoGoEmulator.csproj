@@ -335,7 +335,7 @@
     <None Include="Properties\Settings.settings" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="$(SolutionDir)\POGOProtos\POGOProtos.csproj">
+    <ProjectReference Include="..\POGOProtos\POGOProtos.csproj">
       <Project>{bdca7004-2081-4afd-a7ee-16a101050f82}</Project>
       <Name>POGOProtos</Name>
     </ProjectReference>
