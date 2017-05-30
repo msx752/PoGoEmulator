@@ -35,8 +35,8 @@ namespace PoGoEmulatorApi.Database.Tables
         [StringLength(64)]
         public string pokedex { get; set; } = "{}";
 
-        public byte send_marketing_emails { get; set; }
-        public byte send_push_notifications { get; set; }
+        public bool send_marketing_emails { get; set; }
+        public bool send_push_notifications { get; set; }
         public int stardust { get; set; }
         public byte team { get; set; }
 

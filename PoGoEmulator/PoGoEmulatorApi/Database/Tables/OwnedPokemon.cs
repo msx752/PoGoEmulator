@@ -25,14 +25,14 @@ namespace PoGoEmulatorApi.Database.Tables
         public string egg_incubator_id { get; set; }
         public double? egg_km_walked_start { get; set; }
         public double? egg_km_walked_target { get; set; }
-        public byte? favorite { get; set; }
+        public bool? favorite { get; set; }
         public int? from_fort { get; set; }
         public double height_m { get; set; }
         public int id { get; set; }
         public int individual_attack { get; set; }
         public int individual_defense { get; set; }
         public int individual_stamina { get; set; }
-        public byte is_egg { get; set; }
+        public bool is_egg { get; set; }
 
         [StringLength(32)]
         public String move_1 { get; set; }

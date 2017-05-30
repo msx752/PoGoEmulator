@@ -41,8 +41,8 @@ namespace PoGoEmulatorApi.Responses.Packets
                 MaxItemStorage = 350,
                 ContactSettings = new POGOProtos.Data.Player.ContactSettings()
                 {
-                    SendMarketingEmails = usr.send_marketing_emails == 1,
-                    SendPushNotifications = usr.send_push_notifications == 1
+                    SendMarketingEmails = usr.send_marketing_emails,
+                    SendPushNotifications = usr.send_push_notifications
                 },
                 RemainingCodenameClaims = 10,
             };

@@ -21,7 +21,20 @@ namespace PoGoEmulatorApi.Responses
                 case RequestType.SetFavoritePokemon:
                     SetFavoritePokemonResponse sfp = new SetFavoritePokemonResponse();
                     SetFavoritePokemonMessage m = (SetFavoritePokemonMessage)msg;
-                    //brc.Database.o
+
+                    var usr = brc.Database.Users.SingleOrDefault(p => p.email == brc.UserEmail);
+                    var owned = brc.Database.OwnedPokemons.SingleOrDefault(p => p.owner_id == usr.id && m.PokemonId == p.id);
+                    if (owned != null)
+                    {
+                        m.IsFavorite = true;
+                        owned.favorite = true;
+                        brc.Database.OwnedPokemons.Update(owned);
+                        sfp.Result = SetFavoritePokemonResponse.Types.Result.Success;
+                    }
+                    else
+                    {
+                        sfp.Result = SetFavoritePokemonResponse.Types.Result.ErrorPokemonNotFound;
+                    }
                     return sfp.ToByteString();
 
                 //case RequestType.LevelUpRewards:

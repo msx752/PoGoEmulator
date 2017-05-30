@@ -8,9 +8,10 @@ using PoGoEmulatorApi;
 namespace PoGoEmulatorApi.Migrations
 {
     [DbContext(typeof(PoGoDbContext))]
-    partial class PoGoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170530030504_table updated")]
+    partial class tableupdated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")

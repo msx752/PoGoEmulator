@@ -310,6 +310,10 @@
     <Compile Include="Migrations\20170530023657_user,owned_pkmn tables.designer.cs">
       <DependentUpon>20170530023657_user,owned_pkmn tables.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20170530030504_table updated.cs" />
+    <Compile Include="Migrations\20170530030504_table updated.designer.cs">
+      <DependentUpon>20170530030504_table updated.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\PoGoDbContextModelSnapshot.cs" />
     <Compile Include="Models\CacheUserData.cs" />
     <Compile Include="Models\Configs.cs" />
