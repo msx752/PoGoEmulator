@@ -11,15 +11,15 @@ using PoGoEmulatorApi.Database;
 namespace PoGoEmulatorApi.Controllers
 {
     [System.Web.Http.RoutePrefix("model")]
-    public class ModelController : BaseRpcController
+    public class ModelController : AuthorizedController
     {
         public ModelController(PoGoDbContext db) : base(db)
         {
             Log = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
             RpcType = Enums.RpcRequestType.Model;
 
-            UpdatePlayerLocation();
-            UpdateCachedUser();
+            //UpdatePlayerLocation();
+            //UpdateCachedUser();
         }
 
         [System.Web.Http.HttpPost]

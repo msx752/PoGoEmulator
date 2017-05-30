@@ -10,7 +10,7 @@ namespace PoGoEmulatorApi.Responses
 {
     public static class ProcessOfResponse
     {
-        public static ByteString ProcessResponse(this BaseRpcController brcontroller, Request req)
+        public static ByteString ProcessResponse(this AuthorizedController brcontroller, Request req)
         {
             try
             {
@@ -86,7 +86,7 @@ namespace PoGoEmulatorApi.Responses
             }
         }
 
-        public static RepeatedField<ByteString> ProcessRequests(this BaseRpcController brcontroller)
+        public static RepeatedField<ByteString> ProcessRequests(this AuthorizedController brcontroller)
         {
             RepeatedField<ByteString> Body = new RepeatedField<ByteString>();
 

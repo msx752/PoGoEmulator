@@ -104,108 +104,108 @@ namespace PoGoEmulatorApi.Controllers
             return res;
         }
 
-        private string _useremail;
+        //private string _useremail;
 
-        public string UserEmail
-        {
-            get
-            {
-                if (ProtoRequest?.AuthInfo == null)
-                {
-                    Log.Dbg($"Error: ProtoRequest.AuthInfo is NULL");
-                    return "";
-                }
-                if (Request == null || !ProtoRequest.AuthInfo.Token.Contents.Any())
-                {
-                    Log.Dbg($"Error: Request is NULL or token contents is NULL");
-                    return "";
-                }
-                else
-                {
-                    if (_useremail == null)
-                    {
-                        Log.Dbg($"_useremail is null ");
-                        JwtSecurityTokenHandler jwth = new JwtSecurityTokenHandler();
-                        var userJwtToken = jwth.ReadJwtToken(ProtoRequest.AuthInfo.Token.Contents).Payload;
-                        object userEmail;
-                        userJwtToken.TryGetValue("email", out userEmail);
-                        _useremail = userEmail?.ToString().ToLower();
-                        Log.Dbg($"_useremail is set to {_useremail}");
-                    }
-                    return _useremail;
-                }
-            }
-        }
+        //public string UserEmail
+        //{
+        //    get
+        //    {
+        //        if (ProtoRequest?.AuthInfo == null)
+        //        {
+        //            Log.Dbg($"Error: ProtoRequest.AuthInfo is NULL");
+        //            return "";
+        //        }
+        //        if (Request == null || !ProtoRequest.AuthInfo.Token.Contents.Any())
+        //        {
+        //            Log.Dbg($"Error: Request is NULL or token contents is NULL");
+        //            return "";
+        //        }
+        //        else
+        //        {
+        //            if (_useremail == null)
+        //            {
+        //                Log.Dbg($"_useremail is null ");
+        //                JwtSecurityTokenHandler jwth = new JwtSecurityTokenHandler();
+        //                var userJwtToken = jwth.ReadJwtToken(ProtoRequest.AuthInfo.Token.Contents).Payload;
+        //                object userEmail;
+        //                userJwtToken.TryGetValue("email", out userEmail);
+        //                _useremail = userEmail?.ToString().ToLower();
+        //                Log.Dbg($"_useremail is set to {_useremail}");
+        //            }
+        //            return _useremail;
+        //        }
+        //    }
+        //}
 
-        public CacheUserData CachedCurrentUser
-        {
-            get
-            {
-                CacheUserData state;
-                WebApiApplication.AuthenticatedUsers.TryGetValue(UserEmail, out state);
-                Log.Dbg($"is CachedCurrentUser NULL?: {state == null}");
-                return state;
-            }
-        }
+        //public CacheUserData CachedCurrentUser
+        //{
+        //    get
+        //    {
+        //        CacheUserData state;
+        //        WebApiApplication.AuthenticatedUsers.TryGetValue(UserEmail, out state);
+        //        Log.Dbg($"is CachedCurrentUser NULL?: {state == null}");
+        //        return state;
+        //    }
+        //}
 
-        public bool IsAuthenticated
-        {
-            get
-            {
-                CacheUserData state = CachedCurrentUser;
-                bool r = CachedCurrentUser != null && state.IsAuthenticated;
-                Log.Dbg($"Is Authenticated?: {r}");
-                return r;
-            }
-        }
+        //public bool IsAuthenticated
+        //{
+        //    get
+        //    {
+        //        CacheUserData state = CachedCurrentUser;
+        //        bool r = CachedCurrentUser != null && state.IsAuthenticated;
+        //        Log.Dbg($"Is Authenticated?: {r}");
+        //        return r;
+        //    }
+        //}
 
-        public void UpdatePlayerLocation()
-        {
-            if (UserEmail == null)
-                throw new Exception("detected->USER NOT FOUND");
+        //public void UpdatePlayerLocation()
+        //{
+        //    if (UserEmail == null)
+        //        throw new Exception("detected->USER NOT FOUND");
 
-            var user = Database.Users.FirstOrDefault(p => p.email == UserEmail);
-            if (user == null)
-            {
-                Log.Dbg($"user is null adding now");
-                user = new User
-                {
-                    email = UserEmail,
-                    username = UserEmail.Split('@')[0],
-                    altitude = ProtoRequest.Altitude,
-                    longitude = ProtoRequest.Longitude,
-                    latitude = ProtoRequest.Latitude,
-                };
-                Database.Users.Add(user);
-                Log.Dbg($"user is added: {user.email}");
-            }
-            else
-            {
-                user.altitude = ProtoRequest.Altitude;
-                user.longitude = ProtoRequest.Longitude;
-                user.latitude = ProtoRequest.Latitude;
-                Database.Users.Update(user);
-                Log.Dbg($"user is updated: {user.email}");
-            }
-            Database.SaveChanges();
-        }
+        //    var user = Database.Users.FirstOrDefault(p => p.email == UserEmail);
+        //    if (user == null)
+        //    {
+        //        Log.Dbg($"user is null adding now");
+        //        user = new User
+        //        {
+        //            email = UserEmail,
+        //            username = UserEmail.Split('@')[0],
+        //            altitude = ProtoRequest.Altitude,
+        //            longitude = ProtoRequest.Longitude,
+        //            latitude = ProtoRequest.Latitude,
+        //        };
+        //        Database.Users.Add(user);
+        //        Log.Dbg($"user is added: {user.email}");
+        //    }
+        //    else
+        //    {
+        //        user.altitude = ProtoRequest.Altitude;
+        //        user.longitude = ProtoRequest.Longitude;
+        //        user.latitude = ProtoRequest.Latitude;
+        //        Database.Users.Update(user);
+        //        Log.Dbg($"user is updated: {user.email}");
+        //    }
+        //    Database.SaveChanges();
+        //}
 
-        public void UpdateCachedUser()
-        {
-            var oauth = CachedCurrentUser;
-            if (oauth != null)
-            {
-                oauth.IsAuthenticated = true;
-            }
-            else
-            {
-                oauth = new CacheUserData()
-                {
-                    IsAuthenticated = true
-                };
-            }
-            WebApiApplication.AuthenticatedUsers.AddOrUpdate(UserEmail, oauth, (k, v) => oauth);
-            Log.Dbg($"CachedCurrentUser is updated: {CachedCurrentUser.IsAuthenticated}");
-        }
+        //public void UpdateCachedUser()
+        //{
+        //    var oauth = CachedCurrentUser;
+        //    if (oauth != null)
+        //    {
+        //        oauth.IsAuthenticated = true;
+        //    }
+        //    else
+        //    {
+        //        oauth = new CacheUserData()
+        //        {
+        //            IsAuthenticated = true
+        //        };
+        //    }
+        //    WebApiApplication.AuthenticatedUsers.AddOrUpdate(UserEmail, oauth, (k, v) => oauth);
+        //    Log.Dbg($"CachedCurrentUser is updated: {CachedCurrentUser.IsAuthenticated}");
+        //}
     }
 }

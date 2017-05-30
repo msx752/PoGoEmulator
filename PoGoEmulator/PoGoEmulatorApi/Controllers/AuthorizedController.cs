@@ -6,8 +6,10 @@ using System.Net.Http;
 using System.Reflection;
 using System.Web;
 using Google.Protobuf;
+using Google.Protobuf.Collections;
 using PoGoEmulatorApi.Database.Tables;
 using PoGoEmulatorApi.Models;
+using PoGoEmulatorApi.Responses;
 using POGOProtos.Networking.Envelopes;
 
 namespace PoGoEmulatorApi.Controllers
@@ -59,26 +61,33 @@ namespace PoGoEmulatorApi.Controllers
 
         public HttpResponseMessage AuthenticatePlayer()
         {
-            GetAuthTicket();
-            var authInfo = ProtoRequest.AuthInfo;
-            if (authInfo.IsNull() || authInfo.Provider.IsNull())
+            try
             {
-                throw new Exception("Invalid authentication token! Kicking..");
-            }
+                GetAuthTicket();
+                var authInfo = ProtoRequest.AuthInfo;
+                if (authInfo.IsNull() || authInfo.Provider.IsNull())
+                {
+                    return this.ThrowException(new Exception("Invalid authentication token! Kicking.."));
+                }
 
-            if (authInfo.Provider == "google")
+                if (authInfo.Provider == "google")
+                {
+                    UpdateAuthorization();
+                }
+                else
+                {
+                    return this.ThrowException(new Exception("Invalid authentication token! Kicking.."));
+                }
+
+                //validEmail()
+
+                AddOrUpdateUser(UEmail);
+                return base.Rpc();
+            }
+            catch (Exception e)
             {
-                UpdateAuthorization();
+                return ThrowException(e);
             }
-            else
-            {
-                throw new Exception("Invalid authentication token! Kicking..");
-            }
-
-            //validEmail()
-
-            AddOrUpdateUser(UEmail);
-            return base.Rpc();
         }
 
         protected void UpdateAuthorization()
@@ -146,6 +155,64 @@ namespace PoGoEmulatorApi.Controllers
                 Log.Dbg($"user is updated: {user.email}");
             }
             Database.SaveChanges();
+        }
+
+        public HttpResponseMessage OnRequest()
+        {
+            try
+            {
+                if (!IsAuth)
+                {
+                    return AuthenticatePlayer(); ;
+                }
+
+                Log.Debug($"HasSignature:{CurrentPlayer.HasSignature}");
+                if (CurrentPlayer.HasSignature == false)
+                {
+                    if (ProtoResponse.Unknown6 != null)
+                    {
+                        //POGOProtos.Networking.Envelopes.Signature
+                        //connectedClient.HttpContext.Request.Unknown6.Unknown2.EncryptedSignature
+                        var signature = Encryption.Decrypt(
+                               ProtoRequest.Unknown6.Unknown2.EncryptedSignature.ToByteArray());
+                        var codedStream = new CodedInputStream(signature);
+                        var sig = new Signature();
+                        sig.MergeFrom(codedStream);
+                        if (sig.DeviceInfo != null)
+                        {
+                            var usrd = CurrentPlayer;
+                            usrd.HasSignature = true;
+                            usrd.IsIOS = (sig.DeviceInfo.DeviceBrand == "Apple");
+                            bool updtrslt = UpdateCurrentPlayer(usrd);
+                            if (!updtrslt)
+                            {
+                                return this.ThrowException(new Exception(" CONCURRENT ACCESS ERROR this shouldn't happen"));
+                            }
+                        }
+                    }
+                }
+
+                Log.Debug($"HasSignature:{CurrentPlayer.HasSignature}, Platform:{CurrentPlayer.Platform}");
+                Log.Debug($"ProtoRequest.Requests.Count:{ProtoRequest.Requests.Count}");
+                if (ProtoRequest.Requests.Count == 0)
+                {
+                    if (ProtoRequest.Unknown6 != null && ProtoRequest.Unknown6.RequestType == 6)
+                    {
+                        Log.Debug($"ProtoRequest.Unknown6.RequestType:{ProtoRequest.Unknown6.RequestType}");
+                        return this.EnvelopResponse();
+                    }
+                    else
+                    {
+                        return this.ThrowException(new Exception("Invalid Request!."));
+                    }
+                }
+                RepeatedField<ByteString> requests = this.ProcessRequests();
+                return this.EnvelopResponse(requests);
+            }
+            catch (Exception e)
+            {
+                return ThrowException(e);
+            }
         }
     }
 }

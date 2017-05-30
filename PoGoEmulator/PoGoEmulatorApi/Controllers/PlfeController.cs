@@ -19,16 +19,7 @@ namespace PoGoEmulatorApi.Controllers
         [System.Web.Http.HttpPost]
         public override HttpResponseMessage Rpc()
         {
-            if (!IsAuth)
-            {
-                return base.AuthenticatePlayer(); ;
-            }
-            else
-            {
-                throw new Exception("not declered in here !!!!");
-            }
-
-            return base.Rpc();
+            return OnRequest();
         }
     }
 }

@@ -12,11 +12,11 @@ namespace PoGoEmulatorApi.Responses.Packets
 {
     public class GetPlayer
     {
-        public ByteString From(BaseRpcController brc)
+        public ByteString From(AuthorizedController brc)
         {
             User usr =
-                brc.Database.Users.SingleOrDefault(
-                    p => p.email == brc.UserEmail);
+                brc.Database.Users.FirstOrDefault(
+                    p => p.email == brc.UEmail);
 
             var gpr = new GetPlayerResponse();
             gpr.Success = true;

@@ -17,7 +17,7 @@ namespace PoGoEmulatorApi.Responses
 {
     public static class PlayerPacketHandler
     {
-        public static ByteString GetPacket(this BaseRpcController brc, RequestType typ, object msg)
+        public static ByteString GetPacket(this AuthorizedController brc, RequestType typ, object msg)
         {
             switch (typ)
             {
@@ -109,7 +109,7 @@ namespace PoGoEmulatorApi.Responses
                     return gi.ToByteString();
 
                 case RequestType.GetAssetDigest:
-                    var gad = GlobalSettings.GameAssets[brc.CachedCurrentUser.Platform].Value;
+                    var gad = GlobalSettings.GameAssets[brc.CurrentPlayer.Platform].Value;
 
                     brc.Log.Dbg($"TypeOfResponseMessage: {nameof(GetAssetDigestResponse)}");
                     return gad.ToByteString();
@@ -145,14 +145,14 @@ namespace PoGoEmulatorApi.Responses
             }
         }
 
-        public static OwnedPokemon GetPokemonById(this BaseRpcController brc, ulong id)
+        public static OwnedPokemon GetPokemonById(this AuthorizedController brc, ulong id)
         {
-            var usr = brc.Database.Users.SingleOrDefault(p => p.email == brc.UserEmail);
+            var usr = brc.Database.Users.SingleOrDefault(p => p.email == brc.UEmail);
             var owned = brc.Database.OwnedPokemons.SingleOrDefault(p => p.owner_id == usr.id && (int)id == p.id);
             return owned;
         }
 
-        public static ReleasePokemonResponse ReleasePokemon(this BaseRpcController brc, ReleasePokemonMessage msg)
+        public static ReleasePokemonResponse ReleasePokemon(this AuthorizedController brc, ReleasePokemonMessage msg)
         {
             var owned = brc.GetPokemonById(msg.PokemonId);
             ReleasePokemonResponse rsp = new ReleasePokemonResponse();

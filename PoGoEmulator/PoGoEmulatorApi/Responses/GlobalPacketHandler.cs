@@ -9,7 +9,7 @@ namespace PoGoEmulatorApi.Responses
 {
     public static class GlobalPacketHandler
     {
-        public static ByteString GetGlobalPacket(this BaseRpcController brc, RequestType typ, object msg)
+        public static ByteString GetGlobalPacket(this AuthorizedController brc, RequestType typ, object msg)
         {
             switch (typ)
             {
