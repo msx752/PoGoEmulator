@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using Google.Protobuf;
+using Google.Protobuf.Collections;
 using PoGoEmulatorApi.Controllers;
 using PoGoEmulatorApi.Database.Tables;
 using PoGoEmulatorApi.Responses.Packets;
 using POGOProtos.Enums;
+using POGOProtos.Inventory.Item;
 using POGOProtos.Networking.Requests;
 using POGOProtos.Networking.Requests.Messages;
 using POGOProtos.Networking.Responses;
@@ -37,13 +39,20 @@ namespace PoGoEmulatorApi.Responses
                     }
                     return sfp.ToByteString();
 
-                //case RequestType.LevelUpRewards:
-                //    LevelUpRewardsResponse lur = new LevelUpRewardsResponse();
-                //    return lur.ToByteString();
+                case RequestType.LevelUpRewards:
+                    LevelUpRewardsResponse lur = new LevelUpRewardsResponse();
+                    lur.Result = LevelUpRewardsResponse.Types.Result.Success;
+                    lur.ItemsAwarded.AddRange(new RepeatedField<ItemAward>()
+                    {
+                        new ItemAward(){ ItemId=ItemId.ItemPokeBall, ItemCount=2},
+                        new ItemAward(){ ItemId=ItemId.ItemTroyDisk, ItemCount=2}
+                    });
+                    return lur.ToByteString();
 
-                //case RequestType.ReleasePokemon:
-                //    ReleasePokemonResponse rp = new ReleasePokemonResponse();
-                //    return rp.ToByteString();
+                case RequestType.ReleasePokemon:
+                    ReleasePokemonResponse rp = brc.ReleasePokemon((ReleasePokemonMessage)msg);
+
+                    return rp.ToByteString();
 
                 //case RequestType.UpgradePokemon:
                 //    UpgradePokemonResponse up = new UpgradePokemonResponse();
@@ -89,6 +98,23 @@ namespace PoGoEmulatorApi.Responses
                     //    return cc.ToByteString();
             }
             throw new Exception($"unknown (Player) Returns type: {typ}");
+        }
+
+        public static ReleasePokemonResponse ReleasePokemon(this BaseRpcController brc, ReleasePokemonMessage msg)
+        {
+            var usr = brc.Database.Users.SingleOrDefault(p => p.email == brc.UserEmail);
+            var owned = brc.Database.OwnedPokemons.SingleOrDefault(p => p.owner_id == usr.id && (int)msg.PokemonId == p.id);
+            ReleasePokemonResponse rsp = new ReleasePokemonResponse();
+            if (owned != null)
+            {
+                rsp.Result = ReleasePokemonResponse.Types.Result.Success;
+                rsp.CandyAwarded = 3;
+            }
+            else
+            {
+                rsp.Result = ReleasePokemonResponse.Types.Result.Failed;
+            }
+            return rsp;
         }
     }
 }
