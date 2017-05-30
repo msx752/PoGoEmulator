@@ -24,8 +24,7 @@ namespace PoGoEmulatorApi.Responses
                     SetFavoritePokemonResponse sfp = new SetFavoritePokemonResponse();
                     SetFavoritePokemonMessage m = (SetFavoritePokemonMessage)msg;
 
-                    var usr = brc.Database.Users.SingleOrDefault(p => p.email == brc.UserEmail);
-                    var owned = brc.Database.OwnedPokemons.SingleOrDefault(p => p.owner_id == usr.id && m.PokemonId == p.id);
+                    var owned = brc.GetPokemonById((ulong)m.PokemonId);
                     if (owned != null)
                     {
                         m.IsFavorite = true;
@@ -54,9 +53,18 @@ namespace PoGoEmulatorApi.Responses
 
                     return rp.ToByteString();
 
-                //case RequestType.UpgradePokemon:
-                //    UpgradePokemonResponse up = new UpgradePokemonResponse();
-                //    return up.ToByteString();
+                case RequestType.UpgradePokemon:
+                    UpgradePokemonResponse up = new UpgradePokemonResponse();
+                    UpgradePokemonMessage upm = (UpgradePokemonMessage)msg;
+                    //var uptpkmn = brc.GetPokemonById(upm.PokemonId);
+                    //if (uptpkmn!=null)
+                    //{
+                    //}
+                    //else
+                    //{
+                    //    up.Result = UpgradePokemonResponse.Types.Result.ErrorPokemonNotFound;
+                    //}
+                    return up.ToByteString();
 
                 //case RequestType.GetPlayerProfile:
                 //    LevelUpRewardsResponse gpp = new LevelUpRewardsResponse();
@@ -100,10 +108,16 @@ namespace PoGoEmulatorApi.Responses
             throw new Exception($"unknown (Player) Returns type: {typ}");
         }
 
-        public static ReleasePokemonResponse ReleasePokemon(this BaseRpcController brc, ReleasePokemonMessage msg)
+        public static OwnedPokemon GetPokemonById(this BaseRpcController brc, ulong id)
         {
             var usr = brc.Database.Users.SingleOrDefault(p => p.email == brc.UserEmail);
-            var owned = brc.Database.OwnedPokemons.SingleOrDefault(p => p.owner_id == usr.id && (int)msg.PokemonId == p.id);
+            var owned = brc.Database.OwnedPokemons.SingleOrDefault(p => p.owner_id == usr.id && (int)id == p.id);
+            return owned;
+        }
+
+        public static ReleasePokemonResponse ReleasePokemon(this BaseRpcController brc, ReleasePokemonMessage msg)
+        {
+            var owned = brc.GetPokemonById(msg.PokemonId);
             ReleasePokemonResponse rsp = new ReleasePokemonResponse();
             if (owned != null)
             {
