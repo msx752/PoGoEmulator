@@ -21,6 +21,8 @@ namespace PoGoEmulatorApi.Controllers
         {
             Log = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
             RpcType = Enums.RpcRequestType.Custom;
+
+            UpdatePlayerLocation();
         }
 
         [System.Web.Http.HttpPost]

@@ -54,11 +54,6 @@ namespace PoGoEmulatorApi.Controllers
         public ResponseEnvelope ProtoResponse { get; set; } = new ResponseEnvelope();
         public RpcRequestType RpcType { get; set; } = RpcRequestType.None;
 
-        /// <summary>
-        /// ANWER TO USER 
-        /// </summary>
-        /// <returns>
-        /// </returns>
         public virtual HttpResponseMessage Rpc()
         {
             return AnswerToUser(HttpStatusCode.OK);
@@ -98,27 +93,34 @@ namespace PoGoEmulatorApi.Controllers
             if (code == HttpStatusCode.OK && CurrentException == null)
             {
                 res.Content = new ByteArrayContent(ProtoResponse.ToByteArray());
-                UpdatePlayerLocation();
+                Database.SaveChanges();
             }
             else
                 res.Content = new StringContent(CurrentException.Message);
             return res;
         }
 
+        private string _useremail;
+
         public string UserEmail
         {
             get
             {
+                if (ProtoRequest == null) return "";
                 if (ProtoRequest.AuthInfo == null) return "";
                 if (Request == null || !ProtoRequest.AuthInfo.Token.Contents.Any())
                     return "";
                 else
                 {
-                    JwtSecurityTokenHandler jwth = new JwtSecurityTokenHandler();
-                    var userJwtToken = jwth.ReadJwtToken(ProtoRequest.AuthInfo.Token.Contents).Payload;
-                    object userEmail;
-                    userJwtToken.TryGetValue("email", out userEmail);
-                    return userEmail?.ToString().ToLower();
+                    if (_useremail == null)
+                    {
+                        JwtSecurityTokenHandler jwth = new JwtSecurityTokenHandler();
+                        var userJwtToken = jwth.ReadJwtToken(ProtoRequest.AuthInfo.Token.Contents).Payload;
+                        object userEmail;
+                        userJwtToken.TryGetValue("email", out userEmail);
+                        _useremail = userEmail?.ToString().ToLower();
+                    }
+                    return _useremail;
                 }
             }
         }
@@ -142,10 +144,10 @@ namespace PoGoEmulatorApi.Controllers
             }
         }
 
-        public async void UpdatePlayerLocation()
+        public void UpdatePlayerLocation()
         {
-            if (!IsAuthenticated)
-                throw new Exception("detected->USER IS NOT AUTHENTICATED");
+            if (UserEmail == null)
+                throw new Exception("detected->USER NOT FOUND");
 
             var user = Database.Users.SingleOrDefault(p => p.email == UserEmail);
             if (user == null)

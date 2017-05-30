@@ -18,6 +18,9 @@ namespace PoGoEmulatorApi.Responses
                 CodedInputStream codedStream = new CodedInputStream(req.RequestMessage.ToByteArray());
                 var strType = $"POGOProtos.Networking.Requests.Messages.{type}Message";
                 object msg = Activator.CreateInstance(FindTypeOfObject(strType));
+                if (msg == null)
+                {
+                }
                 MethodInfo methodMergeFrom = msg?.GetType()
                     .GetMethods()
                     .ToList()

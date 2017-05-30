@@ -26,6 +26,7 @@ namespace PoGoEmulatorApi.Controllers
         {
             Log = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
             RpcType = Enums.RpcRequestType.Plfe;
+            UpdatePlayerLocation();
         }
 
         [System.Web.Http.HttpPost]
@@ -39,7 +40,7 @@ namespace PoGoEmulatorApi.Controllers
                 ProtoResponse.AuthTicket = new AuthTicket()
                 {
                     Start = ByteString.Empty,
-                    ExpireTimestampMs = DateTime.Now.ToUnixTime(new TimeSpan(0, 30, 0)),
+                    ExpireTimestampMs = 1496119787409,
                     End = ByteString.Empty,
                 };
                 var oauth = CachedCurrentUser;
