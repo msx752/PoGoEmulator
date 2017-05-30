@@ -1,4 +1,4 @@
 source 'http://rubygems.org'
 
-gem 'github_changelog_generator', github: 'Furtif/github-changelog-generator'
+gem 'github_changelog_generator', github: 'msx752/github-changelog-generator'
  
