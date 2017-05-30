@@ -12,7 +12,7 @@ namespace PoGoEmulatorApi.Responses.Packets
 {
     public class GetPlayer
     {
-        public ByteString From(AuthorizedController brc)
+        public ByteString From(BaseRpcController brc)
         {
             User usr =
                 brc.Database.Users.FirstOrDefault(

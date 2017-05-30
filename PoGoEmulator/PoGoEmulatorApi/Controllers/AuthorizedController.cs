@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Web;
@@ -18,45 +19,6 @@ namespace PoGoEmulatorApi.Controllers
     {
         public AuthorizedController(PoGoDbContext db) : base(db)
         {
-        }
-
-        public string UEmail
-        {
-            get
-            {
-                var authInfo = ProtoRequest.AuthInfo;
-                if (authInfo.IsNull() || authInfo.Provider.IsNull())
-                    throw new Exception("Invalid authentication token! Kicking..");
-
-                JwtSecurityTokenHandler jwth = new JwtSecurityTokenHandler();
-                var userJwtToken = jwth.ReadJwtToken(ProtoRequest.AuthInfo.Token.Contents).Payload;
-                object userEmail;
-                userJwtToken.TryGetValue("email", out userEmail);
-                if (userEmail.IsNull())
-                    throw new Exception("useremail not found");
-                return userEmail.ToString();
-            }
-        }
-
-        public CacheUserData CurrentPlayer
-        {
-            get
-            {
-                CacheUserData state;
-                WebApiApplication.AuthenticatedUsers.TryGetValue(UEmail, out state);
-                return state;
-            }
-        }
-
-        public bool IsAuth
-        {
-            get
-            {
-                if (CurrentPlayer == null)
-                    return false;
-                else
-                    return CurrentPlayer.IsAuthenticated;
-            }
         }
 
         public HttpResponseMessage AuthenticatePlayer()
@@ -199,20 +161,29 @@ namespace PoGoEmulatorApi.Controllers
                     if (ProtoRequest.Unknown6 != null && ProtoRequest.Unknown6.RequestType == 6)
                     {
                         Log.Debug($"ProtoRequest.Unknown6.RequestType:{ProtoRequest.Unknown6.RequestType}");
-                        return this.EnvelopResponse();
+                        return base.EnvelopResponse();
                     }
                     else
                     {
                         return this.ThrowException(new Exception("Invalid Request!."));
                     }
                 }
-                RepeatedField<ByteString> requests = this.ProcessRequests();
-                return this.EnvelopResponse(requests);
+                RepeatedField<ByteString> requests = base.ProcessRequests();
+                return base.EnvelopResponse(requests);
             }
             catch (Exception e)
             {
                 return ThrowException(e);
             }
+        }
+
+        public HttpResponseMessage ThrowException(Exception e)
+        {
+            CurrentException = e;
+            Log?.Error("", e);
+            //dispose ALL
+            Database.Dispose();
+            return base.AnswerToUser(HttpStatusCode.BadRequest);
         }
     }
 }
