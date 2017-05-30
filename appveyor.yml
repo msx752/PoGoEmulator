@@ -42,7 +42,6 @@ init:
     }        
 
 
-
 # clone directory
 clone_folder: c:\projects\PoGoEmulator
 
