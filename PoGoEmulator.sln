@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoGoEmulator", "PoGoEmulator\PoGoEmulator.csproj", "{008E4962-DDC4-47F3-9DF7-B4776F8C2D58}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoGoEmulator", "PoGoEmulator\PoGoEmulator\PoGoEmulator.csproj", "{008E4962-DDC4-47F3-9DF7-B4776F8C2D58}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "POGOProtos", "POGOProtos\POGOProtos.csproj", "{BDCA7004-2081-4AFD-A7EE-16A101050F82}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "POGOProtos", "PoGoEmulator\POGOProtos\POGOProtos.csproj", "{BDCA7004-2081-4AFD-A7EE-16A101050F82}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
