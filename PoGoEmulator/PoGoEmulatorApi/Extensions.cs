@@ -27,10 +27,11 @@ namespace PoGoEmulatorApi
             return serverResponse;
         }
 
-        public static ulong ToUnixTime(this DateTime datetime, TimeSpan ts)
+        public static ulong ToUnixTime(this DateTime datetime, TimeSpan? ts = null)
         {
+            if (!ts.HasValue) ts = new TimeSpan();
             DateTime dt = DateTime.UtcNow;
-            dt = dt.Add(ts);
+            dt = dt.Add(ts.Value);
             var timeSpan = (dt.ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0));
             return (ulong)timeSpan.TotalSeconds * 1000;
         }

@@ -18,7 +18,7 @@ namespace PoGoEmulatorApi.Responses.Packets
                 brc.Database.Users.SingleOrDefault(
                     p => p.email == brc.UserEmail);
 
-            GetPlayerResponse gpr = new GetPlayerResponse();
+            var gpr = new GetPlayerResponse();
             gpr.Success = true;
             //update with database
             gpr.PlayerData = new POGOProtos.Data.PlayerData()
@@ -47,13 +47,13 @@ namespace PoGoEmulatorApi.Responses.Packets
                 RemainingCodenameClaims = 10,
             };
             gpr.PlayerData.TutorialState.AddRange(new List<TutorialState>()
-                    {
-                        (TutorialState)1,
-                        (TutorialState)0,
-                        (TutorialState)3,
-                        (TutorialState)4,
-                        (TutorialState)7
-                    });
+            {
+                //(TutorialState)1,
+                //(TutorialState)0,
+                //(TutorialState)3,
+                //(TutorialState)4,
+                //(TutorialState)7
+            });
             return gpr.ToByteString();
         }
     }

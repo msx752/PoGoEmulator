@@ -7,6 +7,7 @@ using PoGoEmulatorApi.Controllers;
 using PoGoEmulatorApi.Database.Tables;
 using PoGoEmulatorApi.Responses.Packets;
 using POGOProtos.Enums;
+using POGOProtos.Inventory;
 using POGOProtos.Inventory.Item;
 using POGOProtos.Networking.Requests;
 using POGOProtos.Networking.Requests.Messages;
@@ -55,7 +56,7 @@ namespace PoGoEmulatorApi.Responses
 
                 case RequestType.UpgradePokemon:
                     UpgradePokemonResponse up = new UpgradePokemonResponse();
-                    UpgradePokemonMessage upm = (UpgradePokemonMessage)msg;
+                    //UpgradePokemonMessage upm = (UpgradePokemonMessage)msg;
                     //var uptpkmn = brc.GetPokemonById(upm.PokemonId);
                     //if (uptpkmn!=null)
                     //{
@@ -66,9 +67,17 @@ namespace PoGoEmulatorApi.Responses
                     //}
                     return up.ToByteString();
 
-                //case RequestType.GetPlayerProfile:
-                //    LevelUpRewardsResponse gpp = new LevelUpRewardsResponse();
-                //    return gpp.ToByteString();
+                case RequestType.GetPlayerProfile:
+                    GetPlayerProfileResponse gpp = new GetPlayerProfileResponse();
+                    gpp.Result = GetPlayerProfileResponse.Types.Result.Success;
+                    gpp.StartTime = (long)DateTime.Now.ToUnixTime();
+                    gpp.Badges.Add(new POGOProtos.Data.PlayerBadge()
+                    {
+                        BadgeType = BadgeType.BadgeTravelKm,
+                        EndValue = 2674,
+                        CurrentValue = 1337
+                    });
+                    return gpp.ToByteString();
 
                 //case RequestType.SetAvatar:
                 //    LevelUpRewardsResponse sa = new LevelUpRewardsResponse();
@@ -77,35 +86,47 @@ namespace PoGoEmulatorApi.Responses
                 case RequestType.GetPlayer:
                     return new GetPlayer().From(brc);
 
-                    //case RequestType.GetInventory:
-                    //    LevelUpRewardsResponse gi = new LevelUpRewardsResponse();
-                    //    return gi.ToByteString();
+                case RequestType.GetInventory:
+                    RepeatedField<InventoryItem> items = new RepeatedField<InventoryItem>();
+                    //ADD ITEMSS
+                    GetInventoryResponse gi = new GetInventoryResponse();
+                    gi.Success = true;
+                    gi.InventoryDelta = new POGOProtos.Inventory.InventoryDelta()
+                    {
+                        NewTimestampMs = (long)DateTime.Now.ToUnixTime()
+                    };
+                    gi.InventoryDelta.InventoryItems.AddRange(items);
+                    return gi.ToByteString();
 
-                    //case RequestType.GetAssetDigest:
-                    //    LevelUpRewardsResponse gad = new LevelUpRewardsResponse();
-                    //    return gad.ToByteString();
+                case RequestType.GetAssetDigest:
+                    var gad = GlobalSettings.GameAssets[brc.CachedCurrentUser.Platform].Value;
+                    return gad.ToByteString();
 
-                    //case RequestType.NicknamePokemon:
-                    //    LevelUpRewardsResponse np = new LevelUpRewardsResponse();
-                    //    return np.ToByteString();
+                //case RequestType.NicknamePokemon:
+                //    LevelUpRewardsResponse np = new LevelUpRewardsResponse();
+                //    return np.ToByteString();
 
-                    //case RequestType.GetHatchedEggs:
-                    //    LevelUpRewardsResponse ghe = new LevelUpRewardsResponse();
-                    //    return ghe.ToByteString();
+                case RequestType.GetHatchedEggs:
+                    LevelUpRewardsResponse ghe = new LevelUpRewardsResponse();
+                    ghe.Result = LevelUpRewardsResponse.Types.Result.Success;
+                    return ghe.ToByteString();
 
-                    //case RequestType.CheckAwardedBadges:
-                    //    LevelUpRewardsResponse cab = new LevelUpRewardsResponse();
-                    //    return cab.ToByteString();
+                case RequestType.CheckAwardedBadges:
+                    LevelUpRewardsResponse cab = new LevelUpRewardsResponse();
+                    cab.Result = LevelUpRewardsResponse.Types.Result.Success;
+                    return cab.ToByteString();
 
-                    //case RequestType.RecycleInventoryItem:
-                    //    LevelUpRewardsResponse rii = new LevelUpRewardsResponse();
-                    //    return rii.ToByteString();
+                //case RequestType.RecycleInventoryItem:
+                //    LevelUpRewardsResponse rii = new LevelUpRewardsResponse();
+                //    return rii.ToByteString();
 
-                    //case RequestType.ClaimCodename:
-                    //    LevelUpRewardsResponse cc = new LevelUpRewardsResponse();
-                    //    return cc.ToByteString();
+                //case RequestType.ClaimCodename:
+                //    LevelUpRewardsResponse cc = new LevelUpRewardsResponse();
+                //    return cc.ToByteString();
+
+                default:
+                    throw new Exception($"unknown (Player) Returns type: {typ}");
             }
-            throw new Exception($"unknown (Player) Returns type: {typ}");
         }
 
         public static OwnedPokemon GetPokemonById(this BaseRpcController brc, ulong id)
