@@ -1,0 +1,4 @@
+[submodule "PoGoEmulator/Resources/PokemonGO-Assets"]
+	path = PoGoEmulator/Resources/PokemonGO-Assets
+	url = https://github.com/Necrobot-Private/PokemonGO-Assets.git
+	branch = master
