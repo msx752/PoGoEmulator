@@ -2,6 +2,12 @@
 #      general configuration      #
 #---------------------------------#
 
+# branch isolation (for now because other branch has different .sln name)
+branches:
+  only:
+  - master
+  - develop
+
 # version format
 version: 0.0.0.{build}
 
