@@ -5,12 +5,14 @@ using System.Web;
 using Microsoft.EntityFrameworkCore;
 using PoGoEmulatorApi.Database.Tables;
 
-namespace PoGoEmulatorApi.Database
+// ReSharper disable once CheckNamespace
+namespace PoGoEmulatorApi
 {
     public class PoGoDbContext : DbContext
     {
         private readonly DbContextOptions _options = null;
         public DbSet<User> Users { get; set; }
+        public DbSet<OwnedPokemon> OwnedPokemons { get; set; }
 
         public PoGoDbContext() : base()
         {
