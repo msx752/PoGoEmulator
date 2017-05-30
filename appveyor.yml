@@ -60,9 +60,9 @@ environment:
 #    - ruby_version: "21-x64"
   
   CHANGELOG_GITHUB_TOKEN:
-    secure: QcKCFS7oLerve4UOpe314Y3jok6BAXbbAyorTwQqykQjJHaTDLzDhhphiZ+l6h1m
+    secure: Kbj9iX33+TMOg0uDmh0OeOvi67A6kthXYJkAS+6h8V1v+OeO7UOle/Ud+cCj9SRB
   auth_token:
-    secure: QcKCFS7oLerve4UOpe314Y3jok6BAXbbAyorTwQqykQjJHaTDLzDhhphiZ+l6h1m
+    secure: Kbj9iX33+TMOg0uDmh0OeOvi67A6kthXYJkAS+6h8V1v+OeO7UOle/Ud+cCj9SRB
   github_user:
     secure: K1enFpkh00HL+0rlpKbUfQ==
   github_email:
