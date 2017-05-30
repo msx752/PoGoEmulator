@@ -3,7 +3,7 @@
 [![Stories in Ready](https://badge.waffle.io/msx752/PoGoEmulator.svg?label=in%20progress&title=In%20Progress)](http://waffle.io/msx752/PoGoEmulator)
 [![Stories in Ready](https://badge.waffle.io/msx752/PoGoEmulator.svg?label=done&title=Done)](http://waffle.io/msx752/PoGoEmulator)
 
-[![Build status](https://ci.appveyor.com/api/projects/status/py50i3brl1wjj6rv/branch/master?svg=true)](https://ci.appveyor.com/project/mustafasalihaslm/pogoemulator/branch/master) 
+[![Build status](https://ci.appveyor.com/api/projects/status/py50i3brl1wjj6rv/branch/master?svg=true)](https://ci.appveyor.com/project/msx752/pogoemulator/branch/master) 
 
 # PoGoEmulator
 
