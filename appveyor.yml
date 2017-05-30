@@ -108,7 +108,7 @@ configuration: Release
 
 build:
   # MSBuild verbosity level
-  #project: PoGoEmulator\PoGoEmulator.sln
+  project: PoGoEmulator.sln
   verbosity: minimal
 
 # scripts to run before build
