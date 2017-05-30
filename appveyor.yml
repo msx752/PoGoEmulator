@@ -174,7 +174,7 @@ deploy:
   # Deploy to GitHub Releases
   - provider: GitHub
     tag: $(APPVEYOR_REPO_TAG_NAME)
-    description: '[CHANGELOG.md](https://github.com/msx752/PoGoEmulatorApi/blob/master/CHANGELOG.md)'
+    description: '[CHANGELOG.md](https://github.com/msx752/PoGoEmulator/blob/net-mvc-api/CHANGELOG.md)'
     release: PoGoEmulatorApi $(APPVEYOR_REPO_TAG_NAME)
     auth_token: $(auth_token)
     artifact: PoGoEmulatorApi
