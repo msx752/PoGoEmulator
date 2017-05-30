@@ -38,8 +38,8 @@ init:
     }
     else
     {
-        $env:PoGoEmulator_Version = "$($env:APPVEYOR_BUILD_VERSION)";
-    }
+    }        $env:PoGoEmulator_Version = "$($env:APPVEYOR_BUILD_VERSION)";
+
 
 # clone directory
 clone_folder: c:\projects\PoGoEmulator
