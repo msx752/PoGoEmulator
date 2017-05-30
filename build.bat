@@ -23,8 +23,8 @@ ECHO You chose %Release%
 echo.
 echo Build initialised %Release% - %Platform%
 echo.
-nuget.exe restore "PoGoEmulator.sln"
-for /f "delims=" %%i in ('dir /s /b /a-d "%programfiles(x86)%\MSBuild.exe"') do (set PoGoEmulator="%%i")
-%RocketBuilder% "PoGoEmulator.sln" /property:Configuration="%Release%" /property:Platform="%Platform%"
-set PoGoEmulator
+nuget.exe restore "PoGoEmulatorApi.sln"
+for /f "delims=" %%i in ('dir /s /b /a-d "%programfiles(x86)%\MSBuild.exe"') do (set PoGoEmulatorApi="%%i")
+%RocketBuilder% "PoGoEmulatorApi.sln" /property:Configuration="%Release%" /property:Platform="%Platform%"
+set PoGoEmulatorApi
 pause
