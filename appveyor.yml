@@ -31,15 +31,15 @@ image: Visual Studio 2017
 
 # scripts that are called at very beginning, before repo cloning
 init:
-- ps: >-
-    if ($env:APPVEYOR_REPO_TAG -eq "true")
-    {
-        $env:PoGoEmulator_Version = "$($env:APPVEYOR_REPO_TAG_NAME.Replace('v', ''))";
-    }
-    else
-    {
-        $env:PoGoEmulator_Version = "$($env:APPVEYOR_BUILD_VERSION)";
-    }
+#- ps: >-
+#    if ($env:APPVEYOR_REPO_TAG -eq "true")
+#    {
+#        $env:PoGoEmulator_Version = "$($env:APPVEYOR_REPO_TAG_NAME.Replace('v', ''))";
+#    }
+#    else
+#    {
+#        $env:PoGoEmulator_Version = "$($env:APPVEYOR_BUILD_VERSION)";
+#    }
 
 # clone directory
 clone_folder: c:\projects\PoGoEmulator
