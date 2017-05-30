@@ -31,15 +31,15 @@ image: Visual Studio 2017
 
 # scripts that are called at very beginning, before repo cloning
 init:
-#- ps: >-
-#    if ($env:APPVEYOR_REPO_TAG -eq "true")
-#    {
-#        $env:PoGoEmulator_Version = "$($env:APPVEYOR_REPO_TAG_NAME.Replace('v', ''))";
-#    }
-#    else
-#    {
-#        $env:PoGoEmulator_Version = "$($env:APPVEYOR_BUILD_VERSION)";
-#    }
+- ps: >-
+    if ($env:APPVEYOR_REPO_TAG -eq "true")
+    {
+        $env:PoGoEmulator_Version = "$($env:APPVEYOR_REPO_TAG_NAME.Replace('v', ''))";
+    }
+    else
+    {
+        $env:PoGoEmulator_Version = "$($env:APPVEYOR_BUILD_VERSION)";
+    }
 
 # clone directory
 clone_folder: c:\projects\PoGoEmulator
@@ -79,7 +79,7 @@ install:
 
 # enable patching of AssemblyInfo.* files
 assembly_info:
-  patch: false
+  patch: true
   file: '**\AssemblyInfo.*'
   assembly_version: '$(PoGoEmulator_Version)'
   assembly_file_version: "1.0.0.0"
@@ -109,12 +109,15 @@ configuration: Release
 build:
   # MSBuild verbosity level
   project: PoGoEmulator.sln
+  publish_nuget: true
+  publish_nuget_symbols: true
+  include_nuget_references: true
   verbosity: minimal
 
 # scripts to run before build
 before_build:
   - nuget restore
-#  - cd PokeEase && npm run pack && cd ..
+  - dotnet restore
 
 # scripts to run *after* solution is built and *before* automatic packaging occurs (web apps, NuGet packages, Azure Cloud Services)
 before_package:
