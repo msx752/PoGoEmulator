@@ -109,14 +109,21 @@ namespace PoGoEmulator.Models
 
         private HttpStreamResult WriteHttpResponse(ByteString responseBody)
         {
-            var responseString =
-                "HTTP/1.1 200 OK\r\n" +
-                "Content-Type: x-www-form-urlencoded\r\n" +
-                "PoGoEmulator: .NET 4.6.2 ConsoleApplication\r\n" +
-                $"Date: {string.Format(new CultureInfo("en-GB"), "{0:ddd, dd MMM yyyy hh:mm:ss}", DateTime.UtcNow)} GMT\r\n" +
-                $"Content-Length: {responseBody.Length}\r\n" +
-                "Connection: keep-alive" +
-                "\r\n";
+            List<String> headers = new List<string>()
+            {
+                "HTTP/1.1 200 OK",
+                "Cache-Control: no-cache",
+                "Content-Type: text/html",
+                "Expires: -1",
+                "Pragma: no-cache",
+                "PoGoEmulator: .NET 4.6.2 ConsoleApplication",
+                $"Date: {string.Format(new CultureInfo("en-GB"), "{0:ddd, dd MMM yyyy hh:mm:ss}", DateTime.UtcNow)} GMT",
+                $"Content-Length: {responseBody.Length}",
+                "\r\n"
+            };
+
+            var responseString = string.Join("\r\n", headers);
+
             this.Write(responseString);
             this.Write(responseBody.ToArray());
             this.SendHttpResponse();

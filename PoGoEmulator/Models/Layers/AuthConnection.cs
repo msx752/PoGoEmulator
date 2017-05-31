@@ -25,6 +25,9 @@ namespace PoGoEmulator.Models
         {
             get
             {
+                if (base.StreamContext.ProtoRequest.RequestId == 0)
+                    throw new Exception("Request doesn't have protobuf data..");
+
                 var authInfo = base.StreamContext.ProtoRequest.AuthInfo;
                 if (authInfo.IsNull() || authInfo.Provider.IsNull())
                     throw new Exception("Invalid authentication token! Kicking..");

@@ -13,9 +13,9 @@ namespace PoGoEmulator
         /// </summary>
         public static Configs Cfg = new Configs()
         {
-#if DEBUG
-            RequestTimeout = new TimeSpan(0, 10, 0)
-#endif
+            //#if DEBUG
+            //            RequestTimeout = new TimeSpan(0, 10, 0)
+            //#endif
         };
 
         /// <summary>
@@ -28,12 +28,6 @@ namespace PoGoEmulator
         /// static datas 
         /// </summary>
         public static GameMaster GameMaster = null;
-
-        public static Dictionary<string, string> DefaultResponseHeader { get; set; } = new Dictionary<string, string>()
-        {
-            {"Connection", "keep-alive"},
-            {"Server", "C#.NET"},
-        };
 
         public static ConcurrentDictionary<string, CacheUserData> AuthenticatedUsers { get; set; } =
             new ConcurrentDictionary<string, CacheUserData>();//it must be re-configure in the future because user must be logout in somewhere (do i need store authTicket too ?)
