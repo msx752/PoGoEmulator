@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Google.Protobuf;
 using HttpMachine;
-using PoGoEmulator.Requests;
 using POGOProtos.Networking.Envelopes;
 
 namespace PoGoEmulator.Models
@@ -25,19 +24,28 @@ namespace PoGoEmulator.Models
         public string QueryString { get; set; }
         public string RequestUri { get; set; }
         public bool ShouldKeepAlive { get; set; }
-        public HttpStatusCode StatusCode { get; set; } = HttpStatusCode.BadRequest;
+        public HttpStatusCode StatusCode { get; set; }
         public string StatusReason { get; set; }
         public int VersionMajor { get; set; } = -1;
         public int VersionMinor { get; set; } = -1;
 
+        public Uri Url
+        {
+            get
+            {
+                return new Uri("http://PoGoEmulator" + this.RequestUri); ;
+            }
+        }
+
         /// <summary>
         /// request from user 
         /// </summary>
-        public RequestEnvelope ProtoRequest { get; private set; }
+        public RequestEnvelope ProtoRequest { get; } = new RequestEnvelope();
 
         public void OnBody(HttpParser parser, ArraySegment<byte> data)
         {
-            ProtoRequest = ProtoCaster<RequestEnvelope>(data.ToArray());
+            CodedInputStream codedStream = new CodedInputStream(data.ToArray());
+            ProtoRequest.MergeFrom(codedStream);
         }
 
         public void OnFragment(HttpParser parser, string fragment)
@@ -105,28 +113,6 @@ namespace PoGoEmulator.Models
                 StatusCode = HttpStatusCode.BadRequest;
             else
                 StatusCode = HttpStatusCode.OK;
-        }
-
-        /// <summary>
-        /// protobuf file deserialise on pure byte[] file , (becareful object must be a type of proto )
-        /// </summary>
-        /// <typeparam name="T">
-        /// </typeparam>
-        /// <param name="protobuf">
-        /// </param>
-        /// <returns>
-        /// </returns>
-        public T ProtoCaster<T>(Byte[] protobuf) where T : class
-        {
-            CodedInputStream codedStream = new CodedInputStream(protobuf);
-            T serverResponse = Activator.CreateInstance(typeof(T)) as T;
-            MethodInfo methodMergeFrom = serverResponse?.GetType().GetMethods().ToList()
-                .FirstOrDefault(p => p.ToString() == "Void MergeFrom(Google.Protobuf.CodedInputStream)");
-            if (methodMergeFrom == null)
-                throw new Exception("undefined protobuf class");
-            methodMergeFrom.Invoke(serverResponse, new object[] { codedStream });
-
-            return serverResponse;
         }
     }
 }

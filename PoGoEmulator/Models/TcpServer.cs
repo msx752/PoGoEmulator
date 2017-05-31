@@ -45,7 +45,8 @@ namespace PoGoEmulator.Models
 #if DEBUG
                       Logger.Write($"connected from {client.Client.RemoteEndPoint}", LogLevel.Debug);
 #endif
-                      new Connection(client).Answer();
+                      var usr = new UserConnection(client, new CancellationTokenSource());
+                      var onresuest = usr.OnRequest();
                   }, _ct);
                 }
             }

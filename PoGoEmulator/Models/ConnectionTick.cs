@@ -14,7 +14,7 @@ namespace PoGoEmulator.Models
 {
     public class ConnectionTick
     {
-        private Connection2 _conn;
+        private UserConnection _conn;
         private CancellationToken _ct;
         private System.Timers.Timer _tmr;
 
@@ -39,7 +39,7 @@ namespace PoGoEmulator.Models
         /// <param name="startAfterCreate">
         /// auto starts the function 
         /// </param>
-        public ConnectionTick(CancellationToken ct, Connection2 conn, bool startAfterCreate) : this(ct)
+        public ConnectionTick(CancellationToken ct, UserConnection conn, bool startAfterCreate) : this(ct)
         {
             _conn = conn;
             if (startAfterCreate)

@@ -248,9 +248,11 @@
     <Compile Include="CommandLineUtility\Arguments.cs" />
     <Compile Include="ConsoleLogger.cs" />
     <Compile Include="Database\PoGoDbContext.cs" />
+    <Compile Include="Database\Tables\OwnedPokemon.cs" />
     <Compile Include="Database\Tables\User.cs" />
     <Compile Include="Encryption.cs" />
     <Compile Include="Enums\ClientState.cs" />
+    <Compile Include="Enums\ControllerType.cs" />
     <Compile Include="Forms\advSettings\JsonTreeViewLoader.cs" />
     <Compile Include="Forms\EggsForm.cs">
       <SubType>Form</SubType>
@@ -295,44 +297,44 @@
       <DependentUpon>SettingForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Helpers\ResourceHelper.cs" />
-    <Compile Include="Migrations\20170524193132_UserTable.cs" />
-    <Compile Include="Migrations\20170524193132_UserTable.designer.cs">
-      <DependentUpon>20170524193132_UserTable.cs</DependentUpon>
+    <Compile Include="Migrations\20170530023657_user,owned_pkmn tables.cs" />
+    <Compile Include="Migrations\20170530023657_user,owned_pkmn tables.Designer.cs">
+      <DependentUpon>20170530023657_user,owned_pkmn tables.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20170530030504_table updated.cs" />
+    <Compile Include="Migrations\20170530030504_table updated.designer.cs">
+      <DependentUpon>20170530030504_table updated.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\PoGoDbContextModelSnapshot.cs" />
-    <Compile Include="Models\BaseConnection.cs" />
+    <Compile Include="Models\Layers\AuthConnection.cs" />
+    <Compile Include="Models\Layers\BaseConnection.cs" />
     <Compile Include="Models\CacheUserData.cs" />
-    <Compile Include="Models\Connection.cs" />
-    <Compile Include="Models\Connection2.cs" />
+    <Compile Include="Models\Layers\RouteConnection.cs" />
+    <Compile Include="Models\Layers\UserConnection.cs" />
     <Compile Include="Models\ConnectionTick.cs" />
     <Compile Include="Models\ConsoleLogger.cs" />
     <Compile Include="Enums\LogLevel.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Assets.cs" />
     <Compile Include="Models\Configs.cs" />
-    <Compile Include="Models\FuncConnection.cs" />
+    <Compile Include="Models\Layers\FuncConnection.cs" />
     <Compile Include="Models\GameMaster.cs" />
     <Compile Include="Models\HttpNetworkStream.cs" />
     <Compile Include="Models\HttpStreamContext.cs" />
-    <Compile Include="Models\MyHttpContext.cs" />
     <Compile Include="Machine\PogoMachine.cs" />
     <Compile Include="Global.cs" />
     <Compile Include="Interfaces\ILogger.cs" />
     <Compile Include="Logging\Logger.cs" />
-    <Compile Include="Models\TimeoutTick.cs" />
+    <Compile Include="Models\HttpStreamResult.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs" />
     <Compile Include="Properties\Settings.Designer.cs" />
-    <Compile Include="Requests\GoogleRequest.cs" />
-    <Compile Include="Requests\RequestHandler.cs" />
     <Compile Include="Models\TcpServer.cs" />
-    <Compile Include="Requests\RpcRequestParser.cs" />
     <Compile Include="Resources\EggDB.Designer.cs" />
     <Compile Include="Resources\ItemIdDB.Designer.cs" />
     <Compile Include="Resources\PokemonDB.Designer.cs" />
     <Compile Include="Resources\ProgressBar.cs" />
-    <Compile Include="Responses\Response.cs" />
     <Compile Include="Win32\ConsoleHelper.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -794,6 +796,10 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Requests\" />
+    <Folder Include="Responses\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
