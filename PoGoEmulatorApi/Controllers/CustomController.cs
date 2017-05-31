@@ -5,13 +5,12 @@ using System.Web.Http;
 namespace PoGoEmulatorApi.Controllers
 {
     [System.Web.Http.RoutePrefix("custom")]
-    public class CustomController : FunctionController4
+    public class CustomController : BaseRpcController
     {
         public CustomController(PoGoDbContext db) : base(db)
         {
             Log = log4net.LogManager.GetLogger(this.GetType());
             RpcType = Enums.RpcRequestType.Custom;
-            ProtoResponse = new POGOProtos.Networking.Envelopes.ResponseEnvelope();
         }
 
         [ActionName("rpc")]

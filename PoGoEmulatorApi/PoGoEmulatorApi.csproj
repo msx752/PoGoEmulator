@@ -294,6 +294,7 @@
     <Compile Include="Assets\GameMaster.cs" />
     <Compile Include="Controllers\Layers\AuthorizedController3.cs" />
     <Compile Include="Controllers\CustomController.cs" />
+    <Compile Include="Controllers\Layers\BaseRpcController.cs" />
     <Compile Include="Controllers\Layers\FunctionController4.cs" />
     <Compile Include="Controllers\Layers\RequestController1.cs" />
     <Compile Include="Controllers\ModelController.cs" />

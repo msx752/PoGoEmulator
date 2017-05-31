@@ -5,7 +5,7 @@ using System.Web.Http;
 namespace PoGoEmulatorApi.Controllers
 {
     [System.Web.Http.RoutePrefix("model")]
-    public class ModelController : FunctionController4
+    public class ModelController : BaseRpcController
     {
         public ModelController(PoGoDbContext db) : base(db)
         {
