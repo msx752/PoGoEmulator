@@ -12,16 +12,13 @@ using Timer = System.Timers.Timer;
 
 namespace PoGoEmulator.Models
 {
-    /// <summary>
-    /// request timeout checker 
-    /// </summary>
-    public class TimeoutTick
+    public class ConnectionTick
     {
-        private Connection _conn;
+        private UserConnection _conn;
         private CancellationToken _ct;
-        private Timer _tmr;
+        private System.Timers.Timer _tmr;
 
-        public TimeoutTick(CancellationToken ct)
+        public ConnectionTick(CancellationToken ct)
         {
             _ct = ct;
             Stopwatch = new Stopwatch();
@@ -42,7 +39,7 @@ namespace PoGoEmulator.Models
         /// <param name="startAfterCreate">
         /// auto starts the function 
         /// </param>
-        public TimeoutTick(CancellationToken ct, Connection conn, bool startAfterCreate) : this(ct)
+        public ConnectionTick(CancellationToken ct, UserConnection conn, bool startAfterCreate) : this(ct)
         {
             _conn = conn;
             if (startAfterCreate)
@@ -75,7 +72,7 @@ namespace PoGoEmulator.Models
 
             try
             {
-                if (_conn.Client.Client.Poll(1, SelectMode.SelectRead) && _conn.Client.Client.Available == 0)//detect the custom aborting
+                if (_conn.TCP.Client.Poll(1, SelectMode.SelectRead) && _conn.TCP.Client.Available == 0)//detect the custom aborting
                     _conn.Abort(RequestState.CanceledByUser, new Exception("canceled"));
                 else if (Stopwatch.ElapsedMilliseconds > Global.Cfg.RequestTimeout.TotalMilliseconds)
                     _conn.Abort(RequestState.Timeout, new Exception("connectionTimeout"));

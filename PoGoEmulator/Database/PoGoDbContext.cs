@@ -7,6 +7,7 @@ namespace PoGoEmulator.Database
     {
         private readonly DbContextOptions _options = null;
         public DbSet<User> Users { get; set; }
+        public DbSet<OwnedPokemon> OwnedPokemons { get; set; }
 
         public PoGoDbContext() : base()
         {

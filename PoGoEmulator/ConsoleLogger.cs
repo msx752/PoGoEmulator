@@ -9,25 +9,26 @@ using PoGoEmulator.Logging;
 using System.Drawing;
 using PoGoEmulator.Interfaces;
 
-#endregion
+#endregion using directives
 
 namespace PoGoEmulator
 {
     /// <summary>
-    ///     The ConsoleLogger is a simple logger which writes all logs to the Console.
+    /// The ConsoleLogger is a simple logger which writes all logs to the Console. 
     /// </summary>
-    internal class ConsoleLogger :ILogger    {
+    internal class ConsoleLogger : ILogger
+    {
         // Log write event definition.
         private delegate void LogWriteHandler(object sender, LogWriteEventArgs e);
 
         private readonly LogLevel _maxLogLevel;
-		//private ISession _session;
+        //private ISession _session;
 
         /// <summary>
-        ///     To create a ConsoleLogger, we must define a maximum log level.
-        ///     All levels above won't be logged.
+        /// To create a ConsoleLogger, we must define a maximum log level. All levels above won't be logged.
         /// </summary>
-        /// <param name="maxLogLevel"></param>
+        /// <param name="maxLogLevel">
+        /// </param>
         internal ConsoleLogger(LogLevel maxLogLevel)
         {
             _maxLogLevel = maxLogLevel;
@@ -37,12 +38,20 @@ namespace PoGoEmulator
         {
             // No need for buffering
         }
+
         /// <summary>
-        ///     Log a specific message by LogLevel. Won't log if the LogLevel is greater than the maxLogLevel set.
+        /// Log a specific message by LogLevel. Won't log if the LogLevel is greater than the
+        /// maxLogLevel set.
         /// </summary>
-        /// <param name="message">The message to log. The current time will be prepended.</param>
-        /// <param name="level">Optional. Default <see cref="LogLevel.Info" />.</param>
-        /// <param name="color">Optional. Default is auotmatic</param>
+        /// <param name="message">
+        /// The message to log. The current time will be prepended. 
+        /// </param>
+        /// <param name="level">
+        /// Optional. Default <see cref="LogLevel.Info" />. 
+        /// </param>
+        /// <param name="color">
+        /// Optional. Default is auotmatic 
+        /// </param>
         public void Write(string message, LogLevel level = LogLevel.Info, ConsoleColor color = ConsoleColor.Black)
         {
             // Remember to change to a font that supports your language, otherwise it'll still show as ???.
@@ -57,9 +66,9 @@ namespace PoGoEmulator
             OnLogWrite?.Invoke(this, new LogWriteEventArgs { Message = finalMessage, Level = level, Color = color });
 
             // ReSharper disable once SwitchStatementMissingSomeCases
-            Color _color = new Color(); 
+            Color _color = new Color();
             //TODO: review
-            
+
             Dictionary<LogLevel, Color> colors = new Dictionary<LogLevel, Color>()
             {
                 { LogLevel.Error, Color.Red },
@@ -71,7 +80,6 @@ namespace PoGoEmulator
             };
 
             _color = colors[level];
-            
 
             if (string.IsNullOrEmpty(color.ToString()) || color.ToString() != "Black")
             {
@@ -79,9 +87,8 @@ namespace PoGoEmulator
             }
 
             if (string.IsNullOrEmpty(_color.ToString())) _color = Color.White;
-            
 
-            MainForm.ColoredConsoleWrite(_color, finalMessage);
+            //MainForm.ColoredConsoleWrite(_color, finalMessage);
         }
 
         public static Color FromColor(ConsoleColor c)
@@ -90,6 +97,7 @@ namespace PoGoEmulator
             {
                 case ConsoleColor.DarkYellow:
                     return Color.FromArgb(255, 128, 128, 0);
+
                 default:
                     return Color.FromName(c.ToString());
             }
@@ -103,24 +111,30 @@ namespace PoGoEmulator
         private class LogWriteEventArgs
         {
             public string message;
+
             public string Message
             {
                 get { return message; }
                 set { message = value; }
             }
+
             public LogLevel level;
+
             public LogLevel Level
             {
                 get { return level; }
                 set { level = value; }
             }
+
             public ConsoleColor color;
+
             public ConsoleColor Color
             {
                 get { return color; }
                 set { color = value; }
             }
         }
+
         private event LogWriteHandler OnLogWrite;
     }
 }

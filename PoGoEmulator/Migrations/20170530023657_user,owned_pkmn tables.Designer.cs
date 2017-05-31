@@ -8,9 +8,10 @@ using PoGoEmulator.Database;
 namespace PoGoEmulator.Migrations
 {
     [DbContext(typeof(PoGoDbContext))]
-    partial class PoGoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170530023657_user,owned_pkmn tables")]
+    partial class userowned_pkmntables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")
@@ -46,7 +47,7 @@ namespace PoGoEmulator.Migrations
 
                     b.Property<double?>("egg_km_walked_target");
 
-                    b.Property<bool?>("favorite");
+                    b.Property<byte?>("favorite");
 
                     b.Property<int?>("from_fort");
 
@@ -58,7 +59,7 @@ namespace PoGoEmulator.Migrations
 
                     b.Property<int>("individual_stamina");
 
-                    b.Property<bool>("is_egg");
+                    b.Property<byte>("is_egg");
 
                     b.Property<string>("move_1")
                         .HasMaxLength(32);
@@ -120,9 +121,9 @@ namespace PoGoEmulator.Migrations
                     b.Property<string>("pokedex")
                         .HasMaxLength(64);
 
-                    b.Property<bool>("send_marketing_emails");
+                    b.Property<byte>("send_marketing_emails");
 
-                    b.Property<bool>("send_push_notifications");
+                    b.Property<byte>("send_push_notifications");
 
                     b.Property<int>("stardust");
 

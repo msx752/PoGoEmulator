@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Google.Protobuf;
+using POGOProtos.Networking.Envelopes;
 
 namespace PoGoEmulator.Models
 {
@@ -76,7 +81,7 @@ namespace PoGoEmulator.Models
             return b;
         }
 
-        public void SendHttpResponse()
+        private void SendHttpResponse()
         {
             if (Position == 0) return;
             NStream.Write(SendBuffer, 0, Position);
@@ -100,6 +105,34 @@ namespace PoGoEmulator.Models
             Array.Resize(ref _sendBuffer, _sendBuffer.Length + byteData.Length);
             Array.Copy(byteData, 0, _sendBuffer, Position, byteData.Length);
             Position += byteData.Length;
+        }
+
+        private HttpStreamResult WriteHttpResponse(ByteString responseBody)
+        {
+            List<String> headers = new List<string>()
+            {
+                "HTTP/1.1 200 OK",
+                "Cache-Control: no-cache",
+                "Content-Type: text/html",
+                "Expires: -1",
+                "Pragma: no-cache",
+                "PoGoEmulator: .NET 4.6.2 ConsoleApplication",
+                $"Date: {string.Format(new CultureInfo("en-GB"), "{0:ddd, dd MMM yyyy hh:mm:ss}", DateTime.UtcNow)} GMT",
+                $"Content-Length: {responseBody.Length}",
+                "\r\n"
+            };
+
+            var responseString = string.Join("\r\n", headers);
+
+            this.Write(responseString);
+            this.Write(responseBody.ToArray());
+            this.SendHttpResponse();
+            return new HttpStreamResult();
+        }
+
+        public HttpStreamResult WriteProtoResponse(ResponseEnvelope responseToUser)
+        {
+            return this.WriteHttpResponse(responseToUser.ToByteString());
         }
     }
 }

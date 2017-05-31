@@ -35,10 +35,10 @@ namespace PoGoEmulator
 
         private static void Main(string[] args)
         {
-            Application.EnableVisualStyles();
-            //for app winexe 
+            //Application.EnableVisualStyles();
+            //for app winexe
             //ConsoleHelper.AllocConsole();
-            Application.Run(new MainForm(args));
+            //Application.Run(new MainForm(args));
 
             try
             {
@@ -70,9 +70,9 @@ namespace PoGoEmulator
                         case "help":
                             Logger.Write(" - help menu", LogLevel.Help);
                             break;
-                        /*case "gui":
-                            StartGui();
-                            break;*/
+                            /*case "gui":
+                                StartGui();
+                                break;*/
                     }
                 } while (line != "exit");
             }
