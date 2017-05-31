@@ -43,7 +43,7 @@ init:
 
 
 # clone directory
-clone_folder: c:\projects\PoGoEmulator
+clone_folder: c:\projects\PoGoEmulatorApi
 
 # fetch repository as zip archive
 shallow_clone: false
