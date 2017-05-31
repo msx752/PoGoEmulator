@@ -6,6 +6,7 @@ using System.Reflection;
 using Google.Protobuf;
 using Google.Protobuf.Collections;
 using PoGoEmulatorApi.Database.Tables;
+using POGOProtos.Data.Player;
 using POGOProtos.Enums;
 using POGOProtos.Inventory;
 using POGOProtos.Inventory.Item;
@@ -264,34 +265,28 @@ namespace PoGoEmulatorApi.Controllers
             {
                 CreationTimestampMs = (long)DateTime.Now.ToUnixTime(),
                 Username = usr.username,
-                Team = (TeamColor)usr.team,
                 Avatar = new POGOProtos.Data.Player.PlayerAvatar()
                 {
-                    Skin = 1,
-                    Hair = 1,
-                    Shirt = 1,
-                    Pants = 1,
-                    Eyes = 1,
-                    Backpack = 1,
-                    Hat = 1,
-                    Shoes = 1
                 },
                 MaxPokemonStorage = 250,
                 MaxItemStorage = 350,
-                ContactSettings = new POGOProtos.Data.Player.ContactSettings()
-                {
-                    SendMarketingEmails = usr.send_marketing_emails,
-                    SendPushNotifications = usr.send_push_notifications
-                },
+                ContactSettings = new POGOProtos.Data.Player.ContactSettings(),
                 RemainingCodenameClaims = 10,
+                DailyBonus = new POGOProtos.Data.Player.DailyBonus(),
+                EquippedBadge = new POGOProtos.Data.Player.EquippedBadge(),
             };
+            gpr.PlayerData.Currencies.AddRange(new List<Currency>()
+            {
+                new Currency(){ Name="POKECOIN"},
+                new Currency(){ Name="STARDUST"}
+            });
             gpr.PlayerData.TutorialState.AddRange(new List<TutorialState>()
             {
-                //(TutorialState)1,
-                //(TutorialState)0,
-                //(TutorialState)3,
-                //(TutorialState)4,
-                //(TutorialState)7
+              TutorialState.LegalScreen,
+              TutorialState.AvatarSelection,
+              TutorialState.PokemonCapture,
+              TutorialState.NameSelection,
+              TutorialState.FirstTimeExperienceComplete
             });
             return gpr.ToByteString();
         }
@@ -375,7 +370,8 @@ namespace PoGoEmulatorApi.Controllers
             this.Log.Dbg($"brcontroller.ProtoRequest.Requests.Count: {this.ProtoRequest.Requests.Count}");
             foreach (var req in this.ProtoRequest.Requests)
             {
-                Body.Add(this.ProcessResponse(req));
+                var r = this.ProcessResponse(req);
+                Body.Add(r);
             }
             return Body;
         }

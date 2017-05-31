@@ -20,6 +20,7 @@ namespace PoGoEmulatorApi.Controllers
         public RequestController1(PoGoDbContext db)
         {
             this.Database = db;
+            ProtoResponse = new ResponseEnvelope();
         }
 
         public HttpRequestMessage HttpRequestMessage { get { return HttpContext.Items["MS_HttpRequestMessage"] as HttpRequestMessage; } }
@@ -46,23 +47,18 @@ namespace PoGoEmulatorApi.Controllers
             _requestProto.MergeFrom(cis);
         }
 
-        public virtual HttpResponseMessage Rpc()
-        {
-            return this.ResponseToClient(HttpStatusCode.OK);
-        }
-
         [System.Web.Http.NonAction]
         protected HttpResponseMessage ThrowException(Exception e)
         {
             return this.ResponseToClient(HttpStatusCode.BadRequest, e);
         }
 
-        protected ResponseEnvelope ProtoResponse { get; set; } = new ResponseEnvelope();
+        protected ResponseEnvelope ProtoResponse { get; set; }
         public PoGoDbContext Database { get; set; }
         protected ILog Log { get; set; } = null;
 
         [System.Web.Http.NonAction]
-        private HttpResponseMessage ResponseToClient(HttpStatusCode code, Exception e = null)
+        protected HttpResponseMessage ResponseToClient(HttpStatusCode code, Exception e = null)
         {
             HttpResponseMessage res = new HttpResponseMessage(code);
             res.Headers.TryAddWithoutValidation("Content-Type", "x-www-form-urlencoded");
@@ -71,15 +67,21 @@ namespace PoGoEmulatorApi.Controllers
             res.Headers.TryAddWithoutValidation("Date", $"{string.Format(new CultureInfo("en-GB"), "{0:ddd, dd MMM yyyy hh:mm:ss}", DateTime.UtcNow)} GMT");
             if (code == HttpStatusCode.OK)
             {
-                res.Content = new ByteArrayContent(ProtoResponse.ToByteArray());
+                //res.Content = new ByteArrayContent(ProtoResponse.ToByteArray());
                 Database.SaveChanges();
                 Log.Dbg($"succesfully responding");
             }
             else
             {
-                res.Content = new StringContent(e.Message);
+                ProtoResponse = new ResponseEnvelope()
+                {
+                    RequestId = ProtoRequest.RequestId,
+                    Error = e.Message,
+                    StatusCode = 1,
+                };
                 Log.Error("unsuccesfully responding error:", e);
             }
+            res.Content = new ByteArrayContent(ProtoResponse.ToByteArray());
             return res;
         }
     }

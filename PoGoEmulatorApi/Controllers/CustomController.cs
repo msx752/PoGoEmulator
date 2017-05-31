@@ -11,12 +11,12 @@ namespace PoGoEmulatorApi.Controllers
         {
             Log = log4net.LogManager.GetLogger(this.GetType());
             RpcType = Enums.RpcRequestType.Custom;
-            //UpdateAuthorization();
+            ProtoResponse = new POGOProtos.Networking.Envelopes.ResponseEnvelope();
         }
 
         [ActionName("rpc")]
         [System.Web.Http.HttpPost]
-        public override HttpResponseMessage Rpc()
+        public HttpResponseMessage Rpc()
         {
             return base.OnRequest();
         }

@@ -21,6 +21,7 @@ namespace PoGoEmulatorApi.Controllers
         [System.Web.Http.NonAction]
         protected HttpResponseMessage EnvelopResponse(RepeatedField<ByteString> returns = null)
         {
+            this.ProtoResponse.RequestId = this.ProtoRequest.RequestId;
             if (returns != null)
             {
                 this.Log.Dbg($"ReturnsCount:{returns.Count}");
@@ -35,17 +36,28 @@ namespace PoGoEmulatorApi.Controllers
             {
                 this.ProtoResponse.AuthTicket = new AuthTicket() { };
             }
-
-            this.ProtoResponse.Unknown6.Add(new Unknown6Response()
+            bool AlreadyExists = false;
+            for (int i = 0; i < this.ProtoResponse.Unknown6.Count; i++)
             {
-                ResponseType = 6,
-                Unknown2 = new Unknown6Response.Types.Unknown2()
+                if (this.ProtoResponse.Unknown6[i].ResponseType == 6)
                 {
-                    Unknown1 = 1
+                    AlreadyExists = true;
+                    break;
                 }
-            });
+            }
+            if (AlreadyExists == false)
+            {
+                this.ProtoResponse.Unknown6.Add(new Unknown6Response()
+                {
+                    ResponseType = 6,
+                    Unknown2 = new Unknown6Response.Types.Unknown2()
+                    {
+                        Unknown1 = 1
+                    }
+                });
+            }
             this.ProtoResponse.StatusCode = 1;
-            return this.Rpc();
+            return base.ResponseToClient(HttpStatusCode.OK);
         }
     }
 }

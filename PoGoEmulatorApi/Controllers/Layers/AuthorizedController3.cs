@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using Google.Protobuf;
 using PoGoEmulatorApi.Database.Tables;
@@ -79,7 +80,7 @@ namespace PoGoEmulatorApi.Controllers
                 //validEmail()
 
                 AddOrUpdateUserLocation();
-                return base.Rpc();
+                return base.ResponseToClient(HttpStatusCode.OK);
             }
             catch (Exception e)
             {
