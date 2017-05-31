@@ -11,9 +11,9 @@ using POGOProtos.Networking.Envelopes;
 // ReSharper disable once CheckNamespace
 namespace PoGoEmulatorApi.Controllers
 {
-    public class AuthorizedController3 : ResponseController2
+    public class AuthorizationController3 : ResponseController2
     {
-        public AuthorizedController3(PoGoDbContext db) : base(db)
+        public AuthorizationController3(PoGoDbContext db) : base(db)
         {
         }
 

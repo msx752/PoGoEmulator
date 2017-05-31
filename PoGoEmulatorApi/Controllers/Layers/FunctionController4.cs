@@ -19,7 +19,7 @@ using POGOProtos.Settings;
 // ReSharper disable once CheckNamespace
 namespace PoGoEmulatorApi.Controllers
 {
-    public class FunctionController4 : AuthorizedController3
+    public class FunctionController4 : AuthorizationController3
     {
         public FunctionController4(PoGoDbContext db) : base(db)
         {
@@ -339,8 +339,8 @@ namespace PoGoEmulatorApi.Controllers
                     }
                 }
 
-                Log.Debug($"HasSignature:{CurrentPlayer.HasSignature}, Platform:{CurrentPlayer.Platform}");
-                Log.Debug($"ProtoRequest.Requests.Count:{ProtoRequest.Requests.Count}");
+                //Log.Debug($"HasSignature:{CurrentPlayer.HasSignature}, Platform:{CurrentPlayer.Platform}");
+                //Log.Debug($"ProtoRequest.Requests.Count:{ProtoRequest.Requests.Count}");
                 if (ProtoRequest.Requests.Count == 0)
                 {
                     if (ProtoRequest.Unknown6 != null && ProtoRequest.Unknown6.RequestType == 6)
@@ -371,6 +371,9 @@ namespace PoGoEmulatorApi.Controllers
             foreach (var req in this.ProtoRequest.Requests)
             {
                 var r = this.ProcessResponse(req);
+#if DEBUG
+                Log.Info($"RequestType:{req.RequestType}\t\tReqLength:{req.RequestMessage.Length}\tResLength:{r.Length}");
+#endif
                 Body.Add(r);
             }
             return Body;

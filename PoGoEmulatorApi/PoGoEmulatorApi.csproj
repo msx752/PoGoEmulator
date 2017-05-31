@@ -292,7 +292,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Assets\Asset.cs" />
     <Compile Include="Assets\GameMaster.cs" />
-    <Compile Include="Controllers\Layers\AuthorizedController3.cs" />
+    <Compile Include="Controllers\Layers\AuthorizationController3.cs" />
     <Compile Include="Controllers\CustomController.cs" />
     <Compile Include="Controllers\Layers\BaseRpcController.cs" />
     <Compile Include="Controllers\Layers\FunctionController4.cs" />
