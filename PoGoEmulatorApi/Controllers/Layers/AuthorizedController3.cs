@@ -123,7 +123,7 @@ namespace PoGoEmulatorApi.Controllers
             var user = Database.Users.FirstOrDefault(p => p.email == email);
             if (user == null)
             {
-                Log.Dbg($"user is notfound adding now");
+                //Log.Dbg($"user is notfound adding now");
                 user = new User
                 {
                     email = email,
@@ -133,7 +133,7 @@ namespace PoGoEmulatorApi.Controllers
                     latitude = ProtoRequest.Latitude,
                 };
                 Database.Users.Add(user);
-                Log.Dbg($"user is added: {user.email}");
+                //Log.Dbg($"user is added: {user.email}");
             }
             else
             {
@@ -141,7 +141,7 @@ namespace PoGoEmulatorApi.Controllers
                 user.longitude = ProtoRequest.Longitude;
                 user.latitude = ProtoRequest.Latitude;
                 Database.Users.Update(user);
-                Log.Dbg($"user is updated: {user.email}");
+                //Log.Dbg($"user is updated: {user.email}");
             }
             Database.SaveChanges();
         }

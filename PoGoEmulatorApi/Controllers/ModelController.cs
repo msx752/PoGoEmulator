@@ -17,9 +17,7 @@ namespace PoGoEmulatorApi.Controllers
         [System.Web.Http.HttpPost]
         public HttpResponseMessage Rpc()
         {
-            Log.Dbg("MODELCONTROLELR NOT DECLARED YET");
-            return null;
-            //return base.Rpc();
+            return base.ThrowException(new System.Exception("MODELCONTROLELR NOT DECLARED YET"));
         }
     }
 }

@@ -57,7 +57,7 @@ namespace PoGoEmulatorApi.Controllers
                         ChallengeUrl = " "
                     };
 
-                    this.Log.Dbg($"TypeOfResponseMessage: {nameof(CheckChallengeResponse)}");
+                    //this.Log.Dbg($"TypeOfResponseMessage: {nameof(CheckChallengeResponse)}");
                     return c.ToByteString();
 
                 //case RequestType.GetDownloadUrls:
@@ -99,7 +99,7 @@ namespace PoGoEmulatorApi.Controllers
                         MinimumClientVersion = "0.35.0",
                     };
 
-                    this.Log.Dbg($"TypeOfResponseMessage: {nameof(DownloadSettingsResponse)}");
+                    //this.Log.Dbg($"TypeOfResponseMessage: {nameof(DownloadSettingsResponse)}");
                     return ds.ToByteString();
 
                 case RequestType.DownloadRemoteConfigVersion:
@@ -108,13 +108,13 @@ namespace PoGoEmulatorApi.Controllers
                     drcv.ItemTemplatesTimestampMs = 1471650700946;
                     drcv.AssetDigestTimestampMs = 1467338276561000;
 
-                    this.Log.Dbg($"TypeOfResponseMessage: {nameof(DownloadRemoteConfigVersionResponse)}");
+                    //this.Log.Dbg($"TypeOfResponseMessage: {nameof(DownloadRemoteConfigVersionResponse)}");
                     return drcv.ToByteString();
 
                 case RequestType.DownloadItemTemplates:
                     var dit = GlobalSettings.GameMaster.Decode;
 
-                    this.Log.Dbg($"TypeOfResponseMessage: {nameof(DownloadItemTemplatesResponse)}");
+                    //this.Log.Dbg($"TypeOfResponseMessage: {nameof(DownloadItemTemplatesResponse)}");
                     return dit.ToByteString();
 
                 default:
@@ -144,7 +144,7 @@ namespace PoGoEmulatorApi.Controllers
                         sfp.Result = SetFavoritePokemonResponse.Types.Result.ErrorPokemonNotFound;
                     }
 
-                    this.Log.Dbg($"TypeOfResponseMessage: {nameof(SetFavoritePokemonResponse)}");
+                    //this.Log.Dbg($"TypeOfResponseMessage: {nameof(SetFavoritePokemonResponse)}");
                     return sfp.ToByteString();
 
                 case RequestType.LevelUpRewards:
@@ -155,13 +155,13 @@ namespace PoGoEmulatorApi.Controllers
                         new ItemAward(){ ItemId=ItemId.ItemPokeBall, ItemCount=2},
                         new ItemAward(){ ItemId=ItemId.ItemTroyDisk, ItemCount=2}
                     });
-                    this.Log.Dbg($"TypeOfResponseMessage: {nameof(LevelUpRewardsResponse)}");
+                    //this.Log.Dbg($"TypeOfResponseMessage: {nameof(LevelUpRewardsResponse)}");
                     return lur.ToByteString();
 
                 case RequestType.ReleasePokemon:
                     ReleasePokemonResponse rp = this.ReleasePokemon((ReleasePokemonMessage)msg);
 
-                    this.Log.Dbg($"TypeOfResponseMessage: {nameof(ReleasePokemonResponse)}");
+                    //this.Log.Dbg($"TypeOfResponseMessage: {nameof(ReleasePokemonResponse)}");
                     return rp.ToByteString();
 
                 case RequestType.UpgradePokemon:
@@ -176,7 +176,7 @@ namespace PoGoEmulatorApi.Controllers
                     //    up.Result = UpgradePokemonResponse.Types.Result.ErrorPokemonNotFound;
                     //}
 
-                    this.Log.Dbg($"TypeOfResponseMessage: {nameof(UpgradePokemonResponse)}");
+                    //this.Log.Dbg($"TypeOfResponseMessage: {nameof(UpgradePokemonResponse)}");
                     return up.ToByteString();
 
                 case RequestType.GetPlayerProfile:
@@ -197,7 +197,7 @@ namespace PoGoEmulatorApi.Controllers
 
                 case RequestType.GetPlayer:
 
-                    this.Log.Dbg($"TypeOfResponseMessage: {nameof(GetPlayerResponse)}");
+                    //this.Log.Dbg($"TypeOfResponseMessage: {nameof(GetPlayerResponse)}");
                     return this.GetPlayer();
 
                 case RequestType.GetInventory:
@@ -211,13 +211,13 @@ namespace PoGoEmulatorApi.Controllers
                     };
                     gi.InventoryDelta.InventoryItems.AddRange(items);
 
-                    this.Log.Dbg($"TypeOfResponseMessage: {nameof(GetInventoryResponse)}");
+                    //this.Log.Dbg($"TypeOfResponseMessage: {nameof(GetInventoryResponse)}");
                     return gi.ToByteString();
 
                 case RequestType.GetAssetDigest:
                     var gad = GlobalSettings.GameAssets[this.CurrentPlayer.Platform].Value;
 
-                    this.Log.Dbg($"TypeOfResponseMessage: {nameof(GetAssetDigestResponse)}");
+                    //this.Log.Dbg($"TypeOfResponseMessage: {nameof(GetAssetDigestResponse)}");
                     return gad.ToByteString();
 
                 //case RequestType.NicknamePokemon:
@@ -228,14 +228,14 @@ namespace PoGoEmulatorApi.Controllers
                     GetHatchedEggsResponse ghe = new GetHatchedEggsResponse();
                     ghe.Success = true;
 
-                    this.Log.Dbg($"TypeOfResponseMessage: {nameof(GetHatchedEggsResponse)}");
+                    //this.Log.Dbg($"TypeOfResponseMessage: {nameof(GetHatchedEggsResponse)}");
                     return ghe.ToByteString();
 
                 case RequestType.CheckAwardedBadges:
                     CheckAwardedBadgesResponse cab = new CheckAwardedBadgesResponse();
                     cab.Success = true;
 
-                    this.Log.Dbg($"TypeOfResponseMessage: {nameof(CheckAwardedBadgesResponse)}");
+                    //this.Log.Dbg($"TypeOfResponseMessage: {nameof(CheckAwardedBadgesResponse)}");
                     return cab.ToByteString();
 
                 //case RequestType.RecycleInventoryItem:
@@ -313,7 +313,7 @@ namespace PoGoEmulatorApi.Controllers
                     AddOrUpdateUserLocation();
                 }
 
-                Log.Debug($"HasSignature:{CurrentPlayer.HasSignature}");
+                //Log.Debug($"HasSignature:{CurrentPlayer.HasSignature}");
                 if (CurrentPlayer.HasSignature == false)
                 {
                     if (ProtoResponse.Unknown6 != null)
@@ -345,7 +345,7 @@ namespace PoGoEmulatorApi.Controllers
                 {
                     if (ProtoRequest.Unknown6 != null && ProtoRequest.Unknown6.RequestType == 6)
                     {
-                        Log.Debug($"ProtoRequest.Unknown6.RequestType:{ProtoRequest.Unknown6.RequestType}");
+                        //Log.Debug($"ProtoRequest.Unknown6.RequestType:{ProtoRequest.Unknown6.RequestType}");
                         return base.EnvelopResponse();
                     }
                     else
@@ -367,7 +367,7 @@ namespace PoGoEmulatorApi.Controllers
         {
             RepeatedField<ByteString> Body = new RepeatedField<ByteString>();
 
-            this.Log.Dbg($"brcontroller.ProtoRequest.Requests.Count: {this.ProtoRequest.Requests.Count}");
+            //this.Log.Dbg($"brcontroller.ProtoRequest.Requests.Count: {this.ProtoRequest.Requests.Count}");
             foreach (var req in this.ProtoRequest.Requests)
             {
                 var r = this.ProcessResponse(req);
@@ -392,7 +392,7 @@ namespace PoGoEmulatorApi.Controllers
 
                 methodMergeFrom.Invoke(msg, new object[] { codedStream });
 
-                this.Log.Dbg($"TypeOfRequestMessage: {strType}");
+                //this.Log.Dbg($"TypeOfRequestMessage: {strType}");
                 switch (type)
                 {
                     //player

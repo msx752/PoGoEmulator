@@ -67,9 +67,8 @@ namespace PoGoEmulatorApi.Controllers
             res.Headers.TryAddWithoutValidation("Date", $"{string.Format(new CultureInfo("en-GB"), "{0:ddd, dd MMM yyyy hh:mm:ss}", DateTime.UtcNow)} GMT");
             if (code == HttpStatusCode.OK)
             {
-                //res.Content = new ByteArrayContent(ProtoResponse.ToByteArray());
                 Database.SaveChanges();
-                Log.Dbg($"succesfully responding");
+                Log.Info($"succesfully responding[{Request.UserHostAddress}]:");
             }
             else
             {
@@ -79,7 +78,7 @@ namespace PoGoEmulatorApi.Controllers
                     Error = e.Message,
                     StatusCode = 1,
                 };
-                Log.Error("unsuccesfully responding error:", e);
+                Log.Error($"responding error[{Request.UserHostAddress}]:", e);
             }
             res.Content = new ByteArrayContent(ProtoResponse.ToByteArray());
             return res;

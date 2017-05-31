@@ -34,19 +34,19 @@ namespace PoGoEmulatorApi
             return serverResponse;
         }
 
-        /// <summary>
-        /// custom extension 
-        /// </summary>
-        /// <param name="log">
-        /// </param>
-        /// <param name="message">
-        /// </param>
-        public static void Dbg(this ILog log, string message)
-        {
-#if DEBUG
-            log.Debug(message);
-#endif
-        }
+        //        /// <summary>
+        //        /// custom extension
+        //        /// </summary>
+        //        /// <param name="log">
+        //        /// </param>
+        //        /// <param name="message">
+        //        /// </param>
+        //        public static void Dbg(this ILog log, string message)
+        //        {
+        //#if DEBUG
+        //            log.Debug(message);
+        //#endif
+        //        }
 
         public static bool IsNull(this object obj)
         {

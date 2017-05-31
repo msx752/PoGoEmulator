@@ -24,12 +24,12 @@ namespace PoGoEmulatorApi.Controllers
             this.ProtoResponse.RequestId = this.ProtoRequest.RequestId;
             if (returns != null)
             {
-                this.Log.Dbg($"ReturnsCount:{returns.Count}");
+                //this.Log.Dbg($"ReturnsCount:{returns.Count}");
                 this.ProtoResponse.Returns.AddRange(returns);
             }
             else
             {
-                this.Log.Dbg($"ReturnsCount:null");
+                //this.Log.Dbg($"ReturnsCount:null");
             }
 
             if (this.ProtoRequest.AuthTicket != null)
