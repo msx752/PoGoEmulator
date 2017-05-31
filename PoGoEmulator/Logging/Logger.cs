@@ -164,7 +164,7 @@ namespace PoGoEmulator.Logging
         public static void Write(Exception message, LogLevel level = LogLevel.Error,
             ConsoleColor color = ConsoleColor.Black, bool force = false)
         {
-            Write($"\r\n{{{message.Message}}}\r\n{message.StackTrace}", level, color, force);
+            Write($"\r\n{{{message.Message}}}\r\n\r\n{message.StackTrace}", level, color, force);
         }
     }
 }

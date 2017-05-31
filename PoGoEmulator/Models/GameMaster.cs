@@ -25,7 +25,7 @@ namespace PoGoEmulator.Models
 
             BinaryReader br = new BinaryReader(new StreamReader(path_game_master).BaseStream);
             Buffer = br.ReadBytes((int)br.BaseStream.Length);
-            Decode = Buffer.Proton<DownloadItemTemplatesResponse>();
+            Decode = Buffer.ProtoCaster<DownloadItemTemplatesResponse>();
 
             foreach (var item in Decode.ItemTemplates)
                 this.Settings[item.TemplateId] = item;
