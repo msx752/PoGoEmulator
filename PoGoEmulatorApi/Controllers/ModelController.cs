@@ -1,31 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Reflection;
-using System.Threading.Tasks;
 using System.Web.Http;
-using PoGoEmulatorApi.Database;
 
 namespace PoGoEmulatorApi.Controllers
 {
     [System.Web.Http.RoutePrefix("model")]
-    public class ModelController : AuthorizedController
+    public class ModelController : FunctionController4
     {
         public ModelController(PoGoDbContext db) : base(db)
         {
-            Log = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+            Log = log4net.LogManager.GetLogger(this.GetType());
             RpcType = Enums.RpcRequestType.Model;
-
-            //UpdatePlayerLocation();
-            //UpdateCachedUser();
         }
 
+        [ActionName("rpc")]
         [System.Web.Http.HttpPost]
         public override HttpResponseMessage Rpc()
         {
-            return base.Rpc();
+            Log.Dbg("MODELCONTROLELR NOT DECLARED YET");
+            return null;
+            //return base.Rpc();
         }
     }
 }

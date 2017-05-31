@@ -1,9 +1,7 @@
-﻿using System;
+﻿using POGOProtos.Networking.Responses;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Web;
-using POGOProtos.Networking.Responses;
 
 namespace PoGoEmulatorApi.Assets
 {
@@ -39,7 +37,7 @@ namespace PoGoEmulatorApi.Assets
                     BinaryReader sr = new BinaryReader(new StreamReader(path_asset_digest).BaseStream);
                     byte[] buffer = sr.ReadBytes((int)sr.BaseStream.Length);
                     GlobalSettings.GameAssets[platform] =
-                        new KeyValuePair<byte[], GetAssetDigestResponse>(buffer, buffer.Proton<GetAssetDigestResponse>());
+                        new KeyValuePair<byte[], GetAssetDigestResponse>(buffer, buffer.ProtoSerializer<GetAssetDigestResponse>());
                 }
 
                 for (var j = 1; j <= max; j++)

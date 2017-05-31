@@ -11,11 +11,17 @@ using PoGoEmulatorApi.Controllers;
 namespace PoGoEmulatorApi
 {
     public static class Extensions
-    {      /// <summary>
-           /// protobuf file deserialise on pure byte[] file , (becareful object must be a type of
-           /// proto ) </summary> <typeparam name="T"> </typeparam> <param name="protobuf"> </param>
-           /// <returns> </returns>
-        public static T Proton<T>(this Byte[] protobuf) where T : class
+    {
+        /// <summary>
+        /// protobuf file deserialise on pure byte[] file , (becareful object must be a type of proto )
+        /// </summary>
+        /// <typeparam name="T">
+        /// </typeparam>
+        /// <param name="protobuf">
+        /// </param>
+        /// <returns>
+        /// </returns>
+        public static T ProtoSerializer<T>(this Byte[] protobuf) where T : class
         {
             CodedInputStream codedStream = new CodedInputStream(protobuf);
             T serverResponse = Activator.CreateInstance(typeof(T)) as T;
@@ -26,15 +32,6 @@ namespace PoGoEmulatorApi
             methodMergeFrom.Invoke(serverResponse, new object[] { codedStream });
 
             return serverResponse;
-        }
-
-        public static ulong ToUnixTime(this DateTime datetime, TimeSpan? ts = null)
-        {
-            if (!ts.HasValue) ts = new TimeSpan();
-            DateTime dt = DateTime.UtcNow;
-            dt = dt.Add(ts.Value);
-            var timeSpan = (dt.ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0));
-            return (ulong)timeSpan.TotalSeconds * 1000;
         }
 
         /// <summary>
@@ -59,6 +56,33 @@ namespace PoGoEmulatorApi
         public static bool IsNotNull(this object obj)
         {
             return !obj.IsNull();
+        }
+
+        public static ulong ToUnixTime(this DateTime d, TimeSpan? ts = null)
+        {
+            if (!ts.HasValue)
+                ts = new TimeSpan();
+            DateTime dt = DateTime.Now;
+            dt = dt.Add(ts.Value);
+            var timeSpan = (dt.ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0));
+            return (ulong)timeSpan.TotalSeconds * 1000;
+        }
+
+        public static Type FindTypeOfObject(string qualifiedTypeName)
+        {
+            var t = Type.GetType(qualifiedTypeName);
+            if (t != null)
+                return t;
+            else
+            {
+                foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
+                {
+                    t = asm.GetType(qualifiedTypeName);
+                    if (t != null)
+                        return t;
+                }
+                return null;
+            }
         }
     }
 }

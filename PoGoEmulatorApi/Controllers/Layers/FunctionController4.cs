@@ -1,27 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IdentityModel.Tokens.Jwt;
-using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
-using System.Web.Http;
-using System.Web.Mvc;
 using Google.Protobuf;
 using Google.Protobuf.Collections;
-using log4net;
-using Microsoft.EntityFrameworkCore;
-using PoGoEmulatorApi.Database;
 using PoGoEmulatorApi.Database.Tables;
-using PoGoEmulatorApi.Enums;
-using PoGoEmulatorApi.Models;
-using PoGoEmulatorApi.Responses;
-using PoGoEmulatorApi.Responses.Packets;
 using POGOProtos.Enums;
 using POGOProtos.Inventory;
 using POGOProtos.Inventory.Item;
@@ -30,201 +14,18 @@ using POGOProtos.Networking.Requests;
 using POGOProtos.Networking.Requests.Messages;
 using POGOProtos.Networking.Responses;
 using POGOProtos.Settings;
-using ITraceWriter = System.Web.Http.Tracing.ITraceWriter;
 
+// ReSharper disable once CheckNamespace
 namespace PoGoEmulatorApi.Controllers
 {
-    public class BaseRpcController : ApiController
+    public class FunctionController4 : AuthorizedController3
     {
-        public PoGoDbContext Database { get; set; }
-        public ILog Log { get; set; } = null;
-        public HttpContext RpcContext { get { return HttpContext.Current; } }
-        public HttpResponse Response { get { return RpcContext.Response; } }
-        public new HttpRequest Request { get { return RpcContext.Request; } }
-        protected Exception CurrentException { get; set; }
-        private RequestEnvelope _requestProto;
-
-        public HttpRequestMessage HttpRequestMessage { get { return RpcContext.Items["MS_HttpRequestMessage"] as HttpRequestMessage; } }
-
-        public BaseRpcController(PoGoDbContext db)
+        public FunctionController4(PoGoDbContext db) : base(db)
         {
-            this.Database = db;
         }
 
-        public RequestEnvelope ProtoRequest
-        {
-            get
-            {
-                LoadProtoContent();
-                return _requestProto;
-            }
-            set { _requestProto = value; }
-        }
-
-        public ResponseEnvelope ProtoResponse { get; set; } = new ResponseEnvelope();
-        public RpcRequestType RpcType { get; set; } = RpcRequestType.None;
-
-        public virtual HttpResponseMessage Rpc()
-        {
-            return this.AnswerToUser(HttpStatusCode.OK);
-        }
-
-        protected void LoadProtoContent()
-        {
-            if (_requestProto != null) return;
-            if (RpcType == RpcRequestType.None) return;
-
-            _requestProto = new RequestEnvelope();
-            Stream req = Request.InputStream;
-            req.Seek(0, System.IO.SeekOrigin.Begin);
-
-            Byte[] buf = new byte[req.Length];
-            req.Read(buf, 0, buf.Length);
-            Google.Protobuf.CodedInputStream cis = new CodedInputStream(buf);
-            _requestProto.MergeFrom(cis);
-        }
-
-        protected HttpResponseMessage AnswerToUser(HttpStatusCode code)
-        {
-            HttpResponseMessage res = new HttpResponseMessage(code);
-            res.Headers.TryAddWithoutValidation("Content-Type", "x-www-form-urlencoded");
-            res.Headers.TryAddWithoutValidation("Connection", "keep-alive");
-            res.Headers.TryAddWithoutValidation("PoGoEmulator", ".NET 4.6.2 MVC API");
-            res.Headers.TryAddWithoutValidation("Date", $"{string.Format(new CultureInfo("en-GB"), "{0:ddd, dd MMM yyyy hh:mm:ss}", DateTime.UtcNow)} GMT");
-            if (code == HttpStatusCode.OK)
-            {
-                res.Content = new ByteArrayContent(ProtoResponse.ToByteArray());
-                Database.SaveChanges();
-                Log.Dbg($"succesfully responding");
-            }
-            else
-            {
-                Log.Dbg($"unsuccesfully responding error: {CurrentException.Message}");
-                res.Content = new StringContent(CurrentException.Message);
-            }
-            return res;
-        }
-
-        public HttpResponseMessage EnvelopResponse(RepeatedField<ByteString> returns = null)
-        {
-            if (returns != null)
-            {
-                this.Log.Dbg($"ReturnsCount:{returns.Count}");
-                this.ProtoResponse.Returns.AddRange(returns);
-            }
-            else
-            {
-                this.Log.Dbg($"ReturnsCount:null");
-            }
-
-            if (this.ProtoRequest.AuthTicket != null)
-            {
-                this.Log.Dbg($"brcontroller.ProtoRequest.AuthTicket: {this.ProtoRequest.AuthTicket}");
-                this.ProtoResponse.AuthTicket = new AuthTicket() { };
-            }
-
-            this.Log.Dbg($"brcontroller.ProtoResponse.Unknown6.ResponseType: ADDED 1");
-            this.ProtoResponse.Unknown6.Add(new Unknown6Response()
-            {
-                ResponseType = 6,
-                Unknown2 = new Unknown6Response.Types.Unknown2()
-                {
-                    Unknown1 = 1
-                }
-            });
-            this.ProtoResponse.StatusCode = 1;
-            return this.Rpc();
-        }
-
-        public RepeatedField<ByteString> ProcessRequests()
-        {
-            RepeatedField<ByteString> Body = new RepeatedField<ByteString>();
-
-            this.Log.Dbg($"brcontroller.ProtoRequest.Requests.Count: {this.ProtoRequest.Requests.Count}");
-            foreach (var req in this.ProtoRequest.Requests)
-            {
-                Body.Add(this.ProcessResponse(req));
-            }
-            return Body;
-        }
-
-        public ByteString ProcessResponse(Request req)
-        {
-            try
-            {
-                var type = req.RequestType;
-                CodedInputStream codedStream = new CodedInputStream(req.RequestMessage.ToByteArray());
-                var strType = $"POGOProtos.Networking.Requests.Messages.{type}Message";
-                object msg = Activator.CreateInstance(FindTypeOfObject(strType));
-                MethodInfo methodMergeFrom = msg?.GetType()
-                    .GetMethods()
-                    .ToList()
-                    .FirstOrDefault(p => p.ToString() == "Void MergeFrom(Google.Protobuf.CodedInputStream)");
-
-                methodMergeFrom.Invoke(msg, new object[] { codedStream });
-
-                this.Log.Dbg($"TypeOfRequestMessage: {strType}");
-                switch (type)
-                {
-                    //player
-                    case RequestType.SetAvatar:
-                    case RequestType.GetPlayer:
-                    case RequestType.GetInventory:
-                    case RequestType.ReleasePokemon:
-                    case RequestType.UpgradePokemon:
-                    case RequestType.GetAssetDigest:
-                    case RequestType.NicknamePokemon:
-                    case RequestType.ClaimCodename:
-                    case RequestType.GetHatchedEggs:
-                    case RequestType.LevelUpRewards:
-                    case RequestType.GetPlayerProfile:
-                    case RequestType.CheckAwardedBadges:
-                    case RequestType.SetFavoritePokemon:
-                    case RequestType.RecycleInventoryItem:
-                        return this.GetPacket(type, msg);
-
-                    //global
-                    case RequestType.Encounter:
-                    case RequestType.FortSearch:
-                    case RequestType.FortDetails:
-                    case RequestType.CatchPokemon:
-                    case RequestType.GetMapObjects:
-                    case RequestType.CheckChallenge:
-                    case RequestType.GetDownloadUrls:
-                    case RequestType.DownloadSettings:
-                    case RequestType.DownloadRemoteConfigVersion:
-                    case RequestType.DownloadItemTemplates:
-                    case RequestType.MarkTutorialComplete:
-                        return this.GetGlobalPacket(type, msg);
-
-                    default:
-                        throw new Exception($"unknown request Type:{type}");
-                }
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-        }
-
-        public static Type FindTypeOfObject(string qualifiedTypeName)
-        {
-            var t = Type.GetType(qualifiedTypeName);
-            if (t != null)
-                return t;
-            else
-            {
-                foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
-                {
-                    t = asm.GetType(qualifiedTypeName);
-                    if (t != null)
-                        return t;
-                }
-                return null;
-            }
-        }
-
-        public ByteString GetGlobalPacket(RequestType typ, object msg)
+        [System.Web.Http.NonAction]
+        protected ByteString GetGlobalPacket(RequestType typ, object msg)
         {
             switch (typ)
             {
@@ -320,28 +121,8 @@ namespace PoGoEmulatorApi.Controllers
             }
         }
 
-        public CacheUserData CurrentPlayer
-        {
-            get
-            {
-                CacheUserData state;
-                WebApiApplication.AuthenticatedUsers.TryGetValue(UEmail, out state);
-                return state;
-            }
-        }
-
-        public bool IsAuth
-        {
-            get
-            {
-                if (CurrentPlayer == null)
-                    return false;
-                else
-                    return CurrentPlayer.IsAuthenticated;
-            }
-        }
-
-        public ByteString GetPacket(RequestType typ, object msg)
+        [System.Web.Http.NonAction]
+        protected ByteString GetPlayerPacket(RequestType typ, object msg)
         {
             switch (typ)
             {
@@ -416,7 +197,7 @@ namespace PoGoEmulatorApi.Controllers
                 case RequestType.GetPlayer:
 
                     this.Log.Dbg($"TypeOfResponseMessage: {nameof(GetPlayerResponse)}");
-                    return new GetPlayer().From(this);
+                    return this.GetPlayer();
 
                 case RequestType.GetInventory:
                     RepeatedField<InventoryItem> items = new RepeatedField<InventoryItem>();
@@ -469,32 +250,198 @@ namespace PoGoEmulatorApi.Controllers
             }
         }
 
-        public string UEmail
+        [System.Web.Http.NonAction]
+        protected ByteString GetPlayer()
         {
-            get
-            {
-                var authInfo = ProtoRequest.AuthInfo;
-                if (authInfo.IsNull() || authInfo.Provider.IsNull())
-                    throw new Exception("Invalid authentication token! Kicking..");
+            User usr =
+                this.Database.Users.FirstOrDefault(
+                    p => p.email == this.UEmail);
 
-                JwtSecurityTokenHandler jwth = new JwtSecurityTokenHandler();
-                var userJwtToken = jwth.ReadJwtToken(ProtoRequest.AuthInfo.Token.Contents).Payload;
-                object userEmail;
-                userJwtToken.TryGetValue("email", out userEmail);
-                if (userEmail.IsNull())
-                    throw new Exception("useremail not found");
-                return userEmail.ToString();
-            }
+            var gpr = new GetPlayerResponse();
+            gpr.Success = true;
+            //update with database
+            gpr.PlayerData = new POGOProtos.Data.PlayerData()
+            {
+                CreationTimestampMs = (long)DateTime.Now.ToUnixTime(),
+                Username = usr.username,
+                Team = (TeamColor)usr.team,
+                Avatar = new POGOProtos.Data.Player.PlayerAvatar()
+                {
+                    Skin = 1,
+                    Hair = 1,
+                    Shirt = 1,
+                    Pants = 1,
+                    Eyes = 1,
+                    Backpack = 1,
+                    Hat = 1,
+                    Shoes = 1
+                },
+                MaxPokemonStorage = 250,
+                MaxItemStorage = 350,
+                ContactSettings = new POGOProtos.Data.Player.ContactSettings()
+                {
+                    SendMarketingEmails = usr.send_marketing_emails,
+                    SendPushNotifications = usr.send_push_notifications
+                },
+                RemainingCodenameClaims = 10,
+            };
+            gpr.PlayerData.TutorialState.AddRange(new List<TutorialState>()
+            {
+                //(TutorialState)1,
+                //(TutorialState)0,
+                //(TutorialState)3,
+                //(TutorialState)4,
+                //(TutorialState)7
+            });
+            return gpr.ToByteString();
         }
 
-        public OwnedPokemon GetPokemonById(ulong id)
+        [System.Web.Http.NonAction]
+        protected OwnedPokemon GetPokemonById(ulong id)
         {
             var usr = this.Database.Users.SingleOrDefault(p => p.email == this.UEmail);
             var owned = this.Database.OwnedPokemons.SingleOrDefault(p => p.owner_id == usr.id && (int)id == p.id);
             return owned;
         }
 
-        public ReleasePokemonResponse ReleasePokemon(ReleasePokemonMessage msg)
+        [System.Web.Http.NonAction]
+        protected HttpResponseMessage OnRequest()
+        {
+            try
+            {
+                if (!IsAuth)
+                {
+                    return base.AuthenticatePlayer(); ;
+                }
+                else
+                {
+                    AddOrUpdateUserLocation();
+                }
+
+                Log.Debug($"HasSignature:{CurrentPlayer.HasSignature}");
+                if (CurrentPlayer.HasSignature == false)
+                {
+                    if (ProtoResponse.Unknown6 != null)
+                    {
+                        //POGOProtos.Networking.Envelopes.Signature
+                        //connectedClient.HttpContext.Request.Unknown6.Unknown2.EncryptedSignature
+                        var signatur = Encryption.Decrypt(
+                               ProtoRequest.Unknown6.Unknown2.EncryptedSignature.ToByteArray());
+                        var codedStream = new CodedInputStream(signatur);
+                        var sig = new Signature();
+                        sig.MergeFrom(codedStream);
+                        if (sig.DeviceInfo != null)
+                        {
+                            var usrd = CurrentPlayer;
+                            usrd.HasSignature = true;
+                            usrd.IsIOS = (sig.DeviceInfo.DeviceBrand == "Apple");
+                            bool updtrslt = UpdateCurrentPlayer(usrd);
+                            if (!updtrslt)
+                            {
+                                throw new Exception(" CONCURRENT ACCESS ERROR this shouldn't happen");
+                            }
+                        }
+                    }
+                }
+
+                Log.Debug($"HasSignature:{CurrentPlayer.HasSignature}, Platform:{CurrentPlayer.Platform}");
+                Log.Debug($"ProtoRequest.Requests.Count:{ProtoRequest.Requests.Count}");
+                if (ProtoRequest.Requests.Count == 0)
+                {
+                    if (ProtoRequest.Unknown6 != null && ProtoRequest.Unknown6.RequestType == 6)
+                    {
+                        Log.Debug($"ProtoRequest.Unknown6.RequestType:{ProtoRequest.Unknown6.RequestType}");
+                        return base.EnvelopResponse();
+                    }
+                    else
+                    {
+                        throw new Exception("Invalid Request!.");
+                    }
+                }
+                RepeatedField<ByteString> requests = this.GetPlyerRequests();
+                return base.EnvelopResponse(requests);
+            }
+            catch (Exception e)
+            {
+                return base.ThrowException(e);
+            }
+        }
+
+        [System.Web.Http.NonAction]
+        protected RepeatedField<ByteString> GetPlyerRequests()
+        {
+            RepeatedField<ByteString> Body = new RepeatedField<ByteString>();
+
+            this.Log.Dbg($"brcontroller.ProtoRequest.Requests.Count: {this.ProtoRequest.Requests.Count}");
+            foreach (var req in this.ProtoRequest.Requests)
+            {
+                Body.Add(this.ProcessResponse(req));
+            }
+            return Body;
+        }
+
+        [System.Web.Http.NonAction]
+        protected ByteString ProcessResponse(Request req)
+        {
+            try
+            {
+                var type = req.RequestType;
+                CodedInputStream codedStream = new CodedInputStream(req.RequestMessage.ToByteArray());
+                var strType = $"POGOProtos.Networking.Requests.Messages.{type}Message";
+                object msg = Activator.CreateInstance(Extensions.FindTypeOfObject(strType));
+                MethodInfo methodMergeFrom = msg?.GetType()
+                    .GetMethods()
+                    .ToList()
+                    .FirstOrDefault(p => p.ToString() == "Void MergeFrom(Google.Protobuf.CodedInputStream)");
+
+                methodMergeFrom.Invoke(msg, new object[] { codedStream });
+
+                this.Log.Dbg($"TypeOfRequestMessage: {strType}");
+                switch (type)
+                {
+                    //player
+                    case RequestType.SetAvatar:
+                    case RequestType.GetPlayer:
+                    case RequestType.GetInventory:
+                    case RequestType.ReleasePokemon:
+                    case RequestType.UpgradePokemon:
+                    case RequestType.GetAssetDigest:
+                    case RequestType.NicknamePokemon:
+                    case RequestType.ClaimCodename:
+                    case RequestType.GetHatchedEggs:
+                    case RequestType.LevelUpRewards:
+                    case RequestType.GetPlayerProfile:
+                    case RequestType.CheckAwardedBadges:
+                    case RequestType.SetFavoritePokemon:
+                    case RequestType.RecycleInventoryItem:
+                        return this.GetPlayerPacket(type, msg);
+
+                    //global
+                    case RequestType.Encounter:
+                    case RequestType.FortSearch:
+                    case RequestType.FortDetails:
+                    case RequestType.CatchPokemon:
+                    case RequestType.GetMapObjects:
+                    case RequestType.CheckChallenge:
+                    case RequestType.GetDownloadUrls:
+                    case RequestType.DownloadSettings:
+                    case RequestType.DownloadRemoteConfigVersion:
+                    case RequestType.DownloadItemTemplates:
+                    case RequestType.MarkTutorialComplete:
+                        return this.GetGlobalPacket(type, msg);
+
+                    default:
+                        throw new Exception($"unknown request Type:{type}");
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        [System.Web.Http.NonAction]
+        protected ReleasePokemonResponse ReleasePokemon(ReleasePokemonMessage msg)
         {
             var owned = this.GetPokemonById(msg.PokemonId);
             ReleasePokemonResponse rsp = new ReleasePokemonResponse();

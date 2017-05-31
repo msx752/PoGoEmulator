@@ -292,13 +292,13 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Assets\Asset.cs" />
     <Compile Include="Assets\GameMaster.cs" />
-    <Compile Include="Controllers\AuthorizedController.cs" />
+    <Compile Include="Controllers\Layers\AuthorizedController3.cs" />
     <Compile Include="Controllers\CustomController.cs" />
-    <Compile Include="Controllers\CustomOldController.cs" />
+    <Compile Include="Controllers\Layers\FunctionController4.cs" />
+    <Compile Include="Controllers\Layers\RequestController1.cs" />
     <Compile Include="Controllers\ModelController.cs" />
     <Compile Include="Controllers\PlfeController.cs" />
-    <Compile Include="Controllers\Plfe_OldController.cs" />
-    <Compile Include="Controllers\BaseRpcController.cs" />
+    <Compile Include="Controllers\Layers\ResponseController2.cs" />
     <Compile Include="Database\PoGoDbContext.cs" />
     <Compile Include="Database\Tables\OwnedPokemon.cs" />
     <Compile Include="Database\Tables\User.cs" />
@@ -321,11 +321,6 @@
     <Compile Include="Models\CacheUserData.cs" />
     <Compile Include="Models\Configs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Responses\GlobalPacketHandler.cs" />
-    <Compile Include="Responses\Packets\GetPlayer.cs" />
-    <Compile Include="Responses\PlayerPacketHandler.cs" />
-    <Compile Include="Responses\ProcessOfResponse.cs" />
-    <Compile Include="Responses\Responses.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -338,6 +333,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Interfaces\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\POGOProtos\POGOProtos.csproj">

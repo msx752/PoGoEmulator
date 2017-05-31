@@ -1,25 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Reflection;
-using System.Web;
+using System.Web.Http;
 
 namespace PoGoEmulatorApi.Controllers
 {
     [System.Web.Http.RoutePrefix("plfe")]
-    public class PlfeController : AuthorizedController
+    public class PlfeController : FunctionController4
     {
         public PlfeController(PoGoDbContext db) : base(db)
         {
-            Log = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+            Log = log4net.LogManager.GetLogger(this.GetType());
             RpcType = Enums.RpcRequestType.Plfe;
         }
 
+        [ActionName("rpc")]
         [System.Web.Http.HttpPost]
         public override HttpResponseMessage Rpc()
         {
-            return OnRequest();
+            return base.OnRequest();
         }
     }
 }

@@ -1,9 +1,7 @@
-﻿using System;
+﻿using POGOProtos.Networking.Responses;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Web;
-using POGOProtos.Networking.Responses;
 
 namespace PoGoEmulatorApi.Assets
 {
@@ -22,7 +20,7 @@ namespace PoGoEmulatorApi.Assets
 
             BinaryReader br = new BinaryReader(new StreamReader(path_game_master).BaseStream);
             Buffer = br.ReadBytes((int)br.BaseStream.Length);
-            Decode = Buffer.Proton<DownloadItemTemplatesResponse>();
+            Decode = Buffer.ProtoSerializer<DownloadItemTemplatesResponse>();
 
             foreach (var item in Decode.ItemTemplates)
                 this.Settings[item.TemplateId] = item;

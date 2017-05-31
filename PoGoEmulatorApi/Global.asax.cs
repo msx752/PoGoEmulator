@@ -6,8 +6,10 @@ using System.Linq;
 using System.Threading;
 using System.Web;
 using System.Web.Http;
+using System.Web.Mvc;
 using System.Web.Routing;
 using PoGoEmulatorApi.Assets;
+using PoGoEmulatorApi.Controllers;
 using PoGoEmulatorApi.Models;
 
 namespace PoGoEmulatorApi

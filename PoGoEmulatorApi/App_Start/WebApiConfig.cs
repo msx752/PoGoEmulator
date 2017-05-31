@@ -13,8 +13,9 @@ namespace PoGoEmulatorApi
             config.MapHttpAttributeRoutes();
 
             config.Routes.MapHttpRoute(
-                name: "DefaultApi",
+                name: "PoGoApi",
                 routeTemplate: "{controller}/{action}"
+
             );
         }
     }
