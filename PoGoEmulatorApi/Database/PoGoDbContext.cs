@@ -11,8 +11,11 @@ namespace PoGoEmulatorApi
     public class PoGoDbContext : DbContext
     {
         private readonly DbContextOptions _options = null;
+
         public DbSet<User> Users { get; set; }
         public DbSet<OwnedPokemon> OwnedPokemons { get; set; }
+        public DbSet<Gym> Gyms { get; set; }
+        public DbSet<PokeStop> PokeStops { get; set; }
 
         public PoGoDbContext() : base()
         {

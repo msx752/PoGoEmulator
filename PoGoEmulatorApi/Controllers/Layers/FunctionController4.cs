@@ -6,10 +6,12 @@ using System.Reflection;
 using Google.Protobuf;
 using Google.Protobuf.Collections;
 using PoGoEmulatorApi.Database.Tables;
+using PoGoEmulatorApi.Models;
 using POGOProtos.Data.Player;
 using POGOProtos.Enums;
 using POGOProtos.Inventory;
 using POGOProtos.Inventory.Item;
+using POGOProtos.Map;
 using POGOProtos.Networking.Envelopes;
 using POGOProtos.Networking.Requests;
 using POGOProtos.Networking.Requests.Messages;
@@ -21,8 +23,11 @@ namespace PoGoEmulatorApi.Controllers
 {
     public class FunctionController4 : AuthorizationController3
     {
+        public FortFuncs Fort { get; set; }
+
         public FunctionController4(PoGoDbContext db) : base(db)
         {
+            Fort = new FortFuncs(db);
         }
 
         [System.Web.Http.NonAction]
@@ -47,9 +52,17 @@ namespace PoGoEmulatorApi.Controllers
                 //    FortDetailsResponse fd = new FortDetailsResponse();
                 //    return fd.ToByteString();
 
-                //case RequestType.GetMapObjects:
-                //    GetMapObjectsResponse gmo = new GetMapObjectsResponse();
-                //    return gmo.ToByteString();
+                case RequestType.GetMapObjects:
+                    GetMapObjectsMessage mgmo = (GetMapObjectsMessage)msg;
+                    var lat = mgmo.Latitude;
+                    var lon = mgmo.Longitude;
+
+                    RepeatedField<MapCell> cells = Fort.GetFortsByCells(mgmo.CellId);
+
+                    GetMapObjectsResponse gmo = new GetMapObjectsResponse();
+                    gmo.Status = POGOProtos.Map.MapObjectsStatus.Success;
+                    gmo.MapCells.AddRange(cells);
+                    return gmo.ToByteString();
 
                 case RequestType.CheckChallenge:
                     var c = new CheckChallengeResponse()

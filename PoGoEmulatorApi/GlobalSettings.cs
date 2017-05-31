@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using PoGoEmulatorApi.Assets;
 using PoGoEmulatorApi.Models;
+using POGOProtos.Map;
 using POGOProtos.Networking.Responses;
 
 namespace PoGoEmulatorApi
@@ -32,5 +33,8 @@ namespace PoGoEmulatorApi
 
         public static ConcurrentDictionary<string, CacheUserData> AuthenticatedUsers { get; set; } =
             new ConcurrentDictionary<string, CacheUserData>();//it must be re-configure in the future because user must be logout in somewhere (do i need store authTicket too ?)
+
+        public static ConcurrentDictionary<ulong, MapCell> MapCells { get; set; } =
+            new ConcurrentDictionary<ulong, MapCell>();
     }
 }

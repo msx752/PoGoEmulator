@@ -13,8 +13,10 @@ namespace PoGoEmulatorApi.Models
         public int MAX_POKEMON_NATIONAL_ID { get; set; } = 151;
         public int MaxRequestContentLength { get; set; } = (1024 * 1024) * (1);//1MB
 
-        //public TimeSpan RequestTimeout { get; set; } = new TimeSpan(0, 0, 15);
+        //public TimeSpan RequestTimeout { get; set; } = new TimeSpan(0, 0, 15);//use web.config
 
         public string SqlConnectionString { get; set; } = @"Server=.\sqlexpress;Database=pogodb;Trusted_Connection=True;";
+
+        public TimeSpan CellTimeout { get; set; } = new TimeSpan(0, 1, 0);//1min
     }
 }

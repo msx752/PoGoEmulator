@@ -301,7 +301,9 @@
     <Compile Include="Controllers\PlfeController.cs" />
     <Compile Include="Controllers\Layers\ResponseController2.cs" />
     <Compile Include="Database\PoGoDbContext.cs" />
+    <Compile Include="Database\Tables\Gym.cs" />
     <Compile Include="Database\Tables\OwnedPokemon.cs" />
+    <Compile Include="Database\Tables\PokeStop.cs" />
     <Compile Include="Database\Tables\User.cs" />
     <Compile Include="Encryption.cs" />
     <Compile Include="Enums\RpcRequestType.cs" />
@@ -311,16 +313,25 @@
     </Compile>
     <Compile Include="GlobalSettings.cs" />
     <Compile Include="Migrations\20170530023657_user,owned_pkmn tables.cs" />
-    <Compile Include="Migrations\20170530023657_user,owned_pkmn tables.designer.cs">
-      <DependentUpon>20170530023657_user,owned_pkmn tables.cs</DependentUpon>
-    </Compile>
+    <Compile Include="Migrations\20170530023657_user,owned_pkmn tables.Designer.cs" />
     <Compile Include="Migrations\20170530030504_table updated.cs" />
-    <Compile Include="Migrations\20170530030504_table updated.designer.cs">
-      <DependentUpon>20170530030504_table updated.cs</DependentUpon>
+    <Compile Include="Migrations\20170530030504_table updated.Designer.cs" />
+    <Compile Include="Migrations\20170531204838_gym_table.cs" />
+    <Compile Include="Migrations\20170531204838_gym_table.designer.cs">
+      <DependentUpon>20170531204838_gym_table.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20170531205108_gym_table_updt.cs" />
+    <Compile Include="Migrations\20170531205108_gym_table_updt.designer.cs">
+      <DependentUpon>20170531205108_gym_table_updt.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20170531205459_pokestop_table.cs" />
+    <Compile Include="Migrations\20170531205459_pokestop_table.designer.cs">
+      <DependentUpon>20170531205459_pokestop_table.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\PoGoDbContextModelSnapshot.cs" />
     <Compile Include="Models\CacheUserData.cs" />
     <Compile Include="Models\Configs.cs" />
+    <Compile Include="Models\FortFuncs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

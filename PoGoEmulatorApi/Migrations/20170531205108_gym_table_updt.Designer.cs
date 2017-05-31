@@ -8,9 +8,10 @@ using PoGoEmulatorApi;
 namespace PoGoEmulatorApi.Migrations
 {
     [DbContext(typeof(PoGoDbContext))]
-    partial class PoGoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170531205108_gym_table_updt")]
+    partial class gym_table_updt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")
@@ -109,37 +110,6 @@ namespace PoGoEmulatorApi.Migrations
                     b.HasKey("id");
 
                     b.ToTable("owned_pkmn");
-                });
-
-            modelBuilder.Entity("PoGoEmulatorApi.Database.Tables.PokeStop", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("cell_id")
-                        .HasMaxLength(64);
-
-                    b.Property<string>("description")
-                        .HasMaxLength(128);
-
-                    b.Property<int>("experience");
-
-                    b.Property<string>("img_url")
-                        .HasMaxLength(64);
-
-                    b.Property<double>("latitude");
-
-                    b.Property<double>("longitude");
-
-                    b.Property<string>("name")
-                        .HasMaxLength(64);
-
-                    b.Property<string>("rewards")
-                        .HasMaxLength(64);
-
-                    b.HasKey("id");
-
-                    b.ToTable("pokestop");
                 });
 
             modelBuilder.Entity("PoGoEmulatorApi.Database.Tables.User", b =>

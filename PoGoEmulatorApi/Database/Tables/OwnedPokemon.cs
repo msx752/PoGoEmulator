@@ -5,6 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
+// ReSharper disable InconsistentNaming
+
 namespace PoGoEmulatorApi.Database.Tables
 {
     [Table("owned_pkmn")]
