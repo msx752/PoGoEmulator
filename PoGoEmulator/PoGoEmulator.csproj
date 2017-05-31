@@ -300,15 +300,20 @@
       <DependentUpon>20170524193132_UserTable.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\PoGoDbContextModelSnapshot.cs" />
+    <Compile Include="Models\BaseConnection.cs" />
     <Compile Include="Models\CacheUserData.cs" />
     <Compile Include="Models\Connection.cs" />
+    <Compile Include="Models\Connection2.cs" />
+    <Compile Include="Models\ConnectionTick.cs" />
     <Compile Include="Models\ConsoleLogger.cs" />
     <Compile Include="Enums\LogLevel.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Assets.cs" />
     <Compile Include="Models\Configs.cs" />
+    <Compile Include="Models\FuncConnection.cs" />
     <Compile Include="Models\GameMaster.cs" />
     <Compile Include="Models\HttpNetworkStream.cs" />
+    <Compile Include="Models\HttpStreamContext.cs" />
     <Compile Include="Models\MyHttpContext.cs" />
     <Compile Include="Machine\PogoMachine.cs" />
     <Compile Include="Global.cs" />
