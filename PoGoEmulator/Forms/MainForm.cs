@@ -225,7 +225,6 @@ namespace PoGoEmulator.Forms
         }
 
         #endregion PoGoEmulator server
-
     }
 }
 
