@@ -2,6 +2,7 @@
 #      general configuration      #
 #---------------------------------#
 
+
 # version format
 version: 0.0.0.{build}
 
@@ -34,16 +35,16 @@ init:
 - ps: >-
     if ($env:APPVEYOR_REPO_TAG -eq "true")
     {
-        $env:PoGoEmulatorApi_Version = "$($env:APPVEYOR_REPO_TAG_NAME.Replace('v', ''))";
+        $env:PoGoEmulator_Version = "$($env:APPVEYOR_REPO_TAG_NAME.Replace('v', ''))";
     }
     else
     {
-        $env:PoGoEmulatorApi_Version = "$($env:APPVEYOR_BUILD_VERSION)";
-    }
+        $env:PoGoEmulator_Version = "$($env:APPVEYOR_BUILD_VERSION)";
+    }        
 
 
 # clone directory
-clone_folder: c:\projects\PoGoEmulatorApi
+clone_folder: c:\projects\PoGoEmulator
 
 # fetch repository as zip archive
 shallow_clone: false
@@ -82,7 +83,7 @@ install:
 assembly_info:
   patch: false
   file: '**\AssemblyInfo.*'
-  assembly_version: '$(PoGoEmulatorApi_Version)'
+  assembly_version: '$(PoGoEmulator_Version)'
   assembly_file_version: "1.0.0.0"
   assembly_informational_version: '$(APPVEYOR_REPO_TAG_NAME)'
 
@@ -109,7 +110,7 @@ configuration: Release
 
 build:
   # MSBuild verbosity level
-  project: PoGoEmulatorApi.sln
+  project: PoGoEmulator.sln
   publish_nuget: true
   publish_nuget_symbols: true
   include_nuget_references: true
@@ -131,15 +132,15 @@ after_build:
     New-Item -ItemType Directory -Force -Path "$($env:APPVEYOR_BUILD_FOLDER)\$($env:PLATFORM)\$($env:CONFIGURATION)";
     if ($env:PLATFORM -eq "x86")
     {
-        Move-Item -Path "$($env:APPVEYOR_BUILD_FOLDER)\PoGoEmulatorApi\bin\$($env:PLATFORM)\$($env:CONFIGURATION)" -Destination "$($env:APPVEYOR_BUILD_FOLDER)\$($env:PLATFORM)\$($env:CONFIGURATION)\PoGoEmulatorApi" -Force;
+        Move-Item -Path "$($env:APPVEYOR_BUILD_FOLDER)\PoGoEmulator\bin\$($env:PLATFORM)\$($env:CONFIGURATION)" -Destination "$($env:APPVEYOR_BUILD_FOLDER)\$($env:PLATFORM)\$($env:CONFIGURATION)\PoGoEmulator" -Force;
     }  
     elseif ($env:PLATFORM -eq "x64")
     {
-        Move-Item -Path "$($env:APPVEYOR_BUILD_FOLDER)\PoGoEmulatorApi\bin\$($env:PLATFORM)\$($env:CONFIGURATION)" -Destination "$($env:APPVEYOR_BUILD_FOLDER)\$($env:PLATFORM)\$($env:CONFIGURATION)\PoGoEmulatorApi" -Force;
+        Move-Item -Path "$($env:APPVEYOR_BUILD_FOLDER)\PoGoEmulator\bin\$($env:PLATFORM)\$($env:CONFIGURATION)" -Destination "$($env:APPVEYOR_BUILD_FOLDER)\$($env:PLATFORM)\$($env:CONFIGURATION)\PoGoEmulator" -Force;
     }
     elseif ($env:PLATFORM -eq "Any CPU")
     {
-        Move-Item -Path "$($env:APPVEYOR_BUILD_FOLDER)\PoGoEmulatorApi\bin\$($env:CONFIGURATION)" -Destination "$($env:APPVEYOR_BUILD_FOLDER)\$($env:PLATFORM)\$($env:CONFIGURATION)\PoGoEmulatorApi" -Force;
+        Move-Item -Path "$($env:APPVEYOR_BUILD_FOLDER)\PoGoEmulator\bin\$($env:CONFIGURATION)" -Destination "$($env:APPVEYOR_BUILD_FOLDER)\$($env:PLATFORM)\$($env:CONFIGURATION)\PoGoEmulator" -Force;
     }
         
 
@@ -159,8 +160,9 @@ test: off
 
 artifacts:
 
-  - path: '\$(PLATFORM)\$(CONFIGURATION)\PoGoEmulatorApi'
-    name: PoGoEmulatorApi
+  - path: '\$(PLATFORM)\$(CONFIGURATION)\PoGoEmulator'
+    name: PoGoEmulator
+    
 
 #---------------------------------#
 #     deployment configuration    #
@@ -173,10 +175,10 @@ deploy:
   # Deploy to GitHub Releases
   - provider: GitHub
     tag: $(APPVEYOR_REPO_TAG_NAME)
-    description: '[CHANGELOG.md](https://github.com/msx752/PoGoEmulator/blob/net-mvc-api/CHANGELOG.md)'
-    release: PoGoEmulatorApi $(APPVEYOR_REPO_TAG_NAME)
+    description: '[CHANGELOG.md](https://github.com/msx752/PoGoEmulator/blob/master/CHANGELOG.md)'
+    release: PoGoEmulator $(APPVEYOR_REPO_TAG_NAME)
     auth_token: $(auth_token)
-    artifact: PoGoEmulatorApi
+    artifact: PoGoEmulator
     draft: false
     prerelease: false
     force_update: true
@@ -218,7 +220,7 @@ before_deploy:
 - bundle exec github_changelog_generator
 
 - git add "CHANGELOG.md"
-- git add "PoGoEmulatorApi/Properties/AssemblyInfo.cs"
+- git add "PoGoEmulator/Properties/AssemblyInfo.cs"
 - git commit -m "%APPVEYOR_REPO_TAG_NAME%"
 - git checkout "%APPVEYOR_REPO_BRANCH%"
 - git merge Appveyor
