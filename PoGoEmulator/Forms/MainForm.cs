@@ -170,9 +170,9 @@ namespace PoGoEmulator.Forms
 
         private void StartStopBotToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (startStopBotToolStripMenuItem.Text != "Exit")
+            if (startStopBotToolStripMenuItem.Text != @"■ Exit Server")
             {
-                startStopBotToolStripMenuItem.Text = "Exit";
+                startStopBotToolStripMenuItem.Text = @"■ Exit Server"; 
                 Task.Run(StartServer);
                 return;
             }
