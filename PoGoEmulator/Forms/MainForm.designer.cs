@@ -141,6 +141,7 @@ namespace PoGoEmulator.Forms
             this.startStopBotToolStripMenuItem.Name = "startStopBotToolStripMenuItem";
             this.startStopBotToolStripMenuItem.Size = new System.Drawing.Size(168, 24);
             this.startStopBotToolStripMenuItem.Text = "▶ Start PoGoEmulator";
+            this.startStopBotToolStripMenuItem.Click += new System.EventHandler(this.StartStopBotToolStripMenuItem_Click);
             // 
             // GMapControl1
             // 
@@ -168,7 +169,7 @@ namespace PoGoEmulator.Forms
             this.GMapControl1.ScaleMode = GMap.NET.WindowsForms.ScaleModes.Integer;
             this.GMapControl1.SelectedAreaFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(65)))), ((int)(((byte)(105)))), ((int)(((byte)(225)))));
             this.GMapControl1.ShowTileGridLines = false;
-            this.GMapControl1.Size = new System.Drawing.Size(644, 243);
+            this.GMapControl1.Size = new System.Drawing.Size(644, 242);
             this.GMapControl1.TabIndex = 23;
             this.GMapControl1.Zoom = 15D;
             // 
@@ -219,7 +220,7 @@ namespace PoGoEmulator.Forms
             this.olvPokemonList.Name = "olvPokemonList";
             this.olvPokemonList.RowHeight = 32;
             this.olvPokemonList.ShowGroups = false;
-            this.olvPokemonList.Size = new System.Drawing.Size(680, 355);
+            this.olvPokemonList.Size = new System.Drawing.Size(679, 355);
             this.olvPokemonList.SmallImageList = this.smallPokemonImageList;
             this.olvPokemonList.TabIndex = 25;
             this.olvPokemonList.UseCompatibleStateImageBehavior = false;
@@ -350,7 +351,7 @@ namespace PoGoEmulator.Forms
             this.btnRefresh.Location = new System.Drawing.Point(471, 509);
             this.btnRefresh.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.btnRefresh.Name = "btnRefresh";
-            this.btnRefresh.Size = new System.Drawing.Size(73, 28);
+            this.btnRefresh.Size = new System.Drawing.Size(72, 28);
             this.btnRefresh.TabIndex = 26;
             this.btnRefresh.Text = "Refresh";
             this.btnRefresh.UseVisualStyleBackColor = true;
@@ -405,7 +406,7 @@ namespace PoGoEmulator.Forms
             this.btnPokeDex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnPokeDex.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnPokeDex.Enabled = false;
-            this.btnPokeDex.Location = new System.Drawing.Point(554, 509);
+            this.btnPokeDex.Location = new System.Drawing.Point(553, 509);
             this.btnPokeDex.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.btnPokeDex.Name = "btnPokeDex";
             this.btnPokeDex.Size = new System.Drawing.Size(117, 28);
@@ -434,7 +435,7 @@ namespace PoGoEmulator.Forms
             this.lblInventory.Location = new System.Drawing.Point(2, 494);
             this.lblInventory.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.lblInventory.Name = "lblInventory";
-            this.lblInventory.Size = new System.Drawing.Size(680, 16);
+            this.lblInventory.Size = new System.Drawing.Size(679, 16);
             this.lblInventory.TabIndex = 33;
             this.lblInventory.Text = "0 / 0 ";
             this.lblInventory.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -450,7 +451,7 @@ namespace PoGoEmulator.Forms
             this.flpItems.Location = new System.Drawing.Point(2, 377);
             this.flpItems.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.flpItems.Name = "flpItems";
-            this.flpItems.Size = new System.Drawing.Size(680, 114);
+            this.flpItems.Size = new System.Drawing.Size(679, 114);
             this.flpItems.TabIndex = 32;
             // 
             // lblPokemonList
@@ -460,7 +461,7 @@ namespace PoGoEmulator.Forms
             this.lblPokemonList.Location = new System.Drawing.Point(3, 357);
             this.lblPokemonList.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.lblPokemonList.Name = "lblPokemonList";
-            this.lblPokemonList.Size = new System.Drawing.Size(680, 16);
+            this.lblPokemonList.Size = new System.Drawing.Size(679, 16);
             this.lblPokemonList.TabIndex = 27;
             this.lblPokemonList.Text = "0 / 0";
             this.lblPokemonList.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
