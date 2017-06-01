@@ -131,15 +131,15 @@ after_build:
     New-Item -ItemType Directory -Force -Path "$($env:APPVEYOR_BUILD_FOLDER)\$($env:PLATFORM)\$($env:CONFIGURATION)";
     if ($env:PLATFORM -eq "x86")
     {
-        Move-Item -Path "$($env:APPVEYOR_BUILD_FOLDER)\PoGoEmulatorApi\bin\$($env:PLATFORM)\$($env:CONFIGURATION)\PoGoEmulatorApi.*" -Destination "$($env:APPVEYOR_BUILD_FOLDER)\$($env:PLATFORM)\$($env:CONFIGURATION)\PoGoEmulatorApi\PoGoEmulatorApi.*" -Force;
+        Move-Item -Path "$($env:APPVEYOR_BUILD_FOLDER)\PoGoEmulatorApi\bin\$($env:PLATFORM)\$($env:CONFIGURATION)" -Destination "$($env:APPVEYOR_BUILD_FOLDER)\$($env:PLATFORM)\$($env:CONFIGURATION)\PoGoEmulatorApi" -Force;
     }  
     elseif ($env:PLATFORM -eq "x64")
     {
-        Move-Item -Path "$($env:APPVEYOR_BUILD_FOLDER)\PoGoEmulatorApi\bin\$($env:PLATFORM)\$($env:CONFIGURATION)\PoGoEmulatorApi.*" -Destination "$($env:APPVEYOR_BUILD_FOLDER)\$($env:PLATFORM)\$($env:CONFIGURATION)\PoGoEmulatorApi\PoGoEmulatorApi.*" -Force;
+        Move-Item -Path "$($env:APPVEYOR_BUILD_FOLDER)\PoGoEmulatorApi\bin\$($env:PLATFORM)\$($env:CONFIGURATION)" -Destination "$($env:APPVEYOR_BUILD_FOLDER)\$($env:PLATFORM)\$($env:CONFIGURATION)\PoGoEmulatorApi" -Force;
     }
     elseif ($env:PLATFORM -eq "Any CPU")
     {
-        Move-Item -Path "$($env:APPVEYOR_BUILD_FOLDER)\PoGoEmulatorApi\bin\$($env:CONFIGURATION)\PoGoEmulatorApi.*" -Destination "$($env:APPVEYOR_BUILD_FOLDER)\$($env:PLATFORM)\$($env:CONFIGURATION)\PoGoEmulatorApi\PoGoEmulatorApi.*" -Force;
+        Move-Item -Path "$($env:APPVEYOR_BUILD_FOLDER)\PoGoEmulatorApi\bin\$($env:CONFIGURATION)" -Destination "$($env:APPVEYOR_BUILD_FOLDER)\$($env:PLATFORM)\$($env:CONFIGURATION)\PoGoEmulatorApi" -Force;
     }
         
 
