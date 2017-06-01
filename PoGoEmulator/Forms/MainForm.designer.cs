@@ -77,6 +77,7 @@ namespace PoGoEmulator.Forms
             this.lblInventory = new System.Windows.Forms.Label();
             this.flpItems = new System.Windows.Forms.FlowLayoutPanel();
             this.lblPokemonList = new System.Windows.Forms.Label();
+            this.TrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.olvPokemonList)).BeginInit();
@@ -466,6 +467,13 @@ namespace PoGoEmulator.Forms
             this.lblPokemonList.Text = "0 / 0";
             this.lblPokemonList.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // TrayIcon
+            // 
+            this.TrayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("TrayIcon.Icon")));
+            this.TrayIcon.Text = "PogoEmulator";
+            this.TrayIcon.Visible = true;
+            this.TrayIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.TrayIcon_MouseDoubleClick);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
@@ -483,6 +491,7 @@ namespace PoGoEmulator.Forms
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "PoGoEmulator";
             this.Load += new System.EventHandler(this.MainForm_Load);
+            this.Resize += new System.EventHandler(this.MainForm_Resize);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
@@ -537,5 +546,6 @@ namespace PoGoEmulator.Forms
         private BrightIdeasSoftware.OLVColumn pkmnMove2;
         public CheckBox checkBoxAutoRefresh;
         private Button btnPokeDex;
+        private NotifyIcon TrayIcon;
     }
 }
