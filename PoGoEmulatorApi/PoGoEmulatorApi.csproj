@@ -331,7 +331,7 @@
     <Compile Include="Migrations\PoGoDbContextModelSnapshot.cs" />
     <Compile Include="Models\CacheUserData.cs" />
     <Compile Include="Models\Configs.cs" />
-    <Compile Include="Models\FortFuncs.cs" />
+    <Compile Include="Models\World.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

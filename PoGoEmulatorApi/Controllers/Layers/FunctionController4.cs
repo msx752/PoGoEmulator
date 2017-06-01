@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net.Http;
 using System.Reflection;
 using Google.Protobuf;
@@ -12,6 +13,7 @@ using POGOProtos.Enums;
 using POGOProtos.Inventory;
 using POGOProtos.Inventory.Item;
 using POGOProtos.Map;
+using POGOProtos.Map.Fort;
 using POGOProtos.Networking.Envelopes;
 using POGOProtos.Networking.Requests;
 using POGOProtos.Networking.Requests.Messages;
@@ -23,14 +25,10 @@ namespace PoGoEmulatorApi.Controllers
 {
     public class FunctionController4 : AuthorizationController3
     {
-        public FortFuncs Fort { get; set; }
-
         public FunctionController4(PoGoDbContext db) : base(db)
         {
-            Fort = new FortFuncs(db);
         }
 
-        [System.Web.Http.NonAction]
         protected ByteString GetGlobalPacket(RequestType typ, object msg)
         {
             switch (typ)
@@ -57,10 +55,51 @@ namespace PoGoEmulatorApi.Controllers
                     var lat = mgmo.Latitude;
                     var lon = mgmo.Longitude;
 
-                    RepeatedField<MapCell> cells = Fort.GetFortsByCells(mgmo.CellId);
+                    //custom defining (every property should be store in DB)
+                    RepeatedField<MapCell> cells = World.GetMapObjects(mgmo.CellId);
+                    //
+                    for (int i = 0; i < cells.Count; i++)
+                    {
+                        var gyms = Database.Gyms.Where(p => p.cell_id == cells[i].S2CellId.ToString());
+                        foreach (var gy in gyms)
+                        {
+                            FortData fd = new FortData()
+                            {
+                                Type = FortType.Gym,
+                                Id = $"{gy.cell_id}.{(int)FortType.Gym}.{gy.id}",
+                                GymPoints = gy.points,
+                                IsInBattle = gy.in_battle,
+                                Latitude = gy.latitude,
+                                Longitude = gy.longitude,
+                                OwnedByTeam = (TeamColor)gy.team,
+                            };
+                            cells[i].Forts.Add(fd);
+                        }
+                    }
+                    //
+                    for (int i = 0; i < cells.Count; i++)
+                    {
+                        var checkpoints = Database.PokeStops.Where(p => p.cell_id == cells[i].S2CellId.ToString());
+                        foreach (var ck in checkpoints)
+                        {
+                            FortData fd = new FortData()
+                            {
+                                Type = FortType.Checkpoint,
+                                Id = $"{ck.cell_id}.{(int)FortType.Checkpoint}.{ck.id}",
+                                Latitude = ck.latitude,
+                                Longitude = ck.longitude,
+                            };
+                            fd.ActiveFortModifier.Add(ItemId.ItemPokeBall);
+                            fd.CooldownCompleteTimestampMs = 300000;//5min??
+                            fd.Enabled = true;
+                            fd.LastModifiedTimestampMs = (long)DateTime.Now.ToUnixTime();
+                            cells[i].Forts.Add(fd);
+                        }
+                    }
+                    //
 
                     GetMapObjectsResponse gmo = new GetMapObjectsResponse();
-                    gmo.Status = POGOProtos.Map.MapObjectsStatus.Success;
+                    gmo.Status = MapObjectsStatus.Success;
                     gmo.MapCells.AddRange(cells);
                     return gmo.ToByteString();
 
@@ -135,7 +174,6 @@ namespace PoGoEmulatorApi.Controllers
             }
         }
 
-        [System.Web.Http.NonAction]
         protected ByteString GetPlayerPacket(RequestType typ, object msg)
         {
             switch (typ)
@@ -264,7 +302,6 @@ namespace PoGoEmulatorApi.Controllers
             }
         }
 
-        [System.Web.Http.NonAction]
         protected ByteString GetPlayer()
         {
             User usr =
@@ -304,7 +341,6 @@ namespace PoGoEmulatorApi.Controllers
             return gpr.ToByteString();
         }
 
-        [System.Web.Http.NonAction]
         protected OwnedPokemon GetPokemonById(ulong id)
         {
             var usr = this.Database.Users.SingleOrDefault(p => p.email == this.UEmail);
@@ -312,7 +348,6 @@ namespace PoGoEmulatorApi.Controllers
             return owned;
         }
 
-        [System.Web.Http.NonAction]
         protected HttpResponseMessage OnRequest()
         {
             try
@@ -375,7 +410,6 @@ namespace PoGoEmulatorApi.Controllers
             }
         }
 
-        [System.Web.Http.NonAction]
         protected RepeatedField<ByteString> GetPlyerRequests()
         {
             RepeatedField<ByteString> Body = new RepeatedField<ByteString>();
@@ -392,7 +426,6 @@ namespace PoGoEmulatorApi.Controllers
             return Body;
         }
 
-        [System.Web.Http.NonAction]
         protected ByteString ProcessResponse(Request req)
         {
             try
@@ -452,7 +485,6 @@ namespace PoGoEmulatorApi.Controllers
             }
         }
 
-        [System.Web.Http.NonAction]
         protected ReleasePokemonResponse ReleasePokemon(ReleasePokemonMessage msg)
         {
             var owned = this.GetPokemonById(msg.PokemonId);
