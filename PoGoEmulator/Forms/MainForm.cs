@@ -25,6 +25,10 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using PoGoEmulator.Logging;
+using PoGoEmulator.Enums;
+using PoGoEmulator.Models;
+using PoGoEmulator.Machine;
 
 #endregion
 
@@ -36,7 +40,7 @@ namespace PoGoEmulator.Forms
         public static MainForm Instance;
         public static SynchronizationContext SynchronizationContext;
         private string[] args;
- 
+
         public MainForm(string[] _args)
         {
             InitializeComponent();
@@ -83,7 +87,6 @@ namespace PoGoEmulator.Forms
             this.splitContainer2.SplitterDistance = this.splitContainer2.Height / 100 * 45;// Always keeps the logger window @ 45%/55% of the window height
             this.Refresh(); // Force screen refresh before items are poppulated
             InitializeMap();
-            ConsoleHelper.HideConsoleWindow();
         }
 
         private void InitializeMap()
@@ -99,5 +102,82 @@ namespace PoGoEmulator.Forms
             GMapControl1.MaxZoom = 18;
             GMapControl1.Zoom = 15;
         }
+
+        public static PogoMachine machine;
+
+        public static void Garbage()
+        {
+            #region Start GC Collector
+
+            Task.Run(() =>
+            {
+                while (true)
+                {
+                    GC.Collect();
+                    Thread.Sleep((int)Global.Cfg.GarbageTime.TotalMilliseconds);
+                }
+            });
+
+            #endregion Start GC Collector
+        }
+
+        public Task StartServer()
+        {
+            try
+            {
+                Console.OutputEncoding = Encoding.UTF8;
+                Thread.CurrentThread.CurrentCulture =
+                Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-GB");
+
+                Logger.AddLogger(new ConsoleLogger(LogLevel.Info));
+
+#if DEBUG
+                Logger.Write("ON", LogLevel.Debug);
+#endif
+                Garbage();
+                Assets.ValidateAssets();
+
+                Global.GameMaster = new GameMaster();
+
+                Task run = Task.Factory.StartNew(() =>
+                {
+                    machine = new PogoMachine();
+                    machine.Run();
+                });
+                string line = "";
+                do
+                {
+                    line = Console.ReadLine();
+                    switch (line)
+                    {
+                        case "help":
+                            Logger.Write(" - help menu", LogLevel.Help);
+                            break;
+                            /*case "gui":
+                                StartGui();
+                                break;*/
+                    }
+                } while (line != "exit");
+            }
+            catch (Exception e)
+            {
+                Logger.Write(e);
+            }
+            machine?.Stop();
+            Console.ReadLine();
+            return null;
+        }
+
+        private void StartStopBotToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (startStopBotToolStripMenuItem.Text != @"■ Exit Server")
+            {
+                startStopBotToolStripMenuItem.Text = @"■ Exit Server"; 
+                Task.Run(StartServer);
+                return;
+            }
+            Environment.Exit(0);
+        }
     }
 }
+
