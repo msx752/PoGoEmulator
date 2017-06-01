@@ -116,6 +116,7 @@ build:
 
 # scripts to run before build
 before_build:
+  - cd PoGoEmulator
   - nuget restore
   - dotnet restore
 
