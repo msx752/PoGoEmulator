@@ -16,6 +16,7 @@ namespace PoGoEmulatorApi
         public DbSet<OwnedPokemon> OwnedPokemons { get; set; }
         public DbSet<Gym> Gyms { get; set; }
         public DbSet<PokeStop> PokeStops { get; set; }
+        public DbSet<SpawnPoint> SpawnPoints { get; set; }
 
         public PoGoDbContext() : base()
         {

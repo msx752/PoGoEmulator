@@ -304,6 +304,7 @@
     <Compile Include="Database\Tables\Gym.cs" />
     <Compile Include="Database\Tables\OwnedPokemon.cs" />
     <Compile Include="Database\Tables\PokeStop.cs" />
+    <Compile Include="Database\Tables\SpawnPoints.cs" />
     <Compile Include="Database\Tables\User.cs" />
     <Compile Include="Encryption.cs" />
     <Compile Include="Enums\RpcRequestType.cs" />
@@ -327,6 +328,10 @@
     <Compile Include="Migrations\20170531205459_pokestop_table.cs" />
     <Compile Include="Migrations\20170531205459_pokestop_table.designer.cs">
       <DependentUpon>20170531205459_pokestop_table.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20170601025424_spawn_point_tbl.cs" />
+    <Compile Include="Migrations\20170601025424_spawn_point_tbl.designer.cs">
+      <DependentUpon>20170601025424_spawn_point_tbl.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\PoGoDbContextModelSnapshot.cs" />
     <Compile Include="Models\CacheUserData.cs" />

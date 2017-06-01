@@ -50,12 +50,16 @@ namespace PoGoEmulatorApi.Controllers
                 //    FortDetailsResponse fd = new FortDetailsResponse();
                 //    return fd.ToByteString();
 
+                //https://github.com/msx752/PoGoEmulator/issues/23
+
                 case RequestType.GetMapObjects:
+                    EncounterResponse f = new EncounterResponse();
+
                     GetMapObjectsMessage mgmo = (GetMapObjectsMessage)msg;
                     var lat = mgmo.Latitude;
                     var lon = mgmo.Longitude;
 
-                    //custom defining (every property should be store in DB)
+                    //custom defining (every property should be store in DB)=>https://github.com/msx752/PoGoEmulator/issues/24
                     RepeatedField<MapCell> cells = World.GetMapObjects(mgmo.CellId);
                     //
                     for (int i = 0; i < cells.Count; i++)
@@ -302,6 +306,7 @@ namespace PoGoEmulatorApi.Controllers
             }
         }
 
+        //https://github.com/msx752/PoGoEmulator/issues/24
         protected ByteString GetPlayer()
         {
             User usr =
@@ -324,11 +329,13 @@ namespace PoGoEmulatorApi.Controllers
                 RemainingCodenameClaims = 10,
                 DailyBonus = new POGOProtos.Data.Player.DailyBonus(),
                 EquippedBadge = new POGOProtos.Data.Player.EquippedBadge(),
+                Team = TeamColor.Neutral,
             };
+
             gpr.PlayerData.Currencies.AddRange(new List<Currency>()
             {
-                new Currency(){ Name="POKECOIN"},
-                new Currency(){ Name="STARDUST"}
+                new Currency(){ Name="POKECOIN", Amount=10000},
+                new Currency(){ Name="STARDUST" , Amount=10000}
             });
             gpr.PlayerData.TutorialState.AddRange(new List<TutorialState>()
             {
