@@ -88,7 +88,7 @@ namespace PoGoEmulator
 
             if (string.IsNullOrEmpty(_color.ToString())) _color = Color.White;
 
-            //MainForm.ColoredConsoleWrite(_color, finalMessage);
+            MainForm.ColoredConsoleWrite(_color, finalMessage);
         }
 
         public static Color FromColor(ConsoleColor c)
