@@ -15,7 +15,9 @@ namespace PoGoEmulator
             Logger.Write("Validating Assets..");
 
             if (!Directory.Exists(Path.Combine(Global.Cfg.DUMP_ASSET_PATH)))
-                throw new Exception("'Data' folder not found.");
+                throw new Exception("'DATA' FOLDER NOT FOUND.\r\nDownload: " +
+                                    "  https://mega.nz/#!aEBGmZ7b!EwSmPmyJxcO0PYUYzuk5Suy3s8j-V99yvz0oMTtEmnI  " +
+                                    "\r\n  and unzip to executable path\r\n");
 
             if (!File.Exists(Path.Combine(Global.Cfg.DUMP_ASSET_PATH, "game_master")))
                 throw new Exception("'game_master' not found");

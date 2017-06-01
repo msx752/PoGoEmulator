@@ -3,9 +3,10 @@
 [![Stories in Ready](https://badge.waffle.io/msx752/PoGoEmulator.svg?label=in%20progress&title=In%20Progress)](http://waffle.io/msx752/PoGoEmulator)
 [![Stories in Ready](https://badge.waffle.io/msx752/PoGoEmulator.svg?label=done&title=Done)](http://waffle.io/msx752/PoGoEmulator)
 
-[![Build status](https://ci.appveyor.com/api/projects/status/8ox68bhw59uy1fkd/branch/master?svg=true)](https://ci.appveyor.com/project/msx752/pogoemulator/branch/master) 
+[![ConsoleApp Build status](https://ci.appveyor.com/api/projects/status/jvwuq446ja59cekt/branch/master?svg=true)](https://ci.appveyor.com/project/msx752/pogoemulator/branch/master) 
 
 # PoGoEmulator
+
 
 # Installation
 - install to Computer [Nox App Player](https://www.bignox.com/blog/category/releasenote/)
