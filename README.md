@@ -17,7 +17,7 @@
 
 # IIS Configuration
 - using local ip for accesing from nox app player we have to allowed port on firewall.
-- run CMD  as 'Administrator' and call `netsh http add urlacl url=http://*:3000/ user=Everyone` , it is allow to the specific ip for 3000 port.
+- run CMD  as 'Administrator' and call `netsh http add urlacl url=http://[LOCALIP]:3000/ user=Everyone` , it is allow to the specific ip for 3000 port.
 - and also run VS as 'Administrator' and open project then configure the Project `Properties>Web>Project URL` after this
 
 
