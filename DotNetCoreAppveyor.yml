@@ -1,4 +1,8 @@
 version: 0.35.0.{build}
+skip_commits:
+  files:
+  - 'CHANGELOG.md'
+  - 'README.md'
 pull_requests:
   do_not_increment_build_number: true
 branches:
@@ -8,35 +12,76 @@ image: Visual Studio 2017
 configuration: Release
 shallow_clone: true
 clone_depth: 5
+init:
+- ps: git submodule update --init --recursive
 environment:
+  gitauth_token:
+    secure: 11TqXLzSLSjYWnB+ieCmTghTP5SEzI6MfRxa8SVLQsEuEhmfNsyWNQU3O+LGNQR9
+  appveyor_token:
+    secure: SwKF1XASJYZRSuq/EccSzx0c8ap1j1Zby863X1N2aAg=
   priv_key:
     secure: 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
-  auth_token:
-    secure: b/Qg1FRLNmIMyNshorF8wHuDYq2072RD7ptBz7l8Grs0gaSLeBRVakBIcc6sWVc/
-  CHANGELOG_GITHUB_TOKEN:
-    secure: b/Qg1FRLNmIMyNshorF8wHuDYq2072RD7ptBz7l8Grs0gaSLeBRVakBIcc6sWVc/
-  github_user:
-    secure: K1enFpkh00HL+0rlpKbUfQ==
   github_email:
     secure: XZXS5+eJOubB91e0LtqIEinf84icR3+URjbX5YbWnc8=
+  github_user:
+    secure: K1enFpkh00HL+0rlpKbUfQ==
 before_build:
 - ps: dotnet restore
 build:
   verbosity: minimal
-after_build:
-- ps: dotnet publish -c Release
 artifacts:
 - path: '\PoGoEmulator\bin\Release\netcoreapp1.1\win10-x64\publish'
   name: PoGoEmulator
 before_deploy:
-- ps: "$fileContent = \"-----BEGIN RSA PRIVATE KEY-----`n\";\n    $fileContent += $env:priv_key.Replace(' ', \"`n\");\n    $fileContent += \"`n-----END RSA PRIVATE KEY-----`n\";\n    Set-Content \"$env:USERPROFILE\\.ssh\\id_rsa\" \"$($fileContent)\";\n    Set-Content \"$env:USERPROFILE\\.git-credentials\" \"https://$($env:auth_token):x-oauth-basic@github.com`n\";\n git config --global credential.helper store\n git config --global user.email \"%github_email%\"\n git config --global user.name \"%github_user%\"\n git checkout -b Appveyor \"%APPVEYOR_REPO_BRANCH%\"\n SET PATH=C:\\Ruby23-x64\\bin;%PATH%\n\n# Print version and location for pre-installed ruby\n ruby --version\n where ruby\n\n# Install latest version of RubyGems\n gem update --system --no-document --no-post-install-message\n gem --version\nwhere gem\n\n# Print version and location for pre-installed bundler\n#- bundler --version\n#- where bundler\n\n# Install ruby dependencies\n gem install bundler\n bundle install\n#- bundle install --retry 3\nbundle exec github_changelog_generator\n\ngit add \"CHANGELOG.md\"\ngit commit -m \"%APPVEYOR_REPO_TAG_NAME%\"\ngit checkout \"%APPVEYOR_REPO_BRANCH%\"\ngit merge Appveyor\ngit branch -d Appveyor\n git pull \"origin\" \"%APPVEYOR_REPO_BRANCH%\" \n git push \"origin\" \"%APPVEYOR_REPO_BRANCH%\""
+- ps: >-
+    $fileContent = "-----BEGIN RSA PRIVATE KEY-----`n";
+        $fileContent += $env:priv_key.Replace(' ', "`n");
+        $fileContent += "`n-----END RSA PRIVATE KEY-----`n";
+        Set-Content "$env:USERPROFILE\.ssh\id_rsa" "$($fileContent)";
+        Set-Content "$env:USERPROFILE\.git-credentials" "https://$($env:gitauth_token):x-oauth-basic@github.com`n";
+
+     git config --global credential.helper store
+     git config --global user.email "%github_email%"
+     git config --global user.name "%github_user%"
+     git checkout -b Appveyor "%APPVEYOR_REPO_BRANCH%"
+     SET PATH=C:\Ruby23-x64\bin;%PATH%
+
+    # Print version and location for pre-installed ruby
+     ruby --version
+     where ruby
+
+    # Install latest version of RubyGems
+     gem update --system --no-document --no-post-install-message
+     gem --version
+     where gem
+
+    # Print version and location for pre-installed bundler
+
+    #- bundler --version
+
+    #- where bundler
+
+
+    # Install ruby dependencies
+     gem install bundler
+     bundle install
+    #- bundle install --retry 3
+     bundle exec github_changelog_generator
+
+     git add "CHANGELOG.md"
+     git commit -m "%APPVEYOR_REPO_TAG_NAME%"
+     git checkout "%APPVEYOR_REPO_BRANCH%"
+     git merge Appveyor
+     git branch -d Appveyor
+     git pull "origin" "%APPVEYOR_REPO_BRANCH%"
+     git push "origin" "%APPVEYOR_REPO_BRANCH%"
 deploy:
 - provider: GitHub
-  tag: $(APPVEYOR_REPO_TAG_NAME)
-  release: PoGoEmulator $(APPVEYOR_REPO_TAG_NAME)
-  description: '[CHANGELOG.md](https://github.com/msx752/PoGoEmulator/blob/master/CHANGELOG.md)'
+  tag: v$(appveyor_build_version)
+  release: $(APPVEYOR_PROJECT_NAME) v$(appveyor_build_version)
+  description: '[CHANGELOG.md](https://github.com/$(APPVEYOR_REPO_NAME)/blob/$(APPVEYOR_REPO_BRANCH)/CHANGELOG.md)'
   auth_token:
-    secure: $(auth_token)
+    secure: izPgJnwIOYQmbwg0h+N4+50Beu3uXGdSbF1Vvwz0d5o=
   artifact: PoGoEmulator
   force_update: true
   on:
