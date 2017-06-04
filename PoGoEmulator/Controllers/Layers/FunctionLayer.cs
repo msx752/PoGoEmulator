@@ -27,8 +27,11 @@ namespace PoGoEmulator.Controllers.Layers
 {
     public class FunctionLayer : AuthorizationLayer
     {
+        public FortFuncs Fort { get; set; }
+
         public FunctionLayer(PoGoDbContext db, ILoggerFactory loggerf) : base(db, loggerf)
         {
+            Fort = new FortFuncs(db);
         }
 
         protected ByteString GetGlobalPacket(RequestType typ, object msg)
@@ -53,59 +56,15 @@ namespace PoGoEmulator.Controllers.Layers
                 //    return fd.ToByteString();
 
                 //https://github.com/msx752/PoGoEmulator/issues/23
-
                 case RequestType.GetMapObjects:
-                    EncounterResponse f = new EncounterResponse();
-
                     GetMapObjectsMessage mgmo = (GetMapObjectsMessage)msg;
                     var lat = mgmo.Latitude;
                     var lon = mgmo.Longitude;
 
-                    //custom defining (every property should be store in DB)=>https://github.com/msx752/PoGoEmulator/issues/24
-                    RepeatedField<MapCell> cells = World.GetMapObjects(mgmo.CellId);
-                    //
-                    for (int i = 0; i < cells.Count; i++)
-                    {
-                        var gyms = Database.Gyms.Where(p => p.cell_id == cells[i].S2CellId.ToString());
-                        foreach (var gy in gyms)
-                        {
-                            FortData fd = new FortData()
-                            {
-                                Type = FortType.Gym,
-                                Id = $"{gy.cell_id}.{(int)FortType.Gym}.{gy.id}",
-                                GymPoints = gy.points,
-                                IsInBattle = gy.in_battle,
-                                Latitude = gy.latitude,
-                                Longitude = gy.longitude,
-                                OwnedByTeam = (TeamColor)gy.team,
-                            };
-                            cells[i].Forts.Add(fd);
-                        }
-                    }
-                    //
-                    for (int i = 0; i < cells.Count; i++)
-                    {
-                        var checkpoints = Database.PokeStops.Where(p => p.cell_id == cells[i].S2CellId.ToString());
-                        foreach (var ck in checkpoints)
-                        {
-                            FortData fd = new FortData()
-                            {
-                                Type = FortType.Checkpoint,
-                                Id = $"{ck.cell_id}.{(int)FortType.Checkpoint}.{ck.id}",
-                                Latitude = ck.latitude,
-                                Longitude = ck.longitude,
-                            };
-                            fd.ActiveFortModifier.Add(ItemId.ItemPokeBall);
-                            fd.CooldownCompleteTimestampMs = 300000;//5min??
-                            fd.Enabled = true;
-                            fd.LastModifiedTimestampMs = (long)DateTime.Now.ToUnixTime();
-                            cells[i].Forts.Add(fd);
-                        }
-                    }
-                    //
+                    RepeatedField<MapCell> cells = Fort.GetFortsByCells(mgmo.CellId);
 
                     GetMapObjectsResponse gmo = new GetMapObjectsResponse();
-                    gmo.Status = MapObjectsStatus.Success;
+                    gmo.Status = POGOProtos.Map.MapObjectsStatus.Success;
                     gmo.MapCells.AddRange(cells);
                     return gmo.ToByteString();
 
@@ -236,6 +195,7 @@ namespace PoGoEmulator.Controllers.Layers
                     //this.Log.Dbg($"TypeOfResponseMessage: {nameof(UpgradePokemonResponse)}");
                     return up.ToByteString();
 
+                //https://github.com/msx752/PoGoEmulator/issues/24
                 case RequestType.GetPlayerProfile:
                     GetPlayerProfileResponse gpp = new GetPlayerProfileResponse();
                     gpp.Result = GetPlayerProfileResponse.Types.Result.Success;
@@ -308,7 +268,6 @@ namespace PoGoEmulator.Controllers.Layers
             }
         }
 
-        //https://github.com/msx752/PoGoEmulator/issues/24
         protected ByteString GetPlayer()
         {
             User usr =
@@ -331,13 +290,11 @@ namespace PoGoEmulator.Controllers.Layers
                 RemainingCodenameClaims = 10,
                 DailyBonus = new POGOProtos.Data.Player.DailyBonus(),
                 EquippedBadge = new POGOProtos.Data.Player.EquippedBadge(),
-                Team = TeamColor.Neutral,
             };
-
             gpr.PlayerData.Currencies.AddRange(new List<Currency>()
             {
-                new Currency(){ Name="POKECOIN", Amount=10000},
-                new Currency(){ Name="STARDUST" , Amount=10000}
+                new Currency(){ Name="POKECOIN", Amount=9999},
+                new Currency(){ Name="STARDUST", Amount=9999}
             });
             gpr.PlayerData.TutorialState.AddRange(new List<TutorialState>()
             {
