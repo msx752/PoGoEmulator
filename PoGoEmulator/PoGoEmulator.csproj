@@ -11,6 +11,21 @@
   </PropertyGroup>
   <PropertyGroup>
     <PackageTargetFallback>portable-net45;win8</PackageTargetFallback>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <Version>0.35.0.0</Version>
+    <Authors>Mustafa Salih ASLIM</Authors>
+    <Company></Company>
+    <PackageLicenseUrl>https://github.com/msx752/PoGoEmulator/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/msx752/PoGoEmulator</PackageProjectUrl>
+    <ApplicationIcon>wwwroot\favicon.ico</ApplicationIcon>
+    <PackageIconUrl>https://github.com/msx752/PoGoEmulator/raw/master/PoGoEmulator/wwwroot/favicon.ico</PackageIconUrl>
+    <RepositoryUrl></RepositoryUrl>
+    <PackageTags>PoGoEmulator game pokemon go emulator</PackageTags>
+    <NeutralLanguage>en-GB</NeutralLanguage>
+    <Description>Unofficial PoGoEmulator</Description>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <Optimize>True</Optimize>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="bower_components\**" />
