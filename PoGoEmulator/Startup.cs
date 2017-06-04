@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Net;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -37,33 +38,42 @@ namespace PoGoEmulator
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            loggerFactory
-                .AddConsole(Configuration.GetSection("Logging"))
-                .AddDebug();
-
-            if (env.IsDevelopment())
+            try
             {
-                app.UseDeveloperExceptionPage();
-                app.UseBrowserLink();
+                loggerFactory
+                    .AddConsole(Configuration.GetSection("Logging"))
+                    .AddDebug();
+
+                if (env.IsDevelopment())
+                {
+                    app.UseDeveloperExceptionPage();
+                    app.UseBrowserLink();
+                }
+                else
+                {
+                    app.UseExceptionHandler("/Admin/Error");
+                }
+
+                app.UseStaticFiles();
+                app.UseMvc(routes =>
+                {
+                    routes.MapRoute("default", "{controller=Home}/{action=Index}");
+                });
+
+                //app.Run(req =>
+                //{
+                //    return req.Response.WriteAsync("");
+                //});
+
+                Asset.ValidateAssets();
+                GlobalSettings.GameMaster = new GameMaster();
             }
-            else
+            catch (Exception e)
             {
-                app.UseExceptionHandler("/Admin/Error");
+                var logg = loggerFactory.CreateLogger(this.GetType());
+                logg.LogError(1, e, "");
+                throw;
             }
-
-            app.UseStaticFiles();
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute("default", "{controller=Home}/{action=Index}");
-            });
-
-            //app.Run(req =>
-            //{
-            //    return req.Response.WriteAsync("");
-            //});
-
-            Asset.ValidateAssets();
-            GlobalSettings.GameMaster = new GameMaster();
         }
     }
 }

@@ -14,12 +14,12 @@ namespace PoGoEmulator
         private static void Main(string[] args)
         {
             var host = new WebHostBuilder()
-           .UseKestrel()
-           .UseUrls($"http://{GlobalSettings.Cfg.Ip}:{GlobalSettings.Cfg.Port}")
-           .UseContentRoot(Directory.GetCurrentDirectory())
-           .UseIISIntegration()
-           .UseStartup<Startup>()
-           .Build();
+                .UseKestrel()
+                .UseUrls($"http://{GlobalSettings.Cfg.Ip}:{GlobalSettings.Cfg.Port}")
+                .UseContentRoot(Directory.GetCurrentDirectory())
+                .UseIISIntegration()
+                .UseStartup<Startup>()
+                .Build();
 
             host.Run();
         }
