@@ -8,7 +8,11 @@ namespace PoGoEmulator.Models
 {
     public class Configs
     {
+#if DEBUG
         public string DUMP_ASSET_PATH { get; set; } = Directory.GetCurrentDirectory() + "\\bin\\Data";
+#else
+        public string DUMP_ASSET_PATH { get; set; } = Directory.GetCurrentDirectory() + "\\Data";
+#endif
         public TimeSpan GarbageTime { get; set; } = new TimeSpan(0, 0, 10);
         public String Ip { get; set; } = "192.168.2.248";
         public int MAX_POKEMON_NATIONAL_ID { get; set; } = 151;
