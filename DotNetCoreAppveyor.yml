@@ -81,6 +81,7 @@ deploy:
   auth_token:
     secure: izPgJnwIOYQmbwg0h+N4+50Beu3uXGdSbF1Vvwz0d5o=
   artifact: PoGoEmulator
+  draft: true
   force_update: true
   on:
     appveyor_repo_tag: true
