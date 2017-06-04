@@ -28,13 +28,11 @@ after_build:
 artifacts:
 - path: '\PoGoEmulator\bin\Release\netcoreapp1.1\win10-x64\publish'
   name: PoGoEmulator
-before_deploy:
-- ps: "$fileContent = \"-----BEGIN RSA PRIVATE KEY-----`n\";\n    $fileContent += $env:priv_key.Replace(' ', \"`n\");\n    $fileContent += \"`n-----END RSA PRIVATE KEY-----`n\";\n    Set-Content \"$env:USERPROFILE\\.ssh\\id_rsa\" \"$($fileContent)\";\n    Set-Content \"$env:USERPROFILE\\.git-credentials\" \"https://$($env:auth_token):x-oauth-basic@github.com`n\";\n git config --global credential.helper store\n git config --global user.email \"%github_email%\"\n git config --global user.name \"%github_user%\"\n git checkout -b Appveyor \"%APPVEYOR_REPO_BRANCH%\"\n SET PATH=C:\\Ruby23-x64\\bin;%PATH%\n\n# Print version and location for pre-installed ruby\n ruby --version\n where ruby\n\n# Install latest version of RubyGems\n gem update --system --no-document --no-post-install-message\n gem --version\nwhere gem\n\n# Print version and location for pre-installed bundler\n#- bundler --version\n#- where bundler\n\n# Install ruby dependencies\n gem install bundler\n bundle install\n#- bundle install --retry 3\nbundle exec github_changelog_generator\n\ngit add \"CHANGELOG.md\"\ngit commit -m \"%APPVEYOR_REPO_TAG_NAME%\"\ngit checkout \"%APPVEYOR_REPO_BRANCH%\"\ngit merge Appveyor\ngit branch -d Appveyor\n git pull \"origin\" \"%APPVEYOR_REPO_BRANCH%\" \n git push \"origin\" \"%APPVEYOR_REPO_BRANCH%\""
 deploy:
 - provider: GitHub
   tag: $(APPVEYOR_REPO_TAG_NAME)
   release: PoGoEmulator $(APPVEYOR_REPO_TAG_NAME)
-  description: '[CHANGELOG.md](https://github.com/msx752/PoGoEmulator/blob/master/CHANGELOG.md)'
+  description: '[CHANGELOG.md](https://github.com/$(APPVEYOR_REPO_NAME)/blob/$(APPVEYOR_REPO_BRANCH)/CHANGELOG.md)'
   auth_token:
     secure: $(auth_token)
   artifact: PoGoEmulator
