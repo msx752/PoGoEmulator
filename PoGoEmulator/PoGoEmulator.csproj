@@ -27,15 +27,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <Optimize>True</Optimize>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Remove="bower_components\**" />
-    <EmbeddedResource Remove="bower_components\**" />
-    <None Remove="bower_components\**" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove=".bowerrc" />
-    <None Remove="appsettings.Development.json" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Google.Protobuf" Version="3.3.0" />
