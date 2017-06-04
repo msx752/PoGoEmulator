@@ -16,7 +16,30 @@ namespace PoGoEmulator.Migrations
                 .HasAnnotation("ProductVersion", "1.1.2")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("PoGoEmulatorApi.Database.Tables.OwnedPokemon", b =>
+            modelBuilder.Entity("PoGoEmulator.Database.Tables.Gym", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("cell_id")
+                        .HasMaxLength(64);
+
+                    b.Property<bool>("in_battle");
+
+                    b.Property<double>("latitude");
+
+                    b.Property<double>("longitude");
+
+                    b.Property<int>("points");
+
+                    b.Property<byte>("team");
+
+                    b.HasKey("id");
+
+                    b.ToTable("gym");
+                });
+
+            modelBuilder.Entity("PoGoEmulator.Database.Tables.OwnedPokemon", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
@@ -88,7 +111,64 @@ namespace PoGoEmulator.Migrations
                     b.ToTable("owned_pkmn");
                 });
 
-            modelBuilder.Entity("PoGoEmulatorApi.Database.Tables.User", b =>
+            modelBuilder.Entity("PoGoEmulator.Database.Tables.PokeStop", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("cell_id")
+                        .HasMaxLength(64);
+
+                    b.Property<string>("description")
+                        .HasMaxLength(128);
+
+                    b.Property<int>("experience");
+
+                    b.Property<string>("img_url")
+                        .HasMaxLength(64);
+
+                    b.Property<double>("latitude");
+
+                    b.Property<double>("longitude");
+
+                    b.Property<string>("name")
+                        .HasMaxLength(64);
+
+                    b.Property<string>("rewards")
+                        .HasMaxLength(64);
+
+                    b.HasKey("id");
+
+                    b.ToTable("pokestop");
+                });
+
+            modelBuilder.Entity("PoGoEmulator.Database.Tables.SpawnPoint", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("cell_id")
+                        .HasMaxLength(64);
+
+                    b.Property<string>("encounters")
+                        .HasMaxLength(64);
+
+                    b.Property<double>("latitude");
+
+                    b.Property<double>("longitute");
+
+                    b.Property<int>("max_spawn_expire");
+
+                    b.Property<int>("min_spawn_expire");
+
+                    b.Property<int>("update_interval");
+
+                    b.HasKey("id");
+
+                    b.ToTable("spawn_points");
+                });
+
+            modelBuilder.Entity("PoGoEmulator.Database.Tables.User", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();

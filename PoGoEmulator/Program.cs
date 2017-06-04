@@ -1,24 +1,27 @@
-﻿#region using directives
-
-using System;
-using System.Windows.Forms;
-using PoGoEmulator.Forms;
-using PoGoEmulator.Win32;
-
-#endregion
+﻿using System;
+using System.Globalization;
+using System.IO;
+using System.Threading;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using PoGoEmulator.Assets;
 
 namespace PoGoEmulator
 {
-    internal class Program
+    internal partial class Program
     {
-        [STAThread]
-
         private static void Main(string[] args)
         {
-            Application.EnableVisualStyles();
-            ConsoleHelper.AllocConsole();
-            ConsoleHelper.HideConsoleWindow();
-            Application.Run(new MainForm(args));
+            var host = new WebHostBuilder()
+           .UseKestrel()
+           .UseUrls($"http://{GlobalSettings.Cfg.Ip}:{GlobalSettings.Cfg.Port}")
+           .UseContentRoot(Directory.GetCurrentDirectory())
+           .UseIISIntegration()
+           .UseStartup<Startup>()
+           .Build();
+
+            host.Run();
         }
     }
 }
