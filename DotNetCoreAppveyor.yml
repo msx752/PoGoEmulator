@@ -1,11 +1,6 @@
 version: 0.35.0.{build}
 pull_requests:
   do_not_increment_build_number: true
-skip_commits:
-  files:
-  #- '**\AssemblyInfo.*'
-  - 'CHANGELOG.md'
-  - 'README.md'
 branches:
   only:
   - master
@@ -23,8 +18,6 @@ environment:
     secure: XZXS5+eJOubB91e0LtqIEinf84icR3+URjbX5YbWnc8=
   github_user:
     secure: K1enFpkh00HL+0rlpKbUfQ==
-install:
-- git submodule update --init --recursive
 before_build:
 - ps: dotnet restore
 build:
@@ -32,56 +25,4 @@ build:
 artifacts:
 - path: '\PoGoEmulator\bin\Release\netcoreapp1.1\win10-x64\publish'
   name: PoGoEmulator
-before_deploy:
-- ps: >-
-    $fileContent = "-----BEGIN RSA PRIVATE KEY-----`n";
-    $fileContent += $env:priv_key.Replace(' ', "`n");
-    $fileContent += "`n-----END RSA PRIVATE KEY-----`n";
-    Set-Content "$env:USERPROFILE\.ssh\id_rsa" "$($fileContent)";
-    Set-Content "$env:USERPROFILE\.git-credentials" "https://$($env:gitauth_token):x-oauth-basic@github.com`n";
-
-- git config --global credential.helper store
-- git config --global user.email "%github_email%"
-- git config --global user.name "%github_user%"
-- git checkout -b Appveyor "%APPVEYOR_REPO_BRANCH%"
-- SET PATH=C:\Ruby23-x64\bin;%PATH%
-
-# Print version and location for pre-installed ruby
-- ruby --version
-- where ruby
-
-# Install latest version of RubyGems
-- gem update --system --no-document --no-post-install-message
-- gem --version
-- where gem
-
-# Print version and location for pre-installed bundler
-#- bundler --version
-#- where bundler
-
-# Install ruby dependencies
-- gem install bundler
-- bundle install
-#- bundle install --retry 3
-- bundle exec github_changelog_generator
-
-- git add "CHANGELOG.md"
-#- git add "PoGoEmulator/Properties/AssemblyInfo.cs"
-- git commit -m "%APPVEYOR_REPO_TAG_NAME%"
-- git checkout "%APPVEYOR_REPO_BRANCH%"
-- git merge Appveyor
-- git branch -d Appveyor
-- git pull "origin" "%APPVEYOR_REPO_BRANCH%"
-- git push "origin" "%APPVEYOR_REPO_BRANCH%"
-deploy:
-- provider: GitHub
-  tag: v$(appveyor_build_version)
-  release: $(APPVEYOR_PROJECT_NAME) v$(appveyor_build_version)
-  description: '[CHANGELOG.md](https://github.com/$(APPVEYOR_REPO_NAME)/blob/$(APPVEYOR_REPO_BRANCH)/CHANGELOG.md)'
-  auth_token:
-    secure: izPgJnwIOYQmbwg0h+N4+50Beu3uXGdSbF1Vvwz0d5o=
-  artifact: PoGoEmulator
-  draft: true
-  force_update: true
-  on:
-    appveyor_repo_tag: true
+deploy: off
