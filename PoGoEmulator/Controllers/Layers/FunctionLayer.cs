@@ -27,6 +27,7 @@ namespace PoGoEmulator.Controllers.Layers
 {
     public class FunctionLayer : AuthorizationLayer
     {
+        //THIS WILL BE DEPREATE
         public FortFuncs Fort { get; set; }
 
         public FunctionLayer(PoGoDbContext db, ILoggerFactory loggerf) : base(db, loggerf)
