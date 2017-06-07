@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using POGOProtos.Networking.Responses;
 
-namespace PoGoEmulator.Assets
+namespace PoGoEmulator.Models.GameMasters
 {
-    public class GameMaster1
+    public class GameMaster
     {
-        public GameMaster1()
+        public GameMaster()
         {
             //#if DEBUG
 

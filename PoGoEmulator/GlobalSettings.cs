@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using PoGoEmulator.Assets;
 using PoGoEmulator.Models;
+using PoGoEmulator.Models.GameMasters;
 using POGOProtos.Map;
 using POGOProtos.Networking.Responses;
 

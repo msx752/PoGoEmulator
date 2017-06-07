@@ -20,12 +20,7 @@ namespace PoGoEmulator.Models.Pokemons
         {
             this.InitializeMapObject(this, obj);
 
-            if (this.isWild && !this.isOwned) this.calcStats(this.owner);
-        }
-
-        private void calcStats(string owner)
-        {
-            throw new NotImplementedException();
+            if (this.isWild && !this.isOwned) this.CalcStats(this.owner);
         }
 
         public double cpMultiplier { get; set; }

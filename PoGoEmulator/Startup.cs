@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PoGoEmulator.Assets;
 using PoGoEmulator.Database;
+using PoGoEmulator.Models.GameMasters;
 
 namespace PoGoEmulator
 {
