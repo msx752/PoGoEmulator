@@ -80,6 +80,34 @@ namespace PoGoEmulator.Models.Worlds.MapObjects
                         pi = refClassType.GetProperty("uid");
                         break;
 
+                    case "move_1":
+                        pi = refClassType.GetProperty("move1");
+                        break;
+
+                    case "move_2":
+                        pi = refClassType.GetProperty("move2");
+                        break;
+
+                    case "height_m":
+                        pi = refClassType.GetProperty("height");
+                        break;
+
+                    case "weight_kg":
+                        pi = refClassType.GetProperty("weight");
+                        break;
+
+                    case "individual_attack":
+                        pi = refClassType.GetProperty("ivAttack");
+                        break;
+
+                    case "individual_defense":
+                        pi = refClassType.GetProperty("ivDefense");
+                        break;
+
+                    case "individual_stamina":
+                        pi = refClassType.GetProperty("ivStamina");
+                        break;
+
                     default:
                         pi = refClassType.GetProperty(prop.Name.ToLower());
                         if (pi == null)
