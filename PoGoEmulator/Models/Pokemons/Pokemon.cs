@@ -53,7 +53,7 @@ namespace PoGoEmulator.Models.Pokemons
         {
             PokemonData pk = new PokemonData
             {
-                Id = Extensions.GenerateUniqueId(),
+                Id = Extensions.GenerateUniqueULongId(),
                 PokemonId = (PokemonId)this.dexNumber,
                 Cp = this.cp,
                 Stamina = this.stamina,

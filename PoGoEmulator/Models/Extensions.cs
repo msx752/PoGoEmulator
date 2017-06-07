@@ -39,7 +39,7 @@ namespace PoGoEmulator.Models
         }
 
         //modification of https://codereview.stackexchange.com/questions/61338/generate-random-numbers-without-repetitions
-        public static ulong GenerateUniqueId()
+        public static ulong GenerateUniqueULongId()
         {
             int count = 2;
             List<int> result = new List<int>(count);
@@ -47,6 +47,7 @@ namespace PoGoEmulator.Models
             HashSet<int> candidates = new HashSet<int>();
             for (Int32 top = Int32.MaxValue - count; top < Int32.MaxValue; top++)
             {
+                Thread.Sleep(5);
                 int value = GlobalSettings.Random.Next(top + 1);
                 if (candidates.Add(value))
                 {
@@ -73,6 +74,32 @@ namespace PoGoEmulator.Models
                 }
             }
             return (ulong)str;
+        }
+
+        //modification of https://codereview.stackexchange.com/questions/61338/generate-random-numbers-without-repetitions
+        public static Int32 GenerateUniqueInt32Id()
+        {
+            int count = 1;
+            List<int> result = new List<int>(count);
+
+            // generate count random values.
+            HashSet<int> candidates = new HashSet<int>();
+            for (Int32 top = Int32.MaxValue - count; top < Int32.MaxValue; top++)
+            {
+                Thread.Sleep(5);
+                // May strike a duplicate.
+                int value = GlobalSettings.Random.Next(top + 1);
+                if (candidates.Add(value))
+                {
+                    result.Add(value);
+                }
+                else
+                {
+                    result.Add(top);
+                    candidates.Add(top);
+                }
+            }
+            return result.First();
         }
 
         public static PokemonSettings GetPkmnTemplate(byte dex)
