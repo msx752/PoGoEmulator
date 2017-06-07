@@ -26,25 +26,9 @@ namespace PoGoEmulator.Models.Pokemons
             p.nickname = name;
         }
 
-        public static PokemonSettings GetPkmnTemplate(this Pokemon p, byte dex)
-        {
-            var sttng = GlobalSettings.GameMaster.GetPokemonTmplByDex(dex);
-            return sttng;
-        }
-
-        public static PokemonId GetPkmnName(this Pokemon p, byte dex)
-        {
-            return (PokemonId)dex;
-        }
-
-        public static PokemonFamilyId GetPkmnFamily(this Pokemon p, byte dex)
-        {
-            return p.GetPkmnTemplate(dex).FamilyId;
-        }
-
         public static void addCandies(this Pokemon p, int amount)
         {
-            var family = p.GetPkmnFamily((byte)p.dexNumber);
+            var family = Extensions.GetPkmnFamily((byte)p.dexNumber);
             /*
                  let family = this.getPkmnFamily(this.dexNumber);
                 let id = ENUM.getIdByName(ENUM.POKEMON_FAMILY, family) << 0;
@@ -62,5 +46,25 @@ namespace PoGoEmulator.Models.Pokemons
             //var pkmnTmpl = p.GetPkmnTemplate((byte)p.dexNumber);
             return false;
         }
+
+        /**
+         * @return {Number}
+         */
+        //candiesToEvolve()
+        //      {
+        //          let pkmnTmpl = this.getPkmnTemplate(this.dexNumber);
+        //          return (pkmnTmpl.candy_to_evolve << 0);
+        //      }
+
+        /**
+  /**
+   * @return {Boolean}
+   */
+        //hasReachedMaxLevel()
+        //      {
+        //          return (
+        //            this.level > this.owner.info.getMaximumLevel() * 2
+        //          );
+        //      }
     }
 }

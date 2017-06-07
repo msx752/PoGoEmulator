@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using PoGoEmulator.Models.GameMasters;
+using PoGoEmulator.Models.Pokemons;
+using POGOProtos.Enums;
+using POGOProtos.Settings.Master;
 
 namespace PoGoEmulator.Models
 {
@@ -31,6 +35,22 @@ namespace PoGoEmulator.Models
         {
             Random r = new Random();
             return 1e18 - Math.Floor(r.NextDouble() * 1e18);
+        }
+
+        public static PokemonSettings GetPkmnTemplate(byte dex)
+        {
+            var sttng = GlobalSettings.GameMaster.GetPokemonTmplByDex(dex);
+            return sttng;
+        }
+
+        public static PokemonId GetPkmnName(byte dex)
+        {
+            return (PokemonId)dex;
+        }
+
+        public static PokemonFamilyId GetPkmnFamily(byte dex)
+        {
+            return GetPkmnTemplate(dex).FamilyId;
         }
     }
 }
