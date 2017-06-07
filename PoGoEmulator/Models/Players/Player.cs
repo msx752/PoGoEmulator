@@ -9,6 +9,7 @@ using PoGoEmulator.Models.Players.CandyBags;
 using PoGoEmulator.Models.Players.Contacts;
 using PoGoEmulator.Models.Players.Currencys;
 using PoGoEmulator.Models.Players.Infos;
+using PoGoEmulator.Models.Players.Tutorials;
 using PoGoEmulator.Models.Worlds.MapObjects;
 
 // ReSharper disable InconsistentNaming
@@ -25,6 +26,7 @@ namespace PoGoEmulator.Models.Players
             contact = new Contact();
             info = new Info();
             currency = new Currency(this);
+            tutorial = new Tutorial();
         }
 
         public string _email { get; set; }
@@ -45,6 +47,7 @@ namespace PoGoEmulator.Models.Players
         public Contact contact { get; set; }
         public Info info { get; set; }
         public Currency currency { get; set; }
+        public Tutorial tutorial { get; set; }
 
         public Player(object obj) : this()
         {
