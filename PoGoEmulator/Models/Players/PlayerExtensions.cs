@@ -8,10 +8,5 @@ namespace PoGoEmulator.Models.Players
 {
     public static class PlayerExtensions
     {
-        public static int CalcCp(this Player p)
-        {
-            var levelSettings = p.info.GetLevelSettings();
-            return 0;
-        }
     }
 }
