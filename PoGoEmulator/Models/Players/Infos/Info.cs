@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Google.Protobuf.Collections;
+using POGOProtos.Inventory;
 
 // ReSharper disable InconsistentNaming
 
@@ -41,5 +43,33 @@ namespace PoGoEmulator.Models.Players.Infos
         public int pokeStopVisits { get; set; }
         public int pokeballsThrown { get; set; }
         public int eggsHatched { get; set; }
+
+        public InventoryItem Serialize()
+        {
+            InventoryItem v = new InventoryItem
+            {
+                ModifiedTimestampMs = (long)((double)DateTime.Now.ToUnixTime() - 1e3),
+                InventoryItemData = new InventoryItemData()
+                {
+                    PlayerStats = new POGOProtos.Data.Player.PlayerStats()
+                    {
+                        Level = this._level,
+                        Experience = this._exp,
+                        PrevLevelXp = this.prevLvlExp,
+                        NextLevelXp = this.nextLvlExp,
+                        KmWalked = this.kmWalked,
+                        PokemonsEncountered = this.pkmnEncountered,
+                        UniquePokedexEntries = this.uniquePokedexEntries,
+                        PokemonsCaptured = this.pkmnCaptured,
+                        PokeStopVisits = this.pokeStopVisits,
+                        PokeballsThrown = this.pokeballsThrown,
+                        EggsHatched = this.eggsHatched,
+                        BigMagikarpCaught = this.bigMagikarpCaught,
+                        PokemonDeployed = this.pkmnDeployed
+                    }
+                }
+            };
+            return v;
+        }
     }
 }

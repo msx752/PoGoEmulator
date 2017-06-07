@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using PoGoEmulator.Models.Players;
 using PoGoEmulator.Models.Worlds.MapObjects;
 
 // ReSharper disable InconsistentNaming
@@ -40,7 +41,7 @@ namespace PoGoEmulator.Models.Pokemons
         public int ivStamina { get; set; }
         public int staminaMax { get; set; }
         public int favorite { get; set; }
-        public string owner { get; set; }
+        public Player owner { get; set; }
         public string nickname { get; set; }
         public string pokeball { get; set; }
         public string spawnPoint { get; set; }
