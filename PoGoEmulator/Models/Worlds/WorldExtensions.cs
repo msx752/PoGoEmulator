@@ -6,7 +6,7 @@ using POGOProtos.Map;
 namespace PoGoEmulator.Models.Worlds
 {
     //THIS WILL BE DEPREATE
-    public static class Extensions
+    public static class WorldExtensions
     {
         public static bool AddNewCell(this Worlds.World world, MapCell newCell, bool force)
         {

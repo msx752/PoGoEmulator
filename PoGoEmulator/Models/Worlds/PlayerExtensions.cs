@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace PoGoEmulator.Models.Worlds
 {
-    public class PlayerFunctions
+    public class PlayerExtensions
     {
     }
 }
