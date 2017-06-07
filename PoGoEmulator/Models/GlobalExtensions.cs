@@ -11,7 +11,7 @@ using POGOProtos.Settings.Master;
 
 namespace PoGoEmulator.Models
 {
-    public static class Extensions
+    public static class GlobalExtensions
     {
         public static bool ValidUsername(string name)
         {
@@ -106,6 +106,30 @@ namespace PoGoEmulator.Models
         {
             var sttng = GlobalSettings.GameMaster.GetPokemonTmplByDex(dex);
             return sttng;
+        }
+
+        public static float GetHalfLevelCpMultiplier(byte lvl)
+        {
+            var levelSettings = GetLevelSettings();
+            var next = levelSettings.CpMultiplier[lvl - 1];
+
+            return (float)Math.Sqrt(Math.Pow(lvl, 2) + ((Math.Pow(next, 2) - Math.Pow(lvl, 2)) / 2));
+        }
+
+        public static PlayerLevelSettings GetLevelSettings()
+        {
+            var pls = GlobalSettings.GameMaster.Settings["PLAYER_LEVEL_SETTINGS"];
+            return pls.PlayerLevel;
+        }
+
+        public static int GetLevelExp(byte lvl)
+        {
+            return GlobalExtensions.GetLevelSettings().RequiredExperience[lvl - 1];
+        }
+
+        public static int GetMaximumLevel()
+        {
+            return GlobalExtensions.GetLevelSettings().RequiredExperience.Count;
         }
 
         public static PokemonId GetPkmnName(byte dex)

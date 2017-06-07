@@ -18,7 +18,7 @@ namespace PoGoEmulator.Models.GameMasters
 
         public static PokemonSettings GetPokemonTmplByDex(this GameMaster g, byte dex)
         {
-            var id = Extensions.IdToPkmnBundleName(dex);
+            var id = GlobalExtensions.IdToPkmnBundleName(dex);
             PokemonId name = (PokemonId)dex;
             string tmplId = $"V{id}_POKEMON_{name}";
 

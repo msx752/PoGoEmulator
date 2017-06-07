@@ -10,20 +10,9 @@ namespace PoGoEmulator.Models.Players.Infos
 {
     public static class InfoExtensions
     {
-        public static PlayerLevelSettings GetLevelSettings(this Info i)
-        {
-            var pls = GlobalSettings.GameMaster.Settings["PLAYER_LEVEL_SETTINGS"];
-            return pls.PlayerLevel;
-        }
-
-        public static int GetMaximumLevel(this Info i)
-        {
-            return i.GetLevelSettings().RequiredExperience.Count;
-        }
-
         public static int GetCurrentLevel(this Info i)
         {
-            var levels = i.GetLevelSettings().RequiredExperience;
+            var levels = GlobalExtensions.GetLevelSettings().RequiredExperience;
             for (int j = 0; j < levels.Count; j++)
             {
                 if (levels[j] << 0 == i.nextLvlExp)
@@ -32,11 +21,6 @@ namespace PoGoEmulator.Models.Players.Infos
                 }
             }
             return 1;
-        }
-
-        public static int GetLevelExp(this Info i, byte lvl)
-        {
-            return i.GetLevelSettings().RequiredExperience[lvl - 1];
         }
 
         public static void UpgradeExp(this Info i, int exp)
@@ -48,15 +32,15 @@ namespace PoGoEmulator.Models.Players.Infos
 
             if (!i.MaxLevelReached())
             {
-                int currentLevelExp = i.GetLevelExp((byte)i._level);
-                int nextLevelExp = i.GetLevelExp((byte)(i._level + 1));
+                int currentLevelExp = GlobalExtensions.GetLevelExp((byte)i._level);
+                int nextLevelExp = GlobalExtensions.GetLevelExp((byte)(i._level + 1));
                 int leftExp = nextLevelExp - i._exp;
                 i.levelReward = false;
                 if (i._exp + exp >= nextLevelExp)
                 {
                     i._level += 1;
                     i.prevLvlExp = nextLevelExp;
-                    i.nextLvlExp = i.GetLevelExp((byte)(i._level + 1));
+                    i.nextLvlExp = GlobalExtensions.GetLevelExp((byte)(i._level + 1));
                     i._exp += leftExp + 1;
                     i.levelReward = true;
                     i.UpgradeExp(exp - leftExp);
@@ -70,7 +54,7 @@ namespace PoGoEmulator.Models.Players.Infos
 
         public static bool MaxLevelReached(this Info i)
         {
-            return i._level + 1 >= i.GetMaximumLevel();
+            return i._level + 1 >= GlobalExtensions.GetMaximumLevel();
         }
     }
 }

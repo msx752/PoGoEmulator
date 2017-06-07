@@ -12,7 +12,7 @@ namespace PoGoEmulator.Models.Players.CandyBags
     {
         public static Candy CreateCandy(this CandyBag c, byte dex)
         {
-            var id = (int)Extensions.GetPkmnFamily(dex);
+            var id = (int)GlobalExtensions.GetPkmnFamily(dex);
             Candy candy = new Candy()
             {
                 amount = 0
@@ -23,7 +23,7 @@ namespace PoGoEmulator.Models.Players.CandyBags
 
         public static Candy GetCandyByDexNumber(this CandyBag c, byte dex)
         {
-            var id = (int)Extensions.GetPkmnFamily(dex);
+            var id = (int)GlobalExtensions.GetPkmnFamily(dex);
             if (c.candies[id].IsNotNull())
             {
                 return c.candies[id];

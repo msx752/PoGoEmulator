@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using PoGoEmulator.Database;
 using PoGoEmulator.Models.GameMasters;
 using PoGoEmulator.Models.Players;
 using PoGoEmulator.Models.Players.CandyBags;
@@ -16,7 +17,7 @@ namespace PoGoEmulator.Models.Pokemons
     {
         public static void CalcStats(this Pokemon p, Player owner)
         {
-            var pkmnTmpl = Extensions.GetPkmnTemplate((byte)p.dexNumber);
+            var pkmnTmpl = p.GetPokemonSettings();
             var stats = pkmnTmpl.Stats;
             var minIV = GlobalSettings.GameCfg.PokemonSettings.MIN_IV;
             var maxIV = GlobalSettings.GameCfg.PokemonSettings.MAX_IV;
@@ -36,11 +37,28 @@ namespace PoGoEmulator.Models.Pokemons
             {
                 p.cp = (int)(Math.Floor((GlobalSettings.Random.Next() * p.CalcCp(owner)) + 16));
             }
+            p.CalcMoves();
+        }
+
+        public static PokemonSettings GetPokemonSettings(this Pokemon p)
+        {
+            return GlobalExtensions.GetPkmnTemplate((byte)p.dexNumber);
+        }
+
+        public static void CalcMoves(this Pokemon p)
+        {
+            var pkmnTmpl = p.GetPokemonSettings();
+
+            var weakMoves = pkmnTmpl.QuickMoves;
+            var strongMoves = pkmnTmpl.CinematicMoves;
+
+            p.move1 = (int)weakMoves[(GlobalSettings.Random.Next() * weakMoves.Count) << 0];
+            p.move2 = (int)strongMoves[(GlobalSettings.Random.Next() * strongMoves.Count) << 0];
         }
 
         public static double CalcCp(this Pokemon p, Player owner)
         {
-            var levelSettings = owner.info.GetLevelSettings();
+            var levelSettings = GlobalExtensions.GetLevelSettings();
             var ecpm = levelSettings.CpMultiplier[owner.info._level - 1];
             var atk = (p.attack + p.ivAttack) * ecpm;
             var def = (p.defense + p.ivDefense) * ecpm;
@@ -61,54 +79,44 @@ namespace PoGoEmulator.Models.Pokemons
 
         public static void AddCandies(this Pokemon p, int amount)
         {
-            var family = Extensions.GetPkmnFamily((byte)p.dexNumber);
+            var family = p.GetPokemonFamilyId();
             byte id = (byte)family;
             if (p.isOwned)
-            {
                 p.owner.candyBag.AddCandy(id, amount);
-            }
-            /*
-                 let family = this.getPkmnFamily(this.dexNumber);
-                let id = ENUM.getIdByName(ENUM.POKEMON_FAMILY, family) << 0;
-                if (this.owner) this.owner.candyBag.addCandy(id, parseInt(amount));
-             */
         }
 
-        public static int HasEvolution(this Pokemon p)
+        public static PokemonFamilyId GetPokemonFamilyId(this Pokemon p)
         {
-            var pkmnTmpl = Extensions.GetPkmnTemplate((byte)p.dexNumber);
-            return (pkmnTmpl.CandyToEvolve << 0);
-            /*
-                let pkmnTmpl = this.getPkmnTemplate(this.dexNumber);
-                return (
-                  pkmnTmpl.evolution_ids.length >= 1  );
-             */
-            //var pkmnTmpl = p.GetPkmnTemplate((byte)p.dexNumber);
+            return GlobalExtensions.GetPkmnFamily((byte)p.dexNumber);
+        }
+
+        public static bool HasEvolution(this Pokemon p)
+        {
+            var pkmnTmpl = p.GetPokemonSettings();
+            return pkmnTmpl.EvolutionIds.Count >= 1;
+        }
+
+        public static int CandiesToEvolve(this Pokemon p)
+        {
+            var pkmnTmpl = p.GetPokemonSettings();
+            return pkmnTmpl.CandyToEvolve << 0;
         }
 
         public static bool HasReachedMaxLevel(this Pokemon p)
         {
-            return p._level > p.owner.info.GetMaximumLevel() * 2;
+            return p._level > GlobalExtensions.GetMaximumLevel() * 2;
         }
 
-        /**
-         * @return {Number}
-         */
-        //candiesToEvolve()
-        //      {
-        //          let pkmnTmpl = this.getPkmnTemplate(this.dexNumber);
-        //          return (pkmnTmpl.candy_to_evolve << 0);
-        //      }
+        public static void InsertIntoDatabase(this Pokemon p, PoGoDbContext db)
+        {
+        }
 
-        /**
-  /**
-   * @return {Boolean}
-   */
-        //hasReachedMaxLevel()
-        //      {
-        //          return (
-        //            this.level > this.owner.info.getMaximumLevel() * 2
-        //          );
-        //      }
+        public static void UpdateDatabase(this Pokemon p, PoGoDbContext db)
+        {
+        }
+
+        public static void DeleteFromDatabase(this Pokemon p, PoGoDbContext db)
+        {
+        }
     }
 }

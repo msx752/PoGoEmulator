@@ -14,7 +14,7 @@ namespace PoGoEmulator.Models.Pokemons.WildPokemons
         {
             hasSeen = new List<Seen>();
             hasCatched = new List<string>();
-            this.uid = Extensions.GenerateUniqueInt32Id();
+            this.uid = GlobalExtensions.GenerateUniqueInt32Id();
             despawnIn = -1;
             creation = DateTime.Now;
             Random r = new Random();
