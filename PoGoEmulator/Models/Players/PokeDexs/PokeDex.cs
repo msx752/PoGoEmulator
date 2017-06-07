@@ -10,7 +10,7 @@ namespace PoGoEmulator.Models.Players.PokeDexs
     public class PokeDex
     {
         public Poke[] pkmns { get; set; }
-            = new Poke[GlobalSettings.ServerCfg.MAX_POKEMON_NATIONAL_ID];
+            = new Poke[GlobalSettings.ServerCfg.MAX_POKEMON_NATIONAL_ID + 1];
 
         public PokeDex()
         {
