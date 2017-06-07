@@ -7,10 +7,10 @@ namespace PoGoEmulator.Models
 {
     public class GameSettings
     {
-        public FortSetting FortSettings { get; set; }
-        public MapSetting MapSettings { get; set; }
-        public InventorySetting InventorySettings { get; set; }
-        public PokemonSetting PokemonSettings { get; set; }
+        public FortSetting FortSettings { get; set; } = new FortSetting();
+        public MapSetting MapSettings { get; set; } = new MapSetting();
+        public InventorySetting InventorySettings { get; set; } = new InventorySetting();
+        public PokemonSetting PokemonSettings { get; set; } = new PokemonSetting();
     }
 
     public class FortSetting
@@ -27,6 +27,8 @@ namespace PoGoEmulator.Models
 
     public class PokemonSetting
     {
+        public int MIN_IV { get; set; } = 1;
+        public int MAX_IV { get; set; } = 15;
     }
 
     //put this values in to the classes

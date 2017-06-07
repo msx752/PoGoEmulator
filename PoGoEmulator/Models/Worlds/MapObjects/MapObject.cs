@@ -8,7 +8,7 @@ namespace PoGoEmulator.Models.Worlds.MapObjects
 {
     public class MapObject
     {
-        public string uid { get; set; }
+        public int uid { get; set; }
 
         public string cellId { get; set; }
 

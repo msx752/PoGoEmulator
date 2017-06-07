@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using PoGoEmulator.Models.Players;
 using PoGoEmulator.Models.Worlds.MapObjects;
+using POGOProtos.Data;
+using POGOProtos.Enums;
 
 // ReSharper disable InconsistentNaming
 
@@ -13,18 +12,19 @@ namespace PoGoEmulator.Models.Pokemons
     {
         public Pokemon()
         {
+            _level = 1;
             Random r = new Random();
-            cpMultiplier = r.NextDouble() + 1.0;
+            cpMultiplier = (float)(r.NextDouble() + 1.0);
         }
 
         public Pokemon(object obj) : this()
         {
             this.InitializeMapObject(this, obj);
 
-            if (this.isWild && !this.isOwned) this.CalcStats(this.owner);
+            if (isWild && !isOwned) this.CalcStats(owner);
         }
 
-        public double cpMultiplier { get; set; }
+        public float cpMultiplier { get; set; }
         public int dexNumber { get; set; }
         public int capturedLevel { get; set; }
         public int cp { get; set; }
@@ -47,6 +47,32 @@ namespace PoGoEmulator.Models.Pokemons
         public string spawnPoint { get; set; }
         public bool isWild { get; set; }
         public bool isOwned { get; set; }
-        public int _level { get; set; } = 1;
+        public int _level { get; set; }
+
+        public PokemonData Serialize()
+        {
+            PokemonData pk = new PokemonData
+            {
+                Id = Extensions.GenerateUniqueId(),
+                PokemonId = (PokemonId)this.dexNumber,
+                Cp = this.cp,
+                Stamina = this.stamina,
+                StaminaMax = this.staminaMax,
+                Move1 = (PokemonMove)this.move1,
+                Move2 = (PokemonMove)this.move2,
+                HeightM = this.height,
+                WeightKg = this.weight,
+                IndividualAttack = this.ivAttack,
+                IndividualDefense = this.ivDefense,
+                IndividualStamina = this.ivStamina,
+                CpMultiplier = this.cpMultiplier,
+                Pokeball = POGOProtos.Inventory.Item.ItemId.ItemPokeBall,
+                CapturedCellId = 1337,
+                CreationTimeMs = DateTime.Now.ToUnixTime(),
+                Favorite = this.favorite,
+                Nickname = this.nickname
+            };
+            return pk;
+        }
     }
 }

@@ -16,7 +16,37 @@ namespace PoGoEmulator.Models.Pokemons
     {
         public static void CalcStats(this Pokemon p, Player owner)
         {
-            throw new NotImplementedException();
+            var pkmnTmpl = Extensions.GetPkmnTemplate((byte)p.dexNumber);
+            var stats = pkmnTmpl.Stats;
+            var minIV = GlobalSettings.GameCfg.PokemonSettings.MIN_IV;
+            var maxIV = GlobalSettings.GameCfg.PokemonSettings.MAX_IV;
+            p.attack = stats.BaseAttack;
+            p.defense = stats.BaseDefense;
+            p.stamina = stats.BaseStamina;
+            p.staminaMax = p.stamina;
+
+            p.ivAttack = ~~(GlobalSettings.Random.Next() * maxIV) + minIV;
+            p.ivDefense = ~~(GlobalSettings.Random.Next() * maxIV) + minIV;
+            p.ivStamina = ~~(GlobalSettings.Random.Next() * maxIV) + minIV;
+
+            p.height = (int)(pkmnTmpl.PokedexHeightM + ((GlobalSettings.Random.Next() * pkmnTmpl.HeightStdDev) + .1));
+            p.weight = (int)(pkmnTmpl.PokedexWeightKg + ((GlobalSettings.Random.Next() * pkmnTmpl.PokedexHeightM) + .1));
+
+            if (owner != null)
+            {
+                p.cp = (int)(Math.Floor((GlobalSettings.Random.Next() * p.CalcCp(owner)) + 16));
+            }
+        }
+
+        public static double CalcCp(this Pokemon p, Player owner)
+        {
+            var levelSettings = owner.info.GetLevelSettings();
+            var ecpm = levelSettings.CpMultiplier[owner.info._level - 1];
+            var atk = (p.attack + p.ivAttack) * ecpm;
+            var def = (p.defense + p.ivDefense) * ecpm;
+            var sta = (p.stamina + p.ivStamina) * ecpm;
+
+            return Math.Max(10, Math.Floor(Math.Sqrt(atk * atk * def * sta) / 10));
         }
 
         public static void SetFavorite(this Pokemon p, bool truth)

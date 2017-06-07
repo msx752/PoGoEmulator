@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using PoGoEmulator.Models.GameMasters;
 using PoGoEmulator.Models.Pokemons;
@@ -35,6 +36,43 @@ namespace PoGoEmulator.Models
         {
             Random r = new Random();
             return 1e18 - Math.Floor(r.NextDouble() * 1e18);
+        }
+
+        //modification of https://codereview.stackexchange.com/questions/61338/generate-random-numbers-without-repetitions
+        public static ulong GenerateUniqueId()
+        {
+            int count = 2;
+            List<int> result = new List<int>(count);
+
+            HashSet<int> candidates = new HashSet<int>();
+            for (Int32 top = Int32.MaxValue - count; top < Int32.MaxValue; top++)
+            {
+                int value = GlobalSettings.Random.Next(top + 1);
+                if (candidates.Add(value))
+                {
+                    result.Add(value);
+                }
+                else
+                {
+                    result.Add(top);
+                    candidates.Add(top);
+                }
+            }
+            var str = (ulong)(((result[0] - 23) * 3) + ((result[1] + 3) * 23));
+            var lent = str.ToString().Length;
+            if (lent < 20)
+            {
+                for (int i = 0; i < 20; i++)
+                {
+                    str *= 10;
+                    if (str.ToString().Length >= 20)//ulong fixed
+                    {
+                        str -= (ulong)i;
+                        break;
+                    }
+                }
+            }
+            return (ulong)str;
         }
 
         public static PokemonSettings GetPkmnTemplate(byte dex)

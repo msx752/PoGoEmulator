@@ -13,6 +13,11 @@ namespace PoGoEmulator
     public static class GlobalSettings
     {
         /// <summary>
+        /// global random 
+        /// </summary>
+        public static Random Random { get; set; } = new Random();
+
+        /// <summary>
         /// game settings 
         /// </summary>
         public static GameSettings GameCfg { get; set; } = new GameSettings()
