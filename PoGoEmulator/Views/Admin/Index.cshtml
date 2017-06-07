@@ -1,22 +1,22 @@
-﻿@model PoGoEmulator.Models.AdminModel
-@{
-    ViewBag.Title = "Admin Panel";
-}
-
-@{
-    PoGoEmulator.Models.AdminModel adm = Model as PoGoEmulator.Models.AdminModel;
-
-    <br />
-    <span>online users: @adm.OnlineUserCount</span>
-    <br />
-    <span>--------------------</span>
-    <br />
-    foreach (var loc in adm.SpawnLocations)
-    {
-        <span> @loc.Key : @loc.Value</span>
-        <br />
+﻿@model PoGoEmulator.Models.ViewModel.AdminModel
+    @{
+        ViewBag.Title = "Admin Panel";
     }
-    <span>--------------------</span>
-}
 
-<h6>pokemon spawn locations on map [click to map and spawn]</h6>
+    @{
+        PoGoEmulator.Models.ViewModel.AdminModel adm = Model as PoGoEmulator.Models.ViewModel.AdminModel;
+
+        <br />
+        <span>online users: @adm.OnlineUserCount</span>
+        <br />
+        <span>--------------------</span>
+        <br />
+        foreach (var loc in adm.SpawnLocations)
+        {
+            <span> @loc.Key : @loc.Value</span>
+            <br />
+        }
+        <span>--------------------</span>
+    }
+
+    <h6>pokemon spawn locations on map [click to map and spawn]</h6>

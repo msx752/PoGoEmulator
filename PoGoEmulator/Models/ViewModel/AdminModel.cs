@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace PoGoEmulator.Models
+namespace PoGoEmulator.Models.ViewModel
 {
     public class AdminModel
     {
