@@ -6,7 +6,7 @@ using System.Text;
 
 namespace PoGoEmulator.Models
 {
-    public class Configs
+    public class ServerSettings
     {
 #if DEBUG
         public string DUMP_ASSET_PATH { get; set; } = Directory.GetCurrentDirectory() + "\\bin\\Data";

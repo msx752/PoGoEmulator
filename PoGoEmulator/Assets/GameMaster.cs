@@ -14,7 +14,7 @@ namespace PoGoEmulator.Assets
             Console.WriteLine("ItemTemplates are loading from 'game_master'..");
             //#endif
             Settings["PLAYER_LEVEL_SETTINGS"] = null;//move to top
-            var path_game_master = Path.Combine(GlobalSettings.Cfg.DUMP_ASSET_PATH, "game_master");
+            var path_game_master = Path.Combine(GlobalSettings.ServerCfg.DUMP_ASSET_PATH, "game_master");
             if (!File.Exists(path_game_master))
                 throw new Exception($"{path_game_master} not found");
 

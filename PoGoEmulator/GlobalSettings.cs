@@ -12,9 +12,16 @@ namespace PoGoEmulator
     public static class GlobalSettings
     {
         /// <summary>
-        /// server configs 
+        /// game settings 
         /// </summary>
-        public static Configs Cfg = new Configs()
+        public static GameSettings GameCfg { get; set; } = new GameSettings()
+        {
+        };
+
+        /// <summary>
+        /// server settings 
+        /// </summary>
+        public static ServerSettings ServerCfg { get; set; } = new ServerSettings()
         {
             //#if DEBUG
             //            RequestTimeout = new TimeSpan(0, 10, 0)

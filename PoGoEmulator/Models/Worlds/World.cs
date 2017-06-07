@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Concurrent;
 using POGOProtos.Map;
 
-namespace PoGoEmulator.Models.World
+namespace PoGoEmulator.Models.Worlds
 {
     //THIS WILL BE DEPREATE
     public class World

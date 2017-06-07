@@ -14,27 +14,27 @@ namespace PoGoEmulator.Assets
         {
             Console.WriteLine("Validating Assets..");
 
-            if (!Directory.Exists(Path.Combine(GlobalSettings.Cfg.DUMP_ASSET_PATH)))
+            if (!Directory.Exists(Path.Combine(GlobalSettings.ServerCfg.DUMP_ASSET_PATH)))
 #if DEBUG
 
                 throw new Exception("'Data' folder not found.download[https://mega.nz/#!aEBGmZ7b!EwSmPmyJxcO0PYUYzuk5Suy3s8j-V99yvz0oMTtEmnI] ,unzip and put to \\bin\\data folder");
 #else
-             throw new Exception("'Data' folder not found.download[https://mega.nz/#!aEBGmZ7b!EwSmPmyJxcO0PYUYzuk5Suy3s8j-V99yvz0oMTtEmnI] ,unzip and put to \\data folder");
+                throw new Exception("'Data' folder not found.download[https://mega.nz/#!aEBGmZ7b!EwSmPmyJxcO0PYUYzuk5Suy3s8j-V99yvz0oMTtEmnI] ,unzip and put to \\data folder");
 #endif
 
-            if (!File.Exists(Path.Combine(GlobalSettings.Cfg.DUMP_ASSET_PATH, "game_master")))
+            if (!File.Exists(Path.Combine(GlobalSettings.ServerCfg.DUMP_ASSET_PATH, "game_master")))
                 throw new Exception("'game_master' not found");
 
             //#if DEBUG
             //            Logger.Write("Pokemons are loading from 'asset_digest'..", Enums.LogLevel.Debug);
             //#endif
-            var max = GlobalSettings.Cfg.MAX_POKEMON_NATIONAL_ID;
+            var max = GlobalSettings.ServerCfg.MAX_POKEMON_NATIONAL_ID;
             var limit = Plaforms.Length;
 
             for (int i = 0; i < limit; i++)
             {
                 var platform = Plaforms[i];
-                var path_platform = Path.Combine(GlobalSettings.Cfg.DUMP_ASSET_PATH, platform);
+                var path_platform = Path.Combine(GlobalSettings.ServerCfg.DUMP_ASSET_PATH, platform);
                 var path_asset_digest = Path.Combine(path_platform, "asset_digest");
                 if (!File.Exists(path_asset_digest))
                     throw new Exception("'asset_digest' not found");

@@ -15,7 +15,7 @@ namespace PoGoEmulator
         {
             var host = new WebHostBuilder()
                 .UseKestrel()
-                .UseUrls($"http://{GlobalSettings.Cfg.Ip}:{GlobalSettings.Cfg.Port}")
+                .UseUrls($"http://{GlobalSettings.ServerCfg.Ip}:{GlobalSettings.ServerCfg.Port}")
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
                 .UseStartup<Startup>()

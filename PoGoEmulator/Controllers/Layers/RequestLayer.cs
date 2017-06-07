@@ -55,7 +55,7 @@ namespace PoGoEmulator.Controllers.Layers
 
             using (var bodyReader = new BinaryReader(Request.Body))
             {
-                Byte[] buf = new byte[GlobalSettings.Cfg.MaxRequestContentLength];
+                Byte[] buf = new byte[GlobalSettings.ServerCfg.MaxRequestContentLength];
                 int lent = bodyReader.Read(buf, 0, buf.Length);
                 Array.Resize(ref buf, lent);
                 CodedInputStream cis = new CodedInputStream(buf);
