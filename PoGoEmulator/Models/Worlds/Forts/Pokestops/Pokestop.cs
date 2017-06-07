@@ -1,4 +1,5 @@
-﻿using POGOProtos.Map;
+﻿using PoGoEmulator.Models.Worlds.MapObjects;
+using POGOProtos.Map;
 using POGOProtos.Map.Fort;
 
 namespace PoGoEmulator.Models.Worlds.Forts.Pokestops

@@ -1,4 +1,5 @@
-﻿using POGOProtos.Enums;
+﻿using PoGoEmulator.Models.Worlds.MapObjects;
+using POGOProtos.Enums;
 using POGOProtos.Map.Fort;
 
 // ReSharper disable InconsistentNaming
