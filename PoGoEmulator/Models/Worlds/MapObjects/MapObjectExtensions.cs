@@ -95,9 +95,7 @@ namespace PoGoEmulator.Models.Worlds.MapObjects
                         pi = refClassType.GetProperty(prop.Name.ToLower());
                         if (pi == null)
                         {
-                            var prp = refClassType.GetProperty("Properties");//or use without reflection, it doesn't matter
-                            var mthAdd = prp.PropertyType.GetMethod("Add", new[] { typeof(string), typeof(object) });
-                            mthAdd.Invoke(refClassType, new object[] { prop.Name.ToLower(), prop.GetValue(obj) });
+                            mp.Properties.Add(prop.Name.ToLower(), prop.GetValue(obj));
                         }
                         break;
                 }
