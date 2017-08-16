@@ -14,7 +14,7 @@ namespace PoGoEmulator.Models
         public string DUMP_ASSET_PATH { get; set; } = Directory.GetCurrentDirectory() + "\\Data";
 #endif
         public TimeSpan GarbageTime { get; set; } = new TimeSpan(0, 0, 10);
-        public String Ip { get; set; } = "192.168.2.248";
+        public String Ip { get; set; } = "127.0.0.1";
         public int MAX_POKEMON_NATIONAL_ID { get; set; } = 151;
         public int MaxRequestContentLength { get; set; } = (1024 * 1024) * (1);//1MB
         public int Port { get; set; } = 3000;

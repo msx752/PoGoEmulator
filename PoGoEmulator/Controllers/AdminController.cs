@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PoGoEmulator.Models;
+using PoGoEmulator.Models.ViewModel;
 
 namespace PoGoEmulator.Controllers
 {
